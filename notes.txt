@@ -1,0 +1,6 @@
+@author: Alexis Tercero
+
+For running parcel, make sure that your have script running rigths.
+In case you don't have permissions, try this on powershell as administrator:
+
+    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
