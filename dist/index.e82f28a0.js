@@ -535,21 +535,34 @@ function hmrAcceptRun(bundle, id) {
 var _three = require("three");
 var _orbitcontrols = require("three/examples/jsm/controls/orbitcontrols");
 var _datGui = require("dat.gui");
-const objs = {};
-let options = {};
+/**
+ * {} global variable
+ */ const objs = {};
+/**
+ * {} global variable
+ */ let options = {};
 const gui = new _datGui.GUI();
-const renderer = new _three.WebGLRenderer();
+/**
+ * THREE.WebGLRenderer global variable
+ */ const renderer = new _three.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-const scene = new _three.Scene();
-const camera = new _three.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+/**
+ * THREE.Scene global variable
+ */ const scene = new _three.Scene();
+/**
+ * THREE.PerspectiveCamera global variable
+ */ const camera = new _three.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 let u = 3;
-camera.position.set(u, u, u);
+camera.position.set(10, 8, -6);
 camera.lookAt(scene.position);
 const cameraControl = new (0, _orbitcontrols.OrbitControls)(camera, renderer.domElement);
 cameraControl.update();
 createObjs();
-let step = 0;
+createLights();
+/**
+ * number global variable
+ */ let step = 0;
 function animate(time) {
     // time is default parameter
     step += options.speed;
@@ -559,11 +572,19 @@ function animate(time) {
 }
 renderer.setAnimationLoop(animate);
 // renderer.shadowMap.enabled = true;
+// ----------------------------------------------------------------
 function createObjs() {
+    //# create 3D objects class:
+    //# {
+    //     material,
+    //     geometry,
+    //     obj,
+    //     (add scene),
+    //  }
     const boxGeometry = new _three.BoxGeometry();
-    const boxMaterial = new _three.MeshBasicMaterial({
+    const boxMaterial = new _three.MeshStandardMaterial({
         color: 0x0e00ff,
-        wireframe: true
+        wireframe: false
     });
     objs.box = new _three.Mesh(boxGeometry, boxMaterial);
     scene.add(objs.box);
@@ -579,7 +600,7 @@ function createGUI() {
     //#  must be constant and add parameters as options.param = value;
     options = {
         cubeColor: "#0e00ff",
-        boxWired: true,
+        boxWired: false,
         speed: 0.003
     };
     // define GUI for colors
@@ -593,6 +614,35 @@ function createGUI() {
     // interval GUI
     gui.add(options, "speed", 0, 0.1);
     console.log("GUI added");
+}
+function createLights() {
+    /**Ambient light  THREE.AmbientLight
+     * 
+     * It deals with THREE.MeshStandardMaterial
+     * for some reflection and shadows features.
+    */ const ambientLight = new _three.AmbientLight(0x333333);
+    scene.add(ambientLight);
+    // /**Directional light THREE.DirectionalLight*/
+    const directionalLight = new _three.DirectionalLight(0xFFFFFF, 0.8);
+    scene.add(directionalLight);
+// directionalLight.position.set(-30, 50, 0);
+// directionalLight.castShadow = true;
+// directionalLight.shadow.camera.bottom = -12;
+// const dLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
+// scene.add(dLightHelper);
+// const dLightShadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+// scene.add(dLightShadowHelper);
+// /**Spot light THREE.SpotLight*/
+// const spotLight = new THREE.SpotLight(0xFFFFFF);
+// scene.add(spotLight);
+// spotLight.position.set(-100, 100, 0);
+// spotLight.castShadow = true;
+// spotLight.angle = 0.2;
+// const sLightHelper = new THREE.SpotLightHelper(spotLight);
+// scene.add(sLightHelper);
+// //scene.fog = new THREE.Fog(0xFFFFFF, 0, 200);
+// scene.fog = new THREE.FogExp2(0xFFFFFF, 0.01);
+//renderer.setClearColor(0xFFEA00);
 }
 
 },{"three":"ktPTu","three/examples/jsm/controls/orbitcontrols":"lYBrp","dat.gui":"k3xQk"}],"ktPTu":[function(require,module,exports) {
