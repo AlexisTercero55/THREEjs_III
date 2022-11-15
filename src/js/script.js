@@ -3,6 +3,9 @@ import { Scene } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/orbitcontrols';
 import * as dat from 'dat.gui';
 
+import nebula from '../img/nebula.jpg';
+import stars from '../img/stars.jpg';
+
 /**
  * {} global variable
  */
@@ -23,6 +26,8 @@ document.body.appendChild(renderer.domElement);
  * THREE.Scene global variable
  */
 const scene = new THREE.Scene();
+const textureLoader = new THREE.TextureLoader();
+scene.background = textureLoader.load(nebula);
 
 /**
  * THREE.PerspectiveCamera global variable
@@ -33,8 +38,8 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     1000
 );
-let u = 3;
-camera.position.set(10,8,-6);
+let u = 2;
+camera.position.set(0,u,-19);
 camera.lookAt(scene.position);
 const cameraControl =new OrbitControls(camera, renderer.domElement);
 cameraControl.update();
@@ -43,6 +48,15 @@ cameraControl.update();
 createObjs();
 createLights();
 
+renderer.setAnimationLoop(animate);
+window.addEventListener('resize', function() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// renderer.shadowMap.enabled = true;
+// ----------------------------------------------------------------
 
 /**
  * number global variable
@@ -58,10 +72,6 @@ function animate(time)
 
     renderer.render(scene, camera);
 }
-renderer.setAnimationLoop(animate);
-
-// renderer.shadowMap.enabled = true;
-// ----------------------------------------------------------------
 
 function createObjs()
 {
@@ -72,10 +82,11 @@ function createObjs()
     //     obj,
     //     (add scene),
     //  }
-    const boxGeometry = new THREE.BoxGeometry();
+    const boxGeometry = new THREE.CircleGeometry(2.5,20);
     const boxMaterial = new THREE.MeshStandardMaterial({
         color: 0x0e00ff,
-        wireframe: false
+        wireframe: false,
+        side: THREE.DoubleSide
     });
     objs.box = new THREE.Mesh(boxGeometry, boxMaterial);
     scene.add(objs.box);
@@ -86,8 +97,66 @@ function createObjs()
     objs.grid = new THREE.GridHelper(10,10);
     scene.add(objs.grid);
 
+    // cocoro3D();
+    torusKnot();
+
     console.log('THREEjs_iii objs was created');
     createGUI();
+}
+
+function cocoro3D()
+{
+    console.log('creating cocoro ');
+    const shape = new THREE.Shape();
+    const x = -2.5;
+    const y = -5;
+    shape.moveTo(x + 2.5, y + 2.5);
+    shape.bezierCurveTo(x + 2.5, y + 2.5, x + 2, y, x, y);
+    shape.bezierCurveTo(x - 3, y, x - 3, y + 3.5, x - 3, y + 3.5);
+    shape.bezierCurveTo(x - 3, y + 5.5, x - 1.5, y + 7.7, x + 2.5, y + 9.5);
+    shape.bezierCurveTo(x + 6, y + 7.7, x + 8, y + 4.5, x + 8, y + 3.5);
+    shape.bezierCurveTo(x + 8, y + 3.5, x + 8, y, x + 5, y);
+    shape.bezierCurveTo(x + 3.5, y, x + 2.5, y + 2.5, x + 2.5, y + 2.5);
+
+    const extrudeSettings = {
+    steps: 2,
+    depth: 2,
+    bevelEnabled: true,
+    bevelThickness: 1,
+    bevelSize: 1,
+    bevelSegments: 2,
+    };
+
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+
+    const material = new THREE.MeshStandardMaterial({
+        color: 0x0000ff,
+        wireframe: false
+    });
+
+    const cocoro = new THREE.Mesh(geometry,material);
+    scene.add(cocoro);
+    console.log('cocoro created');
+}
+
+function torusKnot()
+{
+    const radius = 1;  // ui: radius
+    const tubeRadius = 0.2;  // ui: tubeRadius
+    const radialSegments = 20;  // ui: radialSegments
+    const tubularSegments = 64;  // ui: tubularSegments
+    const p = 1;  // ui: p
+    const q = 3;  // ui: q
+    const geometry = new THREE.TorusKnotGeometry(radius, tubeRadius, tubularSegments, radialSegments, p, q);
+
+    const material = new THREE.MeshStandardMaterial({
+        color: 0x00ffff,
+        wireframe: false
+    });
+
+    const obj = new THREE.Mesh(geometry,material);
+    obj.position.set(0,5,0);
+    scene.add(obj);
 }
 
 function createGUI()
