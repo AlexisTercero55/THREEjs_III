@@ -532,24 +532,52 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"dV6cC":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _three = require("three");
 var _orbitcontrols = require("three/examples/jsm/controls/orbitcontrols");
 var _datGui = require("dat.gui");
-const objs = {};
-let options = {};
+var _nebulaJpg = require("../img/nebula.jpg");
+var _nebulaJpgDefault = parcelHelpers.interopDefault(_nebulaJpg);
+var _starsJpg = require("../img/stars.jpg");
+var _starsJpgDefault = parcelHelpers.interopDefault(_starsJpg);
+/**
+ * {} global variable
+ */ const objs = {};
+/**
+ * {} global variable
+ */ let options = {};
 const gui = new _datGui.GUI();
-const renderer = new _three.WebGLRenderer();
+/**
+ * THREE.WebGLRenderer global variable
+ */ const renderer = new _three.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-const scene = new _three.Scene();
-const camera = new _three.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-let u = 3;
-camera.position.set(u, u, u);
+/**
+ * THREE.Scene global variable
+ */ const scene = new _three.Scene();
+const textureLoader = new _three.TextureLoader();
+scene.background = textureLoader.load((0, _nebulaJpgDefault.default));
+/**
+ * THREE.PerspectiveCamera global variable
+ */ const camera = new _three.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+let u = 2;
+camera.position.set(0, u, -19);
 camera.lookAt(scene.position);
 const cameraControl = new (0, _orbitcontrols.OrbitControls)(camera, renderer.domElement);
 cameraControl.update();
 createObjs();
-let step = 0;
+createLights();
+renderer.setAnimationLoop(animate);
+window.addEventListener("resize", function() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+// renderer.shadowMap.enabled = true;
+// ----------------------------------------------------------------
+/**
+ * number global variable
+ */ let step = 0;
 function animate(time) {
     // time is default parameter
     step += options.speed;
@@ -557,13 +585,19 @@ function animate(time) {
     objs.box.rotation.x += 0.01;
     renderer.render(scene, camera);
 }
-renderer.setAnimationLoop(animate);
-// renderer.shadowMap.enabled = true;
 function createObjs() {
-    const boxGeometry = new _three.BoxGeometry();
-    const boxMaterial = new _three.MeshBasicMaterial({
+    //# create 3D objects class:
+    //# {
+    //     material,
+    //     geometry,
+    //     obj,
+    //     (add scene),
+    //  }
+    const boxGeometry = new _three.CircleGeometry(2.5, 20);
+    const boxMaterial = new _three.MeshStandardMaterial({
         color: 0x0e00ff,
-        wireframe: true
+        wireframe: false,
+        side: _three.DoubleSide
     });
     objs.box = new _three.Mesh(boxGeometry, boxMaterial);
     scene.add(objs.box);
@@ -571,15 +605,62 @@ function createObjs() {
     scene.add(objs.axesHelper);
     objs.grid = new _three.GridHelper(10, 10);
     scene.add(objs.grid);
+    // cocoro3D();
+    torusKnot();
     console.log("THREEjs_iii objs was created");
     createGUI();
+}
+function cocoro3D() {
+    console.log("creating cocoro ");
+    const shape = new _three.Shape();
+    const x = -2.5;
+    const y = -5;
+    shape.moveTo(x + 2.5, y + 2.5);
+    shape.bezierCurveTo(x + 2.5, y + 2.5, x + 2, y, x, y);
+    shape.bezierCurveTo(x - 3, y, x - 3, y + 3.5, x - 3, y + 3.5);
+    shape.bezierCurveTo(x - 3, y + 5.5, x - 1.5, y + 7.7, x + 2.5, y + 9.5);
+    shape.bezierCurveTo(x + 6, y + 7.7, x + 8, y + 4.5, x + 8, y + 3.5);
+    shape.bezierCurveTo(x + 8, y + 3.5, x + 8, y, x + 5, y);
+    shape.bezierCurveTo(x + 3.5, y, x + 2.5, y + 2.5, x + 2.5, y + 2.5);
+    const extrudeSettings = {
+        steps: 2,
+        depth: 2,
+        bevelEnabled: true,
+        bevelThickness: 1,
+        bevelSize: 1,
+        bevelSegments: 2
+    };
+    const geometry = new _three.ExtrudeGeometry(shape, extrudeSettings);
+    const material = new _three.MeshStandardMaterial({
+        color: 0x0000ff,
+        wireframe: false
+    });
+    const cocoro = new _three.Mesh(geometry, material);
+    scene.add(cocoro);
+    console.log("cocoro created");
+}
+function torusKnot() {
+    const radius = 1; // ui: radius
+    const tubeRadius = 0.2; // ui: tubeRadius
+    const radialSegments = 20; // ui: radialSegments
+    const tubularSegments = 64; // ui: tubularSegments
+    const p = 1; // ui: p
+    const q = 3; // ui: q
+    const geometry = new _three.TorusKnotGeometry(radius, tubeRadius, tubularSegments, radialSegments, p, q);
+    const material = new _three.MeshStandardMaterial({
+        color: 0x00ffff,
+        wireframe: false
+    });
+    const obj = new _three.Mesh(geometry, material);
+    obj.position.set(0, 5, 0);
+    scene.add(obj);
 }
 function createGUI() {
     // define parameters for GUI
     //#  must be constant and add parameters as options.param = value;
     options = {
         cubeColor: "#0e00ff",
-        boxWired: true,
+        boxWired: false,
         speed: 0.003
     };
     // define GUI for colors
@@ -594,8 +675,37 @@ function createGUI() {
     gui.add(options, "speed", 0, 0.1);
     console.log("GUI added");
 }
+function createLights() {
+    /**Ambient light  THREE.AmbientLight
+     * 
+     * It deals with THREE.MeshStandardMaterial
+     * for some reflection and shadows features.
+    */ const ambientLight = new _three.AmbientLight(0x333333);
+    scene.add(ambientLight);
+    // /**Directional light THREE.DirectionalLight*/
+    const directionalLight = new _three.DirectionalLight(0xFFFFFF, 0.8);
+    scene.add(directionalLight);
+// directionalLight.position.set(-30, 50, 0);
+// directionalLight.castShadow = true;
+// directionalLight.shadow.camera.bottom = -12;
+// const dLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
+// scene.add(dLightHelper);
+// const dLightShadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+// scene.add(dLightShadowHelper);
+// /**Spot light THREE.SpotLight*/
+// const spotLight = new THREE.SpotLight(0xFFFFFF);
+// scene.add(spotLight);
+// spotLight.position.set(-100, 100, 0);
+// spotLight.castShadow = true;
+// spotLight.angle = 0.2;
+// const sLightHelper = new THREE.SpotLightHelper(spotLight);
+// scene.add(sLightHelper);
+// //scene.fog = new THREE.Fog(0xFFFFFF, 0, 200);
+// scene.fog = new THREE.FogExp2(0xFFFFFF, 0.01);
+//renderer.setClearColor(0xFFEA00);
+}
 
-},{"three":"ktPTu","three/examples/jsm/controls/orbitcontrols":"lYBrp","dat.gui":"k3xQk"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","three/examples/jsm/controls/orbitcontrols":"lYBrp","dat.gui":"k3xQk","../img/nebula.jpg":"hS5qu","../img/stars.jpg":"i5OQ9","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2022 Three.js Authors
@@ -32775,6 +32885,46 @@ var index = {
 };
 exports.default = index;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}]},["iAY9g","dV6cC"], "dV6cC", "parcelRequiree0a3")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"hS5qu":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("2MSMO") + "nebula.a535bdf2.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"dqALS":[function(require,module,exports) {
+"use strict";
+var bundleURL = {};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return "/";
+}
+function getBaseURL(url) {
+    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
+} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
+    if (!matches) throw new Error("Origin not found");
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
+
+},{}],"i5OQ9":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("2MSMO") + "stars.a1d7fe60.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}]},["iAY9g","dV6cC"], "dV6cC", "parcelRequiree0a3")
 
 //# sourceMappingURL=index.e82f28a0.js.map
