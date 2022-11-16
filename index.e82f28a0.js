@@ -551,6 +551,7 @@ const gui = new _datGui.GUI();
  * THREE.WebGLRenderer global variable
  */ const renderer = new _three.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement);
 /**
  * THREE.Scene global variable
@@ -573,7 +574,6 @@ window.addEventListener("resize", function() {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
-// renderer.shadowMap.enabled = true;
 // ----------------------------------------------------------------
 /**
  * number global variable
@@ -600,6 +600,7 @@ function createObjs() {
         side: _three.DoubleSide
     });
     objs.box = new _three.Mesh(boxGeometry, boxMaterial);
+    objs.box.receiveShadow = true;
     scene.add(objs.box);
     objs.axesHelper = new _three.AxesHelper(5);
     scene.add(objs.axesHelper);
@@ -653,6 +654,7 @@ function torusKnot() {
     });
     const obj = new _three.Mesh(geometry, material);
     obj.position.set(0, 5, 0);
+    obj.castShadow = true;
     scene.add(obj);
 }
 function createGUI() {
@@ -684,10 +686,11 @@ function createLights() {
     scene.add(ambientLight);
     // /**Directional light THREE.DirectionalLight*/
     const directionalLight = new _three.DirectionalLight(0xFFFFFF, 0.8);
+    directionalLight.castShadow = true;
     scene.add(directionalLight);
-// directionalLight.position.set(-30, 50, 0);
-// directionalLight.castShadow = true;
+    directionalLight.position.set(0, 30, -10);
 // directionalLight.shadow.camera.bottom = -12;
+//position ligth and shadows helpers.
 // const dLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
 // scene.add(dLightHelper);
 // const dLightShadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
