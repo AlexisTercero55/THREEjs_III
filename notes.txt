@@ -5,17 +5,13 @@ In case you don't have permissions, try this on powershell as administrator:
 
     Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
 
+Working with SHADOWS requier the following steps:
 
-TASK - DONE | script basic scene done
+    - Enable shadows from the light source:
 
-    The script contains the following elements:
-    {
-        scene : {},
-        camera : {},
-        cameraControls : {},
-        renderered : {},
-        textureLoader : THREE.TextureLoader,
-        gui : {} ,
-        options : {}, // global
-        objs : {}, //global
-    }
+        light.castShadow = true;
+
+    - from Meshes: cast or receive:
+
+        obj.castShadow = true;
+        obj.receiveShadow = true;

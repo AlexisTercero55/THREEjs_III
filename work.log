@@ -1,0 +1,14 @@
+Script basic scene done
+[TASK - DONE]
+
+    The script contains the following elements:
+    {
+        scene : {},
+        camera : {},
+        cameraControls : {},
+        renderered : {},
+        textureLoader : THREE.TextureLoader,
+        gui : {} ,
+        options : {}, // global
+        objs : {}, //global
+    }
