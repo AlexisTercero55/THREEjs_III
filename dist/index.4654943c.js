@@ -142,13 +142,13 @@
       this[globalName] = mainExports;
     }
   }
-})({"iAY9g":[function(require,module,exports) {
+})({"8MLHy":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "207a8fdfe82f28a0";
+module.bundle.HMR_BUNDLE_ID = "4bf0e5934654943c";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -531,204 +531,135 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"dV6cC":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+},{}],"2F1by":[function(require,module,exports) {
+/**
+ * @author: Alexis Tercero
+ * @mail : alexistercero55@gmail.com
+ * @github: AlexisTercero55
+ */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "III_SPACE", ()=>III_SPACE);
 var _three = require("three");
 var _orbitcontrols = require("three/examples/jsm/controls/orbitcontrols");
 var _datGui = require("dat.gui");
-var _nebulaJpg = require("../img/nebula.jpg");
-var _nebulaJpgDefault = parcelHelpers.interopDefault(_nebulaJpg);
-var _starsJpg = require("../img/stars.jpg");
-var _starsJpgDefault = parcelHelpers.interopDefault(_starsJpg);
-/**
- * {} global variable
- */ const objs = {};
-/**
- * {} global variable
- */ let options = {};
-const gui = new _datGui.GUI();
-/**
- * THREE.WebGLRenderer global variable
- */ const renderer = new _three.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true;
-document.body.appendChild(renderer.domElement);
-/**
- * THREE.Scene global variable
- */ const scene = new _three.Scene();
-// const textureLoader = new THREE.TextureLoader();
-// scene.background = textureLoader.load(nebula);
-/**
- * THREE.PerspectiveCamera global variable
- */ const camera = new _three.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-let u = 2;
-camera.position.set(0, 0, 22);
-camera.lookAt(scene.position);
-const cameraControl = new (0, _orbitcontrols.OrbitControls)(camera, renderer.domElement);
-cameraControl.update();
-createObjs();
-createLights();
-renderer.setAnimationLoop(animate);
-window.addEventListener("resize", function() {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
-// ----------------------------------------------------------------
-/**
- * number global variable
- */ let step = 0;
-function animate(time) {
-    // time is default parameter
-    // step += options.speed;
-    // objs.box.position.y = 2 * Math.abs(Math.sin(step));
-    // objs.box.rotation.x += 0.01;
-    renderer.render(scene, camera);
-}
-function createObjs() {
-    //# create 3D objects class:
-    //# {
-    //     material,
-    //     geometry,
-    //     obj,
-    //     (add scene),
-    //  }
-    // const boxGeometry = new THREE.CircleGeometry(2.5,20);
-    // const boxMaterial = new THREE.MeshStandardMaterial({
-    //     color: 0x0e00ff,
-    //     wireframe: false,
-    //     side: THREE.DoubleSide
-    // });
-    // objs.box = new THREE.Mesh(boxGeometry, boxMaterial);
-    // objs.box.receiveShadow = true;
-    // scene.add(objs.box);
-    objs.axesHelper = new _three.AxesHelper(10);
-    scene.add(objs.axesHelper);
-    // objs.grid = new THREE.GridHelper(10,10);
-    // scene.add(objs.grid);
-    // cocoro3D();
-    // torusKnot();
-    grapher2D(paretoDistribution, 0.1, 10, 50);
-    console.log("THREEjs_iii objs was created");
-// createGUI();
-}
-function grapher2D(f, min, max, steps = 10) {
-    let x = min;
-    const step = (max - min) / steps;
-    const points = [];
-    for(let i = 0; i < steps; i++){
-        points.push(new _three.Vector3(x, f(x), 0));
-        x += step;
+class III_SPACE {
+    constructor([x, y, z] = [
+        0,
+        0,
+        22
+    ]){
+        this.setUpGUI();
+        this.setUpRenderer();
+        this.setUpScene();
+        this.setUpCamera();
+        window.addEventListener("resize", this.resizeRender);
+    // for Scene classes that adds graphics and animations to the scene
+    // class MYSCENE extends III_SPACE
+    /**
+         * constructor()
+         * {
+         *      super();
+         *      ...
+         *      super.renderer.setAnimationLoop(this.animate);
+         * }
+         */ }
+    // animate(time) 
+    // {
+    //     // time is default parameter
+    //     // step += options.speed;
+    //     // objs.box.position.y = 2 * Math.abs(Math.sin(step));
+    //     // objs.box.rotation.x += 0.01;
+    //     super.renderer.render(super.scene, super.camera);
+    // }
+    /**
+     * call THREE.Scene.add() method
+     * @param {} obj 
+     */ addObject(obj) {
+        this.scene.add(obj);
     }
-    const material = new _three.LineBasicMaterial({
-        color: 0x0000ff
-    });
-    const geometry = new _three.BufferGeometry().setFromPoints(points);
-    const line = new _three.Line(geometry, material);
-    scene.add(line);
+    setUpGUI() {
+        this.guiOptions = {};
+        this.gui = new _datGui.GUI();
+    }
+    setUpRenderer() {
+        this.renderer = new _three.WebGLRenderer();
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.shadowMap.enabled = true;
+        document.body.appendChild(this.renderer.domElement);
+    }
+    setUpScene() {
+        this.scene = new _three.Scene();
+    // const textureLoader = new THREE.TextureLoader();
+    // scene.background = textureLoader.load(nebula);
+    }
+    setUpCamera([x, y, z] = [
+        0,
+        0,
+        22
+    ]) {
+        this.camera = new _three.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        this.camera.position.set(x, y, z);
+        this.camera.lookAt(this.scene.position);
+        this.cameraControl = new (0, _orbitcontrols.OrbitControls)(this.camera, this.renderer.domElement);
+        this.cameraControl.update();
+    }
+    resizeRender() {
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
 }
-function paretoDistribution(x) {
-    let a = 2, b = 3;
-    return a * Math.pow(b, a) / Math.pow(x, a + 1);
+class MYSCENE extends III_SPACE {
+    constructor(){
+        super();
+        this.objs = {};
+        this.createObjs();
+        // createLights();
+        super.renderer.setAnimationLoop((renderer = super.renderer)=>{
+            renderer.render(renderer.scene, renderer.camera);
+        });
+    }
+    /**
+     * animate
+     * Here goes your animation updates
+     * @param {*} time 
+     */ animate(time) {
+        super.renderer.render(super.scene, super.camera);
+    }
+    createObjs() {
+        this.objs.axesHelper = new _three.AxesHelper(10);
+        this.addObject(this.objs.axesHelper);
+        // objs.grid = new THREE.GridHelper(10,10);
+        // scene.add(objs.grid);
+        // cocoro3D();
+        // torusKnot();
+        this.grapher2D(this.paretoDistribution, 0.1, 10, 50);
+        console.log("THREEjs_iii objs was created");
+    // createGUI();
+    }
+    grapher2D(f, min, max, steps = 10) {
+        let x = min;
+        const step = (max - min) / steps;
+        const points = [];
+        for(let i = 0; i < steps; i++){
+            points.push(new _three.Vector3(x, f(x), 0));
+            x += step;
+        }
+        const material = new _three.LineBasicMaterial({
+            color: 0x0000ff
+        });
+        const geometry = new _three.BufferGeometry().setFromPoints(points);
+        this.objs.line = new _three.Line(geometry, material);
+        super.addObject(this.objs.line);
+    }
+    paretoDistribution(x) {
+        let a = 2, b = 3;
+        return a * Math.pow(b, a) / Math.pow(x, a + 1);
+    }
 }
-function cocoro3D() {
-    console.log("creating cocoro ");
-    const shape = new _three.Shape();
-    const x = -2.5;
-    const y = -5;
-    shape.moveTo(x + 2.5, y + 2.5);
-    shape.bezierCurveTo(x + 2.5, y + 2.5, x + 2, y, x, y);
-    shape.bezierCurveTo(x - 3, y, x - 3, y + 3.5, x - 3, y + 3.5);
-    shape.bezierCurveTo(x - 3, y + 5.5, x - 1.5, y + 7.7, x + 2.5, y + 9.5);
-    shape.bezierCurveTo(x + 6, y + 7.7, x + 8, y + 4.5, x + 8, y + 3.5);
-    shape.bezierCurveTo(x + 8, y + 3.5, x + 8, y, x + 5, y);
-    shape.bezierCurveTo(x + 3.5, y, x + 2.5, y + 2.5, x + 2.5, y + 2.5);
-    const extrudeSettings = {
-        steps: 2,
-        depth: 2,
-        bevelEnabled: true,
-        bevelThickness: 1,
-        bevelSize: 1,
-        bevelSegments: 2
-    };
-    const geometry = new _three.ExtrudeGeometry(shape, extrudeSettings);
-    const material = new _three.MeshStandardMaterial({
-        color: 0x0000ff,
-        wireframe: false
-    });
-    const cocoro = new _three.Mesh(geometry, material);
-    scene.add(cocoro);
-    console.log("cocoro created");
-}
-function torusKnot() {
-    const radius = 1; // ui: radius
-    const tubeRadius = 0.2; // ui: tubeRadius
-    const radialSegments = 20; // ui: radialSegments
-    const tubularSegments = 64; // ui: tubularSegments
-    const p = 1; // ui: p
-    const q = 3; // ui: q
-    const geometry = new _three.TorusKnotGeometry(radius, tubeRadius, tubularSegments, radialSegments, p, q);
-    const material = new _three.MeshStandardMaterial({
-        color: 0x00ffff,
-        wireframe: false
-    });
-    const obj = new _three.Mesh(geometry, material);
-    obj.position.set(0, 5, 0);
-    obj.castShadow = true;
-    scene.add(obj);
-}
-function createGUI() {
-    // define parameters for GUI
-    //#  must be constant and add parameters as options.param = value;
-    options = {
-        cubeColor: "#0e00ff",
-        boxWired: false,
-        speed: 0.003
-    };
-    // define GUI for colors
-    gui.addColor(options, "cubeColor").onChange(function(e) {
-        objs.box.material.color.set(e);
-    });
-    // check box
-    gui.add(options, "boxWired").onChange(function(e) {
-        objs.box.material.wireframe = e;
-    });
-    // interval GUI
-    gui.add(options, "speed", 0, 0.1);
-    console.log("GUI added");
-}
-function createLights() {
-    /**Ambient light  THREE.AmbientLight
-     * 
-     * It deals with THREE.MeshStandardMaterial
-     * for some reflection and shadows features.
-    */ const ambientLight = new _three.AmbientLight(0x333333);
-    scene.add(ambientLight);
-    // /**Directional light THREE.DirectionalLight*/
-    const directionalLight = new _three.DirectionalLight(0xFFFFFF, 0.8);
-    directionalLight.castShadow = true;
-    scene.add(directionalLight);
-    directionalLight.position.set(0, 30, -10);
-// directionalLight.shadow.camera.bottom = -12;
-//position ligth and shadows helpers.
-// const dLightHelper = new THREE.DirectionalLightHelper(directionalLight, 5);
-// scene.add(dLightHelper);
-// const dLightShadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
-// scene.add(dLightShadowHelper);
-// /**Spot light THREE.SpotLight*/
-// const spotLight = new THREE.SpotLight(0xFFFFFF);
-// scene.add(spotLight);
-// spotLight.position.set(-100, 100, 0);
-// spotLight.castShadow = true;
-// spotLight.angle = 0.2;
-// const sLightHelper = new THREE.SpotLightHelper(spotLight);
-// scene.add(sLightHelper);
-// //scene.fog = new THREE.Fog(0xFFFFFF, 0, 200);
-// scene.fog = new THREE.FogExp2(0xFFFFFF, 0.01);
-//renderer.setClearColor(0xFFEA00);
-}
+let scene = new MYSCENE();
 
-},{"three":"ktPTu","three/examples/jsm/controls/orbitcontrols":"lYBrp","dat.gui":"k3xQk","../img/nebula.jpg":"hS5qu","../img/stars.jpg":"i5OQ9","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","three/examples/jsm/controls/orbitcontrols":"lYBrp","dat.gui":"k3xQk","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2022 Three.js Authors
@@ -32908,46 +32839,6 @@ var index = {
 };
 exports.default = index;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"hS5qu":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("2MSMO") + "nebula.a535bdf2.jpg" + "?" + Date.now();
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}]},["8MLHy","2F1by"], "2F1by", "parcelRequiree0a3")
 
-},{"./helpers/bundle-url":"dqALS"}],"dqALS":[function(require,module,exports) {
-"use strict";
-var bundleURL = {};
-function getBundleURLCached(id) {
-    var value = bundleURL[id];
-    if (!value) {
-        value = getBundleURL();
-        bundleURL[id] = value;
-    }
-    return value;
-}
-function getBundleURL() {
-    try {
-        throw new Error();
-    } catch (err) {
-        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
-        if (matches) // The first two stack frames will be this function and getBundleURLCached.
-        // Use the 3rd one, which will be a runtime in the original bundle.
-        return getBaseURL(matches[2]);
-    }
-    return "/";
-}
-function getBaseURL(url) {
-    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
-} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
-function getOrigin(url) {
-    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
-    if (!matches) throw new Error("Origin not found");
-    return matches[0];
-}
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-exports.getOrigin = getOrigin;
-
-},{}],"i5OQ9":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("2MSMO") + "stars.a1d7fe60.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}]},["iAY9g","dV6cC"], "dV6cC", "parcelRequiree0a3")
-
-//# sourceMappingURL=index.e82f28a0.js.map
+//# sourceMappingURL=index.4654943c.js.map
