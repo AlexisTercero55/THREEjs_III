@@ -29909,7 +29909,6 @@ function createMaterial() {
     // const textureLoader = new TextureLoader();
     // load a texture
     const texture = new (0, _three.TextureLoader)().load((0, _uvTestBwPngDefault.default));
-    console.log(texture);
     // create a "standard" material
     const material = new (0, _three.MeshStandardMaterial)({
         map: texture
@@ -29989,16 +29988,32 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createScene", ()=>createScene);
 var _three = require("three");
+var _stars2Jpg = require("../../img/stars2.jpg");
+var _stars2JpgDefault = parcelHelpers.interopDefault(_stars2Jpg);
 /**
  * 
  * @returns A virtual 3D math space.
  */ function createScene() {
     const scene = new (0, _three.Scene)();
-    scene.background = new (0, _three.Color)("skyblue");
+    // setting up texture background
+    const cubeTextureLoader = new (0, _three.CubeTextureLoader)();
+    scene.background = cubeTextureLoader.load([
+        (0, _stars2JpgDefault.default),
+        (0, _stars2JpgDefault.default),
+        (0, _stars2JpgDefault.default),
+        (0, _stars2JpgDefault.default),
+        (0, _stars2JpgDefault.default),
+        (0, _stars2JpgDefault.default)
+    ]);
+    // simple color background
+    // scene.background = new Color('skyblue');
     return scene;
 }
 
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"6uZCg":[function(require,module,exports) {
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW","../../img/stars2.jpg":"hiRxS"}],"hiRxS":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("8g2i0") + "stars2.125a7e49.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"6uZCg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createRenderer", ()=>createRenderer);

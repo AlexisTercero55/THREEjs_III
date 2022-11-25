@@ -1,4 +1,9 @@
-import { Color, Scene } from 'three';
+import { Color, 
+  Scene,
+  CubeTextureLoader
+ } from 'three';
+
+import stars from '../../img/stars2.jpg';
 
 /**
  * 
@@ -8,7 +13,19 @@ function createScene()
 {
   const scene = new Scene();
 
-  scene.background = new Color('skyblue');
+  // setting up texture background
+  const cubeTextureLoader = new CubeTextureLoader();
+  scene.background = cubeTextureLoader.load([
+    stars,
+    stars,
+    stars,
+    stars,
+    stars,
+    stars
+  ]);
+
+  // simple color background
+  // scene.background = new Color('skyblue');
 
   return scene;
 }

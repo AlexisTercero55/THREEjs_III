@@ -16,8 +16,7 @@ function createMaterial()
   // const textureLoader = new TextureLoader();
   // load a texture
   const texture = new TextureLoader().load(imagen);
-  console.log(texture);
-
+  
   // create a "standard" material
   const material = new MeshStandardMaterial({ 
     map: texture
