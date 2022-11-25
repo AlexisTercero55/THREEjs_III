@@ -30037,11 +30037,38 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createControls", ()=>createControls);
 var _orbitControlsJs = require("three/examples/jsm/controls/OrbitControls.js");
-function createControls(camera, canvas) {
+/**
+ * By default, the controls orbit around the center of 
+ * the scene, point (0,0,0). This is stored in the 
+ * controls.target property, which is a Vector3. 
+ * We can move this target to a new position
+ * 
+ *  controls.target.set([x,y,z]);
+ *  controls.target.copy(cube.position);
+ * 
+ * Whenever you pan the controls 
+ * (using the right mouse button), the target will pan too. 
+ * If you need a fixed target, you can disable panning using 
+ * 
+ *  controls.enablePan = false.
+ * 
+ * As soon as the user stops interacting with the scene, 
+ * the camera will come to an abrupt stop. 
+ * Objects in the real world have inertia and never 
+ * stop abruptly like this, so we can make the controls 
+ * feel more realistic by enabling damping.
+ * 
+ *  controls.enableDamping = true;
+ */ /**
+ * 
+ * @param {*} camera 
+ * @param {*} canvas 
+ * @returns 
+ */ function createControls(camera, canvas) {
     const controls = new (0, _orbitControlsJs.OrbitControls)(camera, canvas);
     // damping and auto rotation require
     // the controls to be updated each frame
-    // this.controls.autoRotate = true;
+    controls.autoRotate = true;
     controls.enableDamping = true;
     controls.nextFrame = ()=>controls.update();
     return controls;
