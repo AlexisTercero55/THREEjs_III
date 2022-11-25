@@ -1,33 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THREEjs_iii</title>
+  <title>Discoverthreejs.com - The Animation Loop</title>
 
-    <!-- <script src="./js/script.js" type="module"></script> -->
-    <script src="./js/threejs_iii/III_Space.js" type="module" defer ></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
 
-    <style>
-        body{
-            margin: 0;
-            overflow: hidden;
-        }
-    </style>
+  <link rel="icon" href="https://discoverthreejs.com/favicon.ico" type="image/x-icon">
+
+  <link href="./styles/main.css" rel="stylesheet" type="text/css">
+
+  <script type="module" src="./js/threejs_iii/main.js" defer></script>
 </head>
-<body>
 
-    <script id="vertexShader" type="vertex">
-        void main() {
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-    </script>
-    <script id="fragmentShader" type="fragment">
-        void main() {
-            gl_FragColor = vec4(1.0, 0.1, 0.3, 1.0);
-        }
-    </script>
-    
+<body>
+  <h1>THREEjs_iii Built by classes. uwu</h1>
+
+  <div id="scene-container">
+    <!-- Our <canvas> will be inserted here -->
+  </div>
 </body>
+
 </html>
