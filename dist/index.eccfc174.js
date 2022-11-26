@@ -684,7 +684,7 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createCamera", ()=>createCamera);
 var _three = require("three");
 /**
- * @returns A camera representing human sight
+ * @returns A camera representing human view
  */ function createCamera() {
     const camera = new (0, _three.PerspectiveCamera)(35, 1, 0.1, 100);
     // move the camera back so we can view the scene
@@ -30059,6 +30059,11 @@ var _orbitControlsJs = require("three/examples/jsm/controls/OrbitControls.js");
  * feel more realistic by enabling damping.
  * 
  *  controls.enableDamping = true;
+ * 
+ * You can adjust the .dampingFactor to control how 
+ * fast the camera comes to a stop.
+ * 
+ * 
  */ /**
  * 
  * @param {*} camera 
@@ -30070,7 +30075,10 @@ var _orbitControlsJs = require("three/examples/jsm/controls/OrbitControls.js");
     // the controls to be updated each frame
     controls.autoRotate = true;
     controls.enableDamping = true;
-    controls.nextFrame = ()=>controls.update();
+    /**
+   * For damping to work, we must call controls.update 
+   * every frame in the animation loop. If we’re rendering 
+   * frames on demand instead of using the loop, we cannot use damping. */ controls.nextFrame = ()=>controls.update();
     return controls;
 }
 
@@ -30818,7 +30826,8 @@ const clock = new (0, _three.Clock)();
         this.camera = camera;
         this.scene = scene;
         this.renderer = renderer;
-        this.objs = [];
+        this.objs = []; // need a setter for metadata extraction
+        this.flags = {};
     }
     /**Start animation and resizing loops. */ start() {
         this.renderer.setAnimationLoop(()=>{
@@ -30838,7 +30847,12 @@ const clock = new (0, _three.Clock)();
         // console.log(
         //   `The last frame rendered in ${delta * 1000} milliseconds`,
         // );
-        for (const object of this.objs)object.nextFrame(delta);
+        /**
+     * this process needs flags review and pass them
+     * to .nextFrame({delta, flag}) object
+     */ let flag, obj;
+        for (const object of this.objs)// flag = flags[object.name];
+        object.nextFrame(delta);
     }
 }
 

@@ -15,3 +15,29 @@ Working with SHADOWS requier the following steps:
 
         obj.castShadow = true;
         obj.receiveShadow = true;
+
+
+Long animation design:
+
+Agregations help us to achieve the animation loop
+as well as oop claims, this effort provides the
+'.nextFrame()' method to each object that have a behavior
+during the animation loop, that means, '.nextFrame()' method
+is for objs that needs to be update during the animation.
+
+Updates are triggered by different events, we'll focus
+when each frame are rendered. This event is listening by
+
+    Loop.start() method
+
+Internally .start() method manage animation loop and
+changes the objects state around the animation loop.
+Actually object state not always need to be updated,
+as I said, there are other events that raise updates.
+Other processes like computation of physics, 
+perspective changes, focus changes and any other interactions
+can comunicate objects this changes by mapping flags values.
+
+{
+    'obj_i' : 'flag'
+}

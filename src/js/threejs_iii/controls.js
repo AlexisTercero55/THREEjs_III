@@ -22,6 +22,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
  * feel more realistic by enabling damping.
  * 
  *  controls.enableDamping = true;
+ * 
+ * You can adjust the .dampingFactor to control how 
+ * fast the camera comes to a stop.
+ * 
+ * 
  */
 
 /**
@@ -34,12 +39,16 @@ function createControls(camera, canvas)
 {
   const controls = new OrbitControls(camera, canvas);
 
+  
   // damping and auto rotation require
   // the controls to be updated each frame
-
   controls.autoRotate = true;
   controls.enableDamping = true;
 
+  /**
+   * For damping to work, we must call controls.update 
+   * every frame in the animation loop. If we’re rendering 
+   * frames on demand instead of using the loop, we cannot use damping. */
   controls.nextFrame = () => controls.update();
 
   return controls;

@@ -1,7 +1,7 @@
 import { PerspectiveCamera } from 'three';
 
 /**
- * @returns A camera representing human sight
+ * @returns A camera representing human view
  */
 function createCamera() 
 {

@@ -18,6 +18,7 @@ import { AxesHelper } from 'three';
 // import * as THREE from 'three';
 // import * as dat from 'dat.gui';
 
+/** Global variabes */
 let camera;
 let renderer;
 let scene;
@@ -72,25 +73,70 @@ class III_SPACE
     }
 
     /**
-     * Draw a single frame, no animations.
+     * Render a single frame, no systems.
      */
     render() 
     {
-        // draw a single frame
         renderer.render(scene, camera);
     }
     
+    /** Animation manager
+     * 
+     * start runs next systems:
+     * 
+     * - animation loop : changes on 3D world.
+     * - resizing : changes on window resize event.
+     * - camera control : changes on GUI provided by OrbitControls.js 
+     */
     start()
     {
         loop.start();
     }
     
+    /** Animation manager
+     * 
+     * stop breaks all systems.
+     */
     stop()
     {
         loop.stop();
     }
+
+    /** Working With the Camera While Using OrbitControls
+     * With the controls in place, 
+     * we have relinquished control of the camera to them. 
+     * However, sometimes you need to take back control to 
+     * manually position the camera. There are two ways 
+     * to go about this:
+     * 
+     * - Cut/jump to a new camera position
+     * - Smoothly animate to a new camera position. 
+     * */
+    /** Cut to a New Camera Position
+     * 
+     * To perform a camera cut, update the camera’s 
+     * transform as usual, and then call 'controls.update'
+     * If you’re calling .update in the loop, you don’t need 
+     * to do it manually and you can simply move the camera. 
+     * If you move the camera without calling .update, 
+     * weird things will happen, so watch out!
+     * 
+     * this method is useful for long animations and real time
+     * animations even with gui implementations.
+     */
+    #cameraCut()
+    {
+        // move the camera
+        camera.position.set(1,2,3);
+
+        // and/or rotate the camera
+        camera.rotation.set(0.5, 0, 0);
+    }
 }
 export {III_SPACE};
+
+
+//----------------------------------------------------------------
 
 // class MYSCENE extends III_SPACE
 // {
@@ -159,4 +205,3 @@ export {III_SPACE};
 //         return (a*Math.pow(b,a))/Math.pow(x,a+1);
 //     }
 // }
-

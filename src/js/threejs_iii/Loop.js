@@ -22,7 +22,8 @@ class Loop
     this.camera = camera;
     this.scene = scene;
     this.renderer = renderer;
-    this.objs = [];
+    this.objs = []; // need a setter for metadata extraction
+    this.flags = {};
   }
 
   /**Start animation and resizing loops. */
@@ -54,8 +55,14 @@ class Loop
     //   `The last frame rendered in ${delta * 1000} milliseconds`,
     // );
 
+    /**
+     * this process needs flags review and pass them
+     * to .nextFrame({delta, flag}) object
+     */
+    let flag, obj;
     for (const object of this.objs) 
     {
+      // flag = flags[object.name];
       object.nextFrame(delta);
     }
   }
