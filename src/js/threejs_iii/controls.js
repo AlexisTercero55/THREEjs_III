@@ -42,8 +42,8 @@ function createControls(camera, canvas)
   
   // damping and auto rotation require
   // the controls to be updated each frame
-  controls.autoRotate = true;
-  controls.enableDamping = true;
+  // controls.autoRotate = true;
+  // controls.enableDamping = true;
 
   /**
    * For damping to work, we must call controls.update 
@@ -52,6 +52,11 @@ function createControls(camera, canvas)
   controls.nextFrame = () => controls.update();
 
   return controls;
+}
+
+function removeControls(controls)
+{
+  controls.dispose();
 }
 
 export { createControls };

@@ -121,6 +121,18 @@ class III_SPACE
      * If you move the camera without calling .update, 
      * weird things will happen, so watch out!
      * 
+     * One important thing to note here: 
+     * when you move the camera, the controls.target does 
+     * not move. If you have not moved it, it will remain 
+     * at the center of the scene. When you move the camera 
+     * to a new position but leave the target unchanged, 
+     * the camera will not only move but also rotate so that 
+     * it continues to point at the target. This means that 
+     * camera movements may not work as you expect when using 
+     * the controls. Often, you will need to move the camera 
+     * and the target at the same time to get your desired 
+     * outcome.
+     * 
      * this method is useful for long animations and real time
      * animations even with gui implementations.
      */
@@ -131,6 +143,35 @@ class III_SPACE
 
         // and/or rotate the camera
         camera.rotation.set(0.5, 0, 0);
+    }
+    /** # Smoothly Transition to a New Camera Position
+     * 
+     * If you want to smoothly animate the camera to a 
+     * new position, you will probably need to transition 
+     * the camera and the target at the same time, and the 
+     * best place to do this is in the controls.nextFrame 
+     * method. However, you will need to disable the controls 
+     * for the duration of the animation, otherwise, if the 
+     * user attempts to move the camera before the animation 
+     * has completed, you’ll end up with the controls fighting 
+     * against your animation, often with disastrous results.
+     * 
+     * ## Save and Restore a View State
+     * You can save the current view using .saveState()
+     * and later restore it using .reset() 
+     * 
+     * If we call .reset() without first calling .saveState(), 
+     * the camera will jump back to the position it was in when 
+     * we created the controls.
+     * 
+     * */
+    #cameraTransition()
+    {
+        controls.enabled = false;
+        controls.saveState();
+
+        // sometime later:
+        controls.reset();
     }
 }
 export {III_SPACE};

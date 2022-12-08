@@ -30073,13 +30073,16 @@ var _orbitControlsJs = require("three/examples/jsm/controls/OrbitControls.js");
     const controls = new (0, _orbitControlsJs.OrbitControls)(camera, canvas);
     // damping and auto rotation require
     // the controls to be updated each frame
-    controls.autoRotate = true;
-    controls.enableDamping = true;
+    // controls.autoRotate = true;
+    // controls.enableDamping = true;
     /**
    * For damping to work, we must call controls.update 
    * every frame in the animation loop. If we’re rendering 
    * frames on demand instead of using the loop, we cannot use damping. */ controls.nextFrame = ()=>controls.update();
     return controls;
+}
+function removeControls(controls) {
+    controls.dispose();
 }
 
 },{"three/examples/jsm/controls/OrbitControls.js":"7mqRv","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"7mqRv":[function(require,module,exports) {
