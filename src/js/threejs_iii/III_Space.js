@@ -5,7 +5,7 @@
  */
 import { createCamera } from './camera.js';
 import { createCube } from './cube.js';
-import { createLights } from './lights.js';
+import { createLight } from './lights.js';
 import { createScene } from './scene.js';
 import { createRenderer } from './renderer.js';
 import { createControls } from './controls.js'
@@ -19,12 +19,31 @@ import { AxesHelper } from 'three';
 // import * as dat from 'dat.gui';
 
 /** Global variabes */
-let camera;
-let renderer;
-let scene;
-let loop;
-let gui;
-let controls;
+export let camera;
+export let renderer;
+export let scene;
+export let loop;
+export let gui;
+export let controls;
+
+/**textures */
+import starsTexture from '../img/stars.jpg';
+import sunTexture from '../img/sun.jpg';
+import mercuryTexture from '../img/mercury.jpg';
+import venusTexture from '../img/venus.jpg';
+import earthTexture from '../img/earth.jpg';
+import marsTexture from '../img/mars.jpg';
+import jupiterTexture from '../img/jupiter.jpg';
+import saturnTexture from '../img/saturn.jpg';
+import saturnRingTexture from '../img/saturn ring.png';
+import uranusTexture from '../img/uranus.jpg';
+import uranusRingTexture from '../img/uranus ring.png';
+import neptuneTexture from '../img/neptune.jpg';
+import plutoTexture from '../img/pluto.jpg';
+
+//my
+import { Sun } from '../solarSystem/sun.js';
+import { Planet } from '../solarSystem/planet.js';
 
 /**
  * @class III_SPACE
@@ -57,19 +76,78 @@ class III_SPACE
         container.append(renderer.domElement);
 
         controls = createControls(camera, renderer.domElement);
-        loop.objs.push(controls);
+        loop.add(controls);
+        
+        const ambientLight = createLight();
+        const pointLight = createLight('point');
+        scene.add(ambientLight, pointLight);
 
-        const cube = createCube();
-        loop.objs.push(cube);
-        scene.add(cube);
-
-        const axes = new AxesHelper(100);
-        scene.add(axes);
-
-        const light = createLights();
-        scene.add(light);
+        this.createObjects();
 
         const resizer = new Resizer(container, camera, renderer);
+    }
+
+    createObjects()
+    {
+        const sun = Sun();
+        this.addObject(sun);
+
+        //adding plantes
+        const mercury = new Planet(3.2, mercuryTexture, 28,
+                                  0.004, 0.04);
+        scene.add(mercury.orbit);
+        loop.add(mercury);
+
+        const venus = new Planet(5.8, venusTexture, 44, 0.002,0.015);
+        scene.add(venus.orbit);
+        loop.add(venus);
+
+        const earth = new Planet(6, earthTexture, 62, 0.02, 0.01);
+        scene.add(earth.orbit);
+        loop.add(earth);
+
+        const mars = new Planet(4, marsTexture, 78, 0.018, 0.008);
+        scene.add(mars.orbit);
+        loop.add(mars);
+
+        const jupiter = new Planet(12, jupiterTexture, 100,0.04,0.002);
+        scene.add(jupiter.orbit);
+        loop.add(jupiter);
+
+        const saturn = new Planet(10, saturnTexture, 138,
+                                  0.038, 0.0009,
+                                 {
+                                     innerRadius: 10,
+                                     outerRadius: 20,
+                                     texture: saturnRingTexture
+                                 });
+        scene.add(saturn.orbit);
+        loop.add(saturn);
+
+        const uranus = new Planet(7, uranusTexture, 176,
+                                    0.03, 0.0004,
+                                {
+                                    innerRadius: 7,
+                                    outerRadius: 12,
+                                    texture: uranusRingTexture
+                                });
+        scene.add(uranus.orbit);
+        loop.add(uranus);
+
+        const neptune = new Planet(7, neptuneTexture, 200,0.032, 0.0001);
+        scene.add(neptune.orbit);
+        loop.add(neptune);
+
+        const pluto = new Planet(2.8, plutoTexture, 216,0.008, 0.00007);
+        
+        scene.add(pluto.orbit);
+        loop.add(pluto);
+    }
+    
+    addObject(obj)
+    {
+        loop.objs.push(obj);
+        scene.add(obj);
     }
 
     /**
@@ -170,7 +248,7 @@ class III_SPACE
         controls.enabled = false;
         controls.saveState();
 
-        // sometime later:
+        // sometime later
         controls.reset();
     }
 }

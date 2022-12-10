@@ -26,6 +26,11 @@ class Loop
     this.flags = {};
   }
 
+  add(obj)
+  {
+    this.objs.push(obj);
+  }
+
   /**Start animation and resizing loops. */
   start() 
   {
@@ -66,7 +71,6 @@ class Loop
       object.nextFrame(delta);
     }
   }
-  }
+}
   
-  export { Loop };
-  
+export { Loop };

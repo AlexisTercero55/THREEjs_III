@@ -142,13 +142,13 @@
       this[globalName] = mainExports;
     }
   }
-})({"g8vxR":[function(require,module,exports) {
+})({"8bbSP":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "603197f5eccfc174";
+module.bundle.HMR_BUNDLE_ID = "4f8e16027b16b42c";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -531,19 +531,19 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"j8FY8":[function(require,module,exports) {
-var _iiiSpaceJs = require("./III_SPACE.js");
+},{}],"jXCJb":[function(require,module,exports) {
+var _iiiSpace = require("../threejs_iii/III_Space");
 function main() {
     // Get a reference to the container element
     const container = document.querySelector("#scene-container");
     // create a new world
-    const world = new (0, _iiiSpaceJs.III_SPACE)(container);
+    const world = new (0, _iiiSpace.III_SPACE)(container);
     // start the animation loop
     world.start();
 }
 main();
 
-},{"./III_SPACE.js":"kntHg"}],"kntHg":[function(require,module,exports) {
+},{"../threejs_iii/III_Space":"2F1by"}],"2F1by":[function(require,module,exports) {
 /**
  * @author: Alexis Tercero
  * @mail : alexistercero55@gmail.com
@@ -624,6 +624,35 @@ var _controlsJs = require("./controls.js");
 var _resizerJs = require("./Resizer.js");
 var _loopJs = require("./Loop.js");
 var _three = require("three");
+/**textures */ var _starsJpg = require("../img/stars.jpg");
+var _starsJpgDefault = parcelHelpers.interopDefault(_starsJpg);
+var _sunJpg = require("../img/sun.jpg");
+var _sunJpgDefault = parcelHelpers.interopDefault(_sunJpg);
+var _mercuryJpg = require("../img/mercury.jpg");
+var _mercuryJpgDefault = parcelHelpers.interopDefault(_mercuryJpg);
+var _venusJpg = require("../img/venus.jpg");
+var _venusJpgDefault = parcelHelpers.interopDefault(_venusJpg);
+var _earthJpg = require("../img/earth.jpg");
+var _earthJpgDefault = parcelHelpers.interopDefault(_earthJpg);
+var _marsJpg = require("../img/mars.jpg");
+var _marsJpgDefault = parcelHelpers.interopDefault(_marsJpg);
+var _jupiterJpg = require("../img/jupiter.jpg");
+var _jupiterJpgDefault = parcelHelpers.interopDefault(_jupiterJpg);
+var _saturnJpg = require("../img/saturn.jpg");
+var _saturnJpgDefault = parcelHelpers.interopDefault(_saturnJpg);
+var _saturnRingPng = require("../img/saturn ring.png");
+var _saturnRingPngDefault = parcelHelpers.interopDefault(_saturnRingPng);
+var _uranusJpg = require("../img/uranus.jpg");
+var _uranusJpgDefault = parcelHelpers.interopDefault(_uranusJpg);
+var _uranusRingPng = require("../img/uranus ring.png");
+var _uranusRingPngDefault = parcelHelpers.interopDefault(_uranusRingPng);
+var _neptuneJpg = require("../img/neptune.jpg");
+var _neptuneJpgDefault = parcelHelpers.interopDefault(_neptuneJpg);
+var _plutoJpg = require("../img/pluto.jpg");
+var _plutoJpgDefault = parcelHelpers.interopDefault(_plutoJpg);
+//my
+var _sunJs = require("../solarSystem/sun.js");
+var _planetJs = require("../solarSystem/planet.js");
 let camera;
 let renderer;
 let scene;
@@ -656,15 +685,56 @@ let controls;
         loop = new (0, _loopJs.Loop)(camera, scene, renderer);
         container.append(renderer.domElement);
         controls = (0, _controlsJs.createControls)(camera, renderer.domElement);
-        loop.objs.push(controls);
-        const cube = (0, _cubeJs.createCube)();
-        loop.objs.push(cube);
-        scene.add(cube);
-        const axes = new (0, _three.AxesHelper)(100);
-        scene.add(axes);
-        const light = (0, _lightsJs.createLights)();
-        scene.add(light);
+        loop.add(controls);
+        const ambientLight = (0, _lightsJs.createLight)();
+        const pointLight = (0, _lightsJs.createLight)("point");
+        scene.add(ambientLight, pointLight);
+        this.createObjects();
         const resizer = new (0, _resizerJs.Resizer)(container, camera, renderer);
+    }
+    createObjects() {
+        const sun = (0, _sunJs.Sun)();
+        this.addObject(sun);
+        //adding plantes
+        const mercury = new (0, _planetJs.Planet)(3.2, (0, _mercuryJpgDefault.default), 28, 0.004, 0.04);
+        scene.add(mercury.orbit);
+        loop.add(mercury);
+        const venus = new (0, _planetJs.Planet)(5.8, (0, _venusJpgDefault.default), 44, 0.002, 0.015);
+        scene.add(venus.orbit);
+        loop.add(venus);
+        const earth = new (0, _planetJs.Planet)(6, (0, _earthJpgDefault.default), 62, 0.02, 0.01);
+        scene.add(earth.orbit);
+        loop.add(earth);
+        const mars = new (0, _planetJs.Planet)(4, (0, _marsJpgDefault.default), 78, 0.018, 0.008);
+        scene.add(mars.orbit);
+        loop.add(mars);
+        const jupiter = new (0, _planetJs.Planet)(12, (0, _jupiterJpgDefault.default), 100, 0.04, 0.002);
+        scene.add(jupiter.orbit);
+        loop.add(jupiter);
+        const saturn = new (0, _planetJs.Planet)(10, (0, _saturnJpgDefault.default), 138, 0.038, 0.0009, {
+            innerRadius: 10,
+            outerRadius: 20,
+            texture: (0, _saturnRingPngDefault.default)
+        });
+        scene.add(saturn.orbit);
+        loop.add(saturn);
+        const uranus = new (0, _planetJs.Planet)(7, (0, _uranusJpgDefault.default), 176, 0.03, 0.0004, {
+            innerRadius: 7,
+            outerRadius: 12,
+            texture: (0, _uranusRingPngDefault.default)
+        });
+        scene.add(uranus.orbit);
+        loop.add(uranus);
+        const neptune = new (0, _planetJs.Planet)(7, (0, _neptuneJpgDefault.default), 200, 0.032, 0.0001);
+        scene.add(neptune.orbit);
+        loop.add(neptune);
+        const pluto = new (0, _planetJs.Planet)(2.8, (0, _plutoJpgDefault.default), 216, 0.008, 0.00007);
+        scene.add(pluto.orbit);
+        loop.add(pluto);
+    }
+    addObject(obj) {
+        loop.objs.push(obj);
+        scene.add(obj);
     }
     /**
      * Render a single frame, no systems.
@@ -748,12 +818,12 @@ let controls;
      * */ #cameraTransition() {
         controls.enabled = false;
         controls.saveState();
-        // sometime later:
+        // sometime later
         controls.reset();
     }
 }
 
-},{"./camera.js":"dLmrq","./cube.js":"1nKvg","./lights.js":"3wZi5","./scene.js":"itxJx","./renderer.js":"6uZCg","./controls.js":"6zuxS","./Resizer.js":"14Fhg","./Loop.js":"5MTwe","three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"dLmrq":[function(require,module,exports) {
+},{"./camera.js":"dLmrq","./cube.js":"1nKvg","./lights.js":"3wZi5","./scene.js":"itxJx","./renderer.js":"6uZCg","./controls.js":"6zuxS","./Resizer.js":"14Fhg","./Loop.js":"5MTwe","three":"ktPTu","../img/stars.jpg":"kkMWq","../img/sun.jpg":"31HPx","../img/mercury.jpg":"d7mmq","../img/venus.jpg":"e4Qe0","../img/earth.jpg":"fN70c","../img/mars.jpg":"1dRIn","../img/jupiter.jpg":"h7o8t","../img/saturn.jpg":"1BuCt","../img/saturn ring.png":"i1CrG","../img/uranus.jpg":"fKu9O","../img/uranus ring.png":"4HWgY","../img/neptune.jpg":"gSZxt","../img/pluto.jpg":"bbvun","../solarSystem/sun.js":"d2mde","../solarSystem/planet.js":"jwdA2","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"dLmrq":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 // createCamera.prototype.camView = function ()
@@ -764,9 +834,9 @@ var _three = require("three");
 /**
  * @returns A camera representing human view
  */ function createCamera() {
-    const camera = new (0, _three.PerspectiveCamera)(35, 1, 0.1, 100);
+    const camera = new (0, _three.PerspectiveCamera)(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     // move the camera back so we can view the scene
-    camera.position.set(10, 0, 10);
+    camera.position.set(-90, 140, 140);
     return camera;
 }
 
@@ -29988,7 +30058,7 @@ function createMaterial() {
     // load a texture
     const texture = new (0, _three.TextureLoader)().load((0, _uvTestBwPngDefault.default));
     // create a "standard" material
-    const material = new (0, _three.MeshStandardMaterial)({
+    const material = new (0, _three.MeshBasicMaterial)({
         map: texture
     });
     return material;
@@ -30011,8 +30081,8 @@ function createMaterial() {
     return cube;
 }
 
-},{"three":"ktPTu","../../img/uv-test-bw.png":"hJ2wz","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"hJ2wz":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("8g2i0") + "uv-test-bw.a9684adb.png" + "?" + Date.now();
+},{"three":"ktPTu","../../img/uv-test-bw.png":"hTMDv","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"hTMDv":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "uv-test-bw.a9684adb.png" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"dqALS"}],"dqALS":[function(require,module,exports) {
 "use strict";
@@ -30051,13 +30121,27 @@ exports.getOrigin = getOrigin;
 },{}],"3wZi5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "createLights", ()=>createLights);
+/**
+ * 
+ * @param {str} lightType {'directional','ambient','point'}
+ * @returns 
+ */ parcelHelpers.export(exports, "createLight", ()=>createLight);
 var _three = require("three");
-function createLights() {
-    // Create a directional light
-    const light = new (0, _three.DirectionalLight)("white", 8);
-    // move the light right, up, and towards us
-    light.position.set(10, 10, 10);
+function createLight(lightType = "ambient") {
+    let light;
+    switch(lightType){
+        case "directional":
+            light = new _three.DirectionalLight("white", 8);
+            // move the light right, up, and towards us
+            light.position.set(10, 10, 10);
+            break;
+        case "ambient":
+            light = new _three.AmbientLight(0x333333, 5);
+            break;
+        case "point":
+            light = new _three.PointLight(0xFFFFFF, 200, 300);
+            break;
+    }
     return light;
 }
 
@@ -30068,28 +30152,34 @@ parcelHelpers.export(exports, "createScene", ()=>createScene);
 var _three = require("three");
 var _stars2Jpg = require("../../img/stars2.jpg");
 var _stars2JpgDefault = parcelHelpers.interopDefault(_stars2Jpg);
+/**textures */ var _starsJpg = require("../img/stars.jpg");
+var _starsJpgDefault = parcelHelpers.interopDefault(_starsJpg);
 /**
- * 
+ * TODO convert to a class
  * @returns A virtual 3D math space.
  */ function createScene() {
     const scene = new (0, _three.Scene)();
     // setting up texture background
+    // method to change background 
     const cubeTextureLoader = new (0, _three.CubeTextureLoader)();
     scene.background = cubeTextureLoader.load([
-        (0, _stars2JpgDefault.default),
-        (0, _stars2JpgDefault.default),
-        (0, _stars2JpgDefault.default),
-        (0, _stars2JpgDefault.default),
-        (0, _stars2JpgDefault.default),
-        (0, _stars2JpgDefault.default)
+        (0, _starsJpgDefault.default),
+        (0, _starsJpgDefault.default),
+        (0, _starsJpgDefault.default),
+        (0, _starsJpgDefault.default),
+        (0, _starsJpgDefault.default),
+        (0, _starsJpgDefault.default)
     ]);
     // simple color background
     // scene.background = new Color('skyblue');
     return scene;
 }
 
-},{"three":"ktPTu","../../img/stars2.jpg":"hiRxS","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"hiRxS":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("8g2i0") + "stars2.125a7e49.jpg" + "?" + Date.now();
+},{"three":"ktPTu","../../img/stars2.jpg":"dIyKD","../img/stars.jpg":"kkMWq","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"dIyKD":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "stars2.125a7e49.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"kkMWq":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "stars.53150d19.jpg" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"dqALS"}],"6uZCg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -30152,7 +30242,7 @@ var _orbitControlsJs = require("three/examples/jsm/controls/OrbitControls.js");
     // damping and auto rotation require
     // the controls to be updated each frame
     // controls.autoRotate = true;
-    // controls.enableDamping = true;
+    controls.enableDamping = true;
     /**
    * For damping to work, we must call controls.update 
    * every frame in the animation loop. If we’re rendering 
@@ -30910,6 +31000,9 @@ const clock = new (0, _three.Clock)();
         this.objs = []; // need a setter for metadata extraction
         this.flags = {};
     }
+    add(obj) {
+        this.objs.push(obj);
+    }
     /**Start animation and resizing loops. */ start() {
         this.renderer.setAnimationLoop(()=>{
             // tell every animated object to tick forward one frame
@@ -30937,6 +31030,101 @@ const clock = new (0, _three.Clock)();
     }
 }
 
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}]},["g8vxR","j8FY8"], "j8FY8", "parcelRequiree0a3")
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"31HPx":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "sun.333c8fe4.jpg" + "?" + Date.now();
 
-//# sourceMappingURL=index.eccfc174.js.map
+},{"./helpers/bundle-url":"dqALS"}],"d7mmq":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "mercury.9f4c36df.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"e4Qe0":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "venus.3da17d42.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"fN70c":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "earth.b48d76c6.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"1dRIn":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "mars.3b28a167.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"h7o8t":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "jupiter.22313cb2.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"1BuCt":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "saturn.5570cdbb.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"i1CrG":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "saturn ring.099bdb65.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"fKu9O":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "uranus.19c9f356.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"4HWgY":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "uranus ring.e3c1f699.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"gSZxt":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "neptune.b01c494d.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"bbvun":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "pluto.5dc26116.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"d2mde":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Sun", ()=>Sun);
+var _three = require("three");
+/**textures */ var _sunJpg = require("../img/sun.jpg");
+var _sunJpgDefault = parcelHelpers.interopDefault(_sunJpg);
+function Sun() {
+    const textureLoader = new _three.TextureLoader();
+    const sunGeo = new _three.SphereGeometry(16, 30, 30);
+    const sunMat = new _three.MeshBasicMaterial({
+        map: textureLoader.load((0, _sunJpgDefault.default))
+    });
+    const sun = new _three.Mesh(sunGeo, sunMat);
+    sun.nextFrame = (delta)=>{
+        sun.rotateY(0.004);
+    };
+    return sun;
+}
+
+},{"three":"ktPTu","../img/sun.jpg":"31HPx","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"jwdA2":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/**
+ * Planet.orbit is added to the scene.
+ */ parcelHelpers.export(exports, "Planet", ()=>Planet);
+var _three = require("three");
+class Planet {
+    constructor(size, texture, position, speed_r, speed_t, ring = null){
+        this.speed_r = speed_r;
+        this.speed_t = speed_t;
+        const textureLoader = new _three.TextureLoader();
+        const geo = new _three.SphereGeometry(size, 30, 30);
+        const mat = new _three.MeshStandardMaterial({
+            map: textureLoader.load(texture)
+        });
+        this.planet = new _three.Mesh(geo, mat);
+        //for defining planet traslation (emulates sun).
+        this.orbit = new _three.Object3D();
+        this.orbit.add(this.planet);
+        if (ring) {
+            const ringGeo = new _three.RingGeometry(ring.innerRadius, ring.outerRadius, 32);
+            const ringMat = new _three.MeshBasicMaterial({
+                map: textureLoader.load(ring.texture),
+                side: _three.DoubleSide
+            });
+            const ringMesh = new _three.Mesh(ringGeo, ringMat);
+            this.orbit.add(ringMesh);
+            ringMesh.position.x = position;
+            ringMesh.rotation.x = -0.5 * Math.PI;
+        }
+        this.planet.position.x = position;
+    }
+    nextFrame(delta) {
+        this.planet.rotateY(this.speed_r);
+        this.orbit.rotateY(this.speed_t);
+    }
+}
+
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}]},["8bbSP","jXCJb"], "jXCJb", "parcelRequiree0a3")
+
+//# sourceMappingURL=index.7b16b42c.js.map

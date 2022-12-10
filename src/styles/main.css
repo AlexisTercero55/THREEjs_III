@@ -19,6 +19,25 @@ body {
   
     /* make sure that the heading is drawn on top */
     z-index: 1;
+
+    /* Establecemos el color de fondo del elemento h1 en transparente */
+    background-color: transparent;
+    
+    /* Aplicamos una transición suave en el color del texto del elemento h1 */
+    transition: color 0.5s ease;
+    
+    /* Establecemos el color del texto del elemento h1 en verde */
+    color: green;
+    
+    /* Aplicamos un gradiente lineal en el color del texto del elemento h1 */
+    background: -webkit-linear-gradient(left, green, royalblue);
+    background: -o-linear-gradient(right, green, royalblue);
+    background: -moz-linear-gradient(right, green, royalblue);
+    background: linear-gradient(to right, green, royalblue);
+    
+    /* Establecemos el color de fondo del elemento h1 en transparente */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
   
   #scene-container {
