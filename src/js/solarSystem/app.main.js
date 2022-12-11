@@ -1,4 +1,9 @@
-import { III_SPACE } from '../threejs_iii/III_Space';
+/**
+ * @author: Alexis Tercero
+ * @mail : alexistercero55@gmail.com
+ * @github: AlexisTercero55
+ */
+import { III_SPACE } from './III_Space';
 
 function main() 
 {

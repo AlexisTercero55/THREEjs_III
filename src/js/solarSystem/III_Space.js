@@ -3,21 +3,13 @@
  * @mail : alexistercero55@gmail.com
  * @github: AlexisTercero55
  */
-import { createCamera } from './camera.js';
-import { createCube } from './cube.js';
-import { createLight } from './lights.js';
-import { createScene } from './scene.js';
-import { createRenderer } from './renderer.js';
-import { createControls } from './controls.js'
-
-import { Resizer } from './Resizer.js';
-import { Loop } from './Loop.js';
-
-import { AxesHelper } from 'three';
-
-// import * as THREE from 'three';
-// import * as dat from 'dat.gui';
-
+import { createCamera } from '../threejs_iii/camera.js';
+import { createLight } from '../threejs_iii/lights.js';
+import { createScene } from '../threejs_iii/scene.js';
+import { createRenderer } from '../threejs_iii/renderer.js';
+import { createControls } from '../threejs_iii/controls.js'
+import { Resizer } from '../threejs_iii/Resizer.js';
+import { Loop } from '../threejs_iii/Loop.js';
 /** Global variabes */
 export let camera;
 export let renderer;
@@ -27,8 +19,6 @@ export let gui;
 export let controls;
 
 /**textures */
-import starsTexture from '../img/stars.jpg';
-import sunTexture from '../img/sun.jpg';
 import mercuryTexture from '../img/mercury.jpg';
 import venusTexture from '../img/venus.jpg';
 import earthTexture from '../img/earth.jpg';
@@ -42,8 +32,9 @@ import neptuneTexture from '../img/neptune.jpg';
 import plutoTexture from '../img/pluto.jpg';
 
 //my
-import { Sun } from '../solarSystem/sun.js';
-import { Planet } from '../solarSystem/planet.js';
+import { Sun } from './sun.js';
+import { Planet } from './planet.js';
+import { III_CircleGraph } from '../threejs_iii/math/Grapher.class.js';
 
 /**
  * @class III_SPACE
@@ -74,17 +65,20 @@ class III_SPACE
         scene = createScene();
         loop = new Loop(camera, scene, renderer);
         container.append(renderer.domElement);
-
         controls = createControls(camera, renderer.domElement);
         loop.add(controls);
-        
-        const ambientLight = createLight();
-        const pointLight = createLight('point');
-        scene.add(ambientLight, pointLight);
 
+        this.lights();
         this.createObjects();
 
         const resizer = new Resizer(container, camera, renderer);
+    }
+
+    lights()
+    {
+        const ambientLight = createLight();
+        const pointLight = createLight('point');
+        scene.add(ambientLight, pointLight);
     }
 
     createObjects()
@@ -92,27 +86,44 @@ class III_SPACE
         const sun = Sun();
         this.addObject(sun);
 
+        let color = 0xffffff;
+
         //adding plantes
         const mercury = new Planet(3.2, mercuryTexture, 28,
                                   0.004, 0.04);
         scene.add(mercury.orbit);
         loop.add(mercury);
+        // draw the orbit
+        let orbit = new III_CircleGraph(28,color);
+        scene.add(orbit.circle);
 
         const venus = new Planet(5.8, venusTexture, 44, 0.002,0.015);
         scene.add(venus.orbit);
         loop.add(venus);
+        // draw the orbit
+        orbit = new III_CircleGraph(44,color);
+        scene.add(orbit.circle);
 
         const earth = new Planet(6, earthTexture, 62, 0.02, 0.01);
         scene.add(earth.orbit);
         loop.add(earth);
+        // draw the orbit
+        orbit = new III_CircleGraph(62,color);
+        scene.add(orbit.circle);
 
         const mars = new Planet(4, marsTexture, 78, 0.018, 0.008);
         scene.add(mars.orbit);
         loop.add(mars);
+        // draw the orbit
+        orbit = new III_CircleGraph(78,color);
+        scene.add(orbit.circle);
 
         const jupiter = new Planet(12, jupiterTexture, 100,0.04,0.002);
-        scene.add(jupiter.orbit);
+        scene.add(jupiter.orbit,color);
         loop.add(jupiter);
+        // draw the orbit
+        orbit = new III_CircleGraph(100,color);
+        scene.add(orbit.circle,color);
 
         const saturn = new Planet(10, saturnTexture, 138,
                                   0.038, 0.0009,
@@ -123,6 +134,9 @@ class III_SPACE
                                  });
         scene.add(saturn.orbit);
         loop.add(saturn);
+        // draw the orbit
+        orbit = new III_CircleGraph(138,color);
+        scene.add(orbit.circle);
 
         const uranus = new Planet(7, uranusTexture, 176,
                                     0.03, 0.0004,
@@ -133,15 +147,23 @@ class III_SPACE
                                 });
         scene.add(uranus.orbit);
         loop.add(uranus);
+        // draw the orbit
+        orbit = new III_CircleGraph(176,color);
+        scene.add(orbit.circle);
 
         const neptune = new Planet(7, neptuneTexture, 200,0.032, 0.0001);
         scene.add(neptune.orbit);
         loop.add(neptune);
+        // draw the orbit
+        orbit = new III_CircleGraph(200,color);
+        scene.add(orbit.circle);
 
         const pluto = new Planet(2.8, plutoTexture, 216,0.008, 0.00007);
-        
         scene.add(pluto.orbit);
         loop.add(pluto);
+        // draw the orbit
+        orbit = new III_CircleGraph(216,color);
+        scene.add(orbit.circle);
     }
     
     addObject(obj)
@@ -253,74 +275,3 @@ class III_SPACE
     }
 }
 export {III_SPACE};
-
-
-//----------------------------------------------------------------
-
-// class MYSCENE extends III_SPACE
-// {
-//     constructor()
-//     {
-//         super();
-//         this.objs = {};
-//         this.createObjs();
-//         // createLights();
-//         super.renderer.setAnimationLoop((renderer = super.renderer) => {
-//             renderer.render(renderer.scene, renderer.camera);
-//         });
-//     }
-
-
-//     /**
-//      * animate
-//      * Here goes your animation updates
-//      * @param {*} time 
-//      */
-//     animate(time) 
-//     {
-//         super.renderer.render(super.scene, super.camera);
-//     }
-
-//     createObjs()
-//     {
-//         this.objs.axesHelper = new THREE.AxesHelper(10);
-//         this.addObject(this.objs.axesHelper);
-
-//         // objs.grid = new THREE.GridHelper(10,10);
-//         // scene.add(objs.grid);
-
-//         // cocoro3D();
-//         // torusKnot();
-
-//         this.grapher2D(
-//             this.paretoDistribution,
-//             0.1,10,50
-//         );
-
-//         console.log('THREEjs_iii objs was created');
-//         // createGUI();
-//     }
-
-//     grapher2D(f,min,max,steps = 10)
-//     {
-//         let x = min;
-//         const step = (max - min)/steps;
-//         const points = [];
-//         for(let i = 0; i < steps; i++)
-//         {
-//             points.push( new THREE.Vector3( x,f(x),0 ) );
-//             x += step;
-//         }
-//         const material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
-//         const geometry = new THREE.BufferGeometry().setFromPoints( points );
-        
-//         this.objs.line = new THREE.Line( geometry, material );
-//         super.addObject( this.objs.line );
-//     }
-
-//     paretoDistribution(x)
-//     {
-//         let a = 2, b = 3;
-//         return (a*Math.pow(b,a))/Math.pow(x,a+1);
-//     }
-// }

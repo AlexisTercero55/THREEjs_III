@@ -532,7 +532,11 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"jXCJb":[function(require,module,exports) {
-var _iiiSpace = require("../threejs_iii/III_Space");
+/**
+ * @author: Alexis Tercero
+ * @mail : alexistercero55@gmail.com
+ * @github: AlexisTercero55
+ */ var _iiiSpace = require("./III_Space");
 function main() {
     // Get a reference to the container element
     const container = document.querySelector("#scene-container");
@@ -543,7 +547,7 @@ function main() {
 }
 main();
 
-},{"../threejs_iii/III_Space":"2F1by"}],"2F1by":[function(require,module,exports) {
+},{"./III_Space":"afSfI"}],"afSfI":[function(require,module,exports) {
 /**
  * @author: Alexis Tercero
  * @mail : alexistercero55@gmail.com
@@ -556,79 +560,15 @@ parcelHelpers.export(exports, "scene", ()=>scene);
 parcelHelpers.export(exports, "loop", ()=>loop);
 parcelHelpers.export(exports, "gui", ()=>gui);
 parcelHelpers.export(exports, "controls", ()=>controls);
-parcelHelpers.export(exports, "III_SPACE", ()=>III_SPACE) //----------------------------------------------------------------
- // class MYSCENE extends III_SPACE
- // {
- //     constructor()
- //     {
- //         super();
- //         this.objs = {};
- //         this.createObjs();
- //         // createLights();
- //         super.renderer.setAnimationLoop((renderer = super.renderer) => {
- //             renderer.render(renderer.scene, renderer.camera);
- //         });
- //     }
- //     /**
- //      * animate
- //      * Here goes your animation updates
- //      * @param {*} time 
- //      */
- //     animate(time) 
- //     {
- //         super.renderer.render(super.scene, super.camera);
- //     }
- //     createObjs()
- //     {
- //         this.objs.axesHelper = new THREE.AxesHelper(10);
- //         this.addObject(this.objs.axesHelper);
- //         // objs.grid = new THREE.GridHelper(10,10);
- //         // scene.add(objs.grid);
- //         // cocoro3D();
- //         // torusKnot();
- //         this.grapher2D(
- //             this.paretoDistribution,
- //             0.1,10,50
- //         );
- //         console.log('THREEjs_iii objs was created');
- //         // createGUI();
- //     }
- //     grapher2D(f,min,max,steps = 10)
- //     {
- //         let x = min;
- //         const step = (max - min)/steps;
- //         const points = [];
- //         for(let i = 0; i < steps; i++)
- //         {
- //             points.push( new THREE.Vector3( x,f(x),0 ) );
- //             x += step;
- //         }
- //         const material = new THREE.LineBasicMaterial( { color: 0x0000ff } );
- //         const geometry = new THREE.BufferGeometry().setFromPoints( points );
- //         this.objs.line = new THREE.Line( geometry, material );
- //         super.addObject( this.objs.line );
- //     }
- //     paretoDistribution(x)
- //     {
- //         let a = 2, b = 3;
- //         return (a*Math.pow(b,a))/Math.pow(x,a+1);
- //     }
- // }
-;
-var _cameraJs = require("./camera.js");
-var _cubeJs = require("./cube.js");
-var _lightsJs = require("./lights.js");
-var _sceneJs = require("./scene.js");
-var _rendererJs = require("./renderer.js");
-var _controlsJs = require("./controls.js");
-var _resizerJs = require("./Resizer.js");
-var _loopJs = require("./Loop.js");
-var _three = require("three");
-/**textures */ var _starsJpg = require("../img/stars.jpg");
-var _starsJpgDefault = parcelHelpers.interopDefault(_starsJpg);
-var _sunJpg = require("../img/sun.jpg");
-var _sunJpgDefault = parcelHelpers.interopDefault(_sunJpg);
-var _mercuryJpg = require("../img/mercury.jpg");
+parcelHelpers.export(exports, "III_SPACE", ()=>III_SPACE);
+var _cameraJs = require("../threejs_iii/camera.js");
+var _lightsJs = require("../threejs_iii/lights.js");
+var _sceneJs = require("../threejs_iii/scene.js");
+var _rendererJs = require("../threejs_iii/renderer.js");
+var _controlsJs = require("../threejs_iii/controls.js");
+var _resizerJs = require("../threejs_iii/Resizer.js");
+var _loopJs = require("../threejs_iii/Loop.js");
+/**textures */ var _mercuryJpg = require("../img/mercury.jpg");
 var _mercuryJpgDefault = parcelHelpers.interopDefault(_mercuryJpg);
 var _venusJpg = require("../img/venus.jpg");
 var _venusJpgDefault = parcelHelpers.interopDefault(_venusJpg);
@@ -651,8 +591,9 @@ var _neptuneJpgDefault = parcelHelpers.interopDefault(_neptuneJpg);
 var _plutoJpg = require("../img/pluto.jpg");
 var _plutoJpgDefault = parcelHelpers.interopDefault(_plutoJpg);
 //my
-var _sunJs = require("../solarSystem/sun.js");
-var _planetJs = require("../solarSystem/planet.js");
+var _sunJs = require("./sun.js");
+var _planetJs = require("./planet.js");
+var _grapherClassJs = require("../threejs_iii/math/Grapher.class.js");
 let camera;
 let renderer;
 let scene;
@@ -686,31 +627,50 @@ let controls;
         container.append(renderer.domElement);
         controls = (0, _controlsJs.createControls)(camera, renderer.domElement);
         loop.add(controls);
+        this.lights();
+        this.createObjects();
+        const resizer = new (0, _resizerJs.Resizer)(container, camera, renderer);
+    }
+    lights() {
         const ambientLight = (0, _lightsJs.createLight)();
         const pointLight = (0, _lightsJs.createLight)("point");
         scene.add(ambientLight, pointLight);
-        this.createObjects();
-        const resizer = new (0, _resizerJs.Resizer)(container, camera, renderer);
     }
     createObjects() {
         const sun = (0, _sunJs.Sun)();
         this.addObject(sun);
+        let color = 0xffffff;
         //adding plantes
         const mercury = new (0, _planetJs.Planet)(3.2, (0, _mercuryJpgDefault.default), 28, 0.004, 0.04);
         scene.add(mercury.orbit);
         loop.add(mercury);
+        // draw the orbit
+        let orbit = new (0, _grapherClassJs.III_CircleGraph)(28, color);
+        scene.add(orbit.circle);
         const venus = new (0, _planetJs.Planet)(5.8, (0, _venusJpgDefault.default), 44, 0.002, 0.015);
         scene.add(venus.orbit);
         loop.add(venus);
+        // draw the orbit
+        orbit = new (0, _grapherClassJs.III_CircleGraph)(44, color);
+        scene.add(orbit.circle);
         const earth = new (0, _planetJs.Planet)(6, (0, _earthJpgDefault.default), 62, 0.02, 0.01);
         scene.add(earth.orbit);
         loop.add(earth);
+        // draw the orbit
+        orbit = new (0, _grapherClassJs.III_CircleGraph)(62, color);
+        scene.add(orbit.circle);
         const mars = new (0, _planetJs.Planet)(4, (0, _marsJpgDefault.default), 78, 0.018, 0.008);
         scene.add(mars.orbit);
         loop.add(mars);
+        // draw the orbit
+        orbit = new (0, _grapherClassJs.III_CircleGraph)(78, color);
+        scene.add(orbit.circle);
         const jupiter = new (0, _planetJs.Planet)(12, (0, _jupiterJpgDefault.default), 100, 0.04, 0.002);
-        scene.add(jupiter.orbit);
+        scene.add(jupiter.orbit, color);
         loop.add(jupiter);
+        // draw the orbit
+        orbit = new (0, _grapherClassJs.III_CircleGraph)(100, color);
+        scene.add(orbit.circle, color);
         const saturn = new (0, _planetJs.Planet)(10, (0, _saturnJpgDefault.default), 138, 0.038, 0.0009, {
             innerRadius: 10,
             outerRadius: 20,
@@ -718,6 +678,9 @@ let controls;
         });
         scene.add(saturn.orbit);
         loop.add(saturn);
+        // draw the orbit
+        orbit = new (0, _grapherClassJs.III_CircleGraph)(138, color);
+        scene.add(orbit.circle);
         const uranus = new (0, _planetJs.Planet)(7, (0, _uranusJpgDefault.default), 176, 0.03, 0.0004, {
             innerRadius: 7,
             outerRadius: 12,
@@ -725,15 +688,24 @@ let controls;
         });
         scene.add(uranus.orbit);
         loop.add(uranus);
+        // draw the orbit
+        orbit = new (0, _grapherClassJs.III_CircleGraph)(176, color);
+        scene.add(orbit.circle);
         const neptune = new (0, _planetJs.Planet)(7, (0, _neptuneJpgDefault.default), 200, 0.032, 0.0001);
         scene.add(neptune.orbit);
         loop.add(neptune);
+        // draw the orbit
+        orbit = new (0, _grapherClassJs.III_CircleGraph)(200, color);
+        scene.add(orbit.circle);
         const pluto = new (0, _planetJs.Planet)(2.8, (0, _plutoJpgDefault.default), 216, 0.008, 0.00007);
         scene.add(pluto.orbit);
         loop.add(pluto);
+        // draw the orbit
+        orbit = new (0, _grapherClassJs.III_CircleGraph)(216, color);
+        scene.add(orbit.circle);
     }
     addObject(obj) {
-        loop.objs.push(obj);
+        loop.add(obj);
         scene.add(obj);
     }
     /**
@@ -823,7 +795,7 @@ let controls;
     }
 }
 
-},{"./camera.js":"dLmrq","./cube.js":"1nKvg","./lights.js":"3wZi5","./scene.js":"itxJx","./renderer.js":"6uZCg","./controls.js":"6zuxS","./Resizer.js":"14Fhg","./Loop.js":"5MTwe","three":"ktPTu","../img/stars.jpg":"kkMWq","../img/sun.jpg":"31HPx","../img/mercury.jpg":"d7mmq","../img/venus.jpg":"e4Qe0","../img/earth.jpg":"fN70c","../img/mars.jpg":"1dRIn","../img/jupiter.jpg":"h7o8t","../img/saturn.jpg":"1BuCt","../img/saturn ring.png":"i1CrG","../img/uranus.jpg":"fKu9O","../img/uranus ring.png":"4HWgY","../img/neptune.jpg":"gSZxt","../img/pluto.jpg":"bbvun","../solarSystem/sun.js":"d2mde","../solarSystem/planet.js":"jwdA2","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"dLmrq":[function(require,module,exports) {
+},{"../threejs_iii/camera.js":"dLmrq","../threejs_iii/lights.js":"3wZi5","../threejs_iii/scene.js":"itxJx","../threejs_iii/renderer.js":"6uZCg","../threejs_iii/controls.js":"6zuxS","../threejs_iii/Resizer.js":"14Fhg","../threejs_iii/Loop.js":"5MTwe","../img/mercury.jpg":"d7mmq","../img/venus.jpg":"e4Qe0","../img/earth.jpg":"fN70c","../img/mars.jpg":"1dRIn","../img/jupiter.jpg":"h7o8t","../img/saturn.jpg":"1BuCt","../img/saturn ring.png":"i1CrG","../img/uranus.jpg":"fKu9O","../img/uranus ring.png":"4HWgY","../img/neptune.jpg":"gSZxt","../img/pluto.jpg":"bbvun","./sun.js":"d2mde","./planet.js":"jwdA2","../threejs_iii/math/Grapher.class.js":"1JwAm","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"dLmrq":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 // createCamera.prototype.camView = function ()
@@ -30045,79 +30017,6 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"1nKvg":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "createCube", ()=>createCube);
-var _three = require("three");
-var _uvTestBwPng = require("../../img/uv-test-bw.png");
-var _uvTestBwPngDefault = parcelHelpers.interopDefault(_uvTestBwPng);
-function createMaterial() {
-    // create a texture loader.
-    // const textureLoader = new TextureLoader();
-    // load a texture
-    const texture = new (0, _three.TextureLoader)().load((0, _uvTestBwPngDefault.default));
-    // create a "standard" material
-    const material = new (0, _three.MeshBasicMaterial)({
-        map: texture
-    });
-    return material;
-}
-/**
- * @returns Returns a cube 3D object with geometry and material
- */ function createCube() {
-    const geometry = new (0, _three.BoxGeometry)(2, 2, 2);
-    const material = createMaterial();
-    const cube = new (0, _three.Mesh)(geometry, material);
-    // cube.rotation.set(-0.5, -0.1, 0.8);
-    const radiansPerSecond = (0, _three.MathUtils).degToRad(30);
-    // this method will be called once per frame
-    cube.nextFrame = (delta)=>{
-        // increase the cube's rotation each frame
-        cube.rotation.z += radiansPerSecond * delta;
-    // cube.rotation.x += radiansPerSecond * delta;
-    // cube.rotation.y += radiansPerSecond * delta;
-    };
-    return cube;
-}
-
-},{"three":"ktPTu","../../img/uv-test-bw.png":"hTMDv","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"hTMDv":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "uv-test-bw.a9684adb.png" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"dqALS":[function(require,module,exports) {
-"use strict";
-var bundleURL = {};
-function getBundleURLCached(id) {
-    var value = bundleURL[id];
-    if (!value) {
-        value = getBundleURL();
-        bundleURL[id] = value;
-    }
-    return value;
-}
-function getBundleURL() {
-    try {
-        throw new Error();
-    } catch (err) {
-        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
-        if (matches) // The first two stack frames will be this function and getBundleURLCached.
-        // Use the 3rd one, which will be a runtime in the original bundle.
-        return getBaseURL(matches[2]);
-    }
-    return "/";
-}
-function getBaseURL(url) {
-    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
-} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
-function getOrigin(url) {
-    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
-    if (!matches) throw new Error("Origin not found");
-    return matches[0];
-}
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-exports.getOrigin = getOrigin;
-
 },{}],"3wZi5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -30178,7 +30077,41 @@ var _starsJpgDefault = parcelHelpers.interopDefault(_starsJpg);
 },{"three":"ktPTu","../../img/stars2.jpg":"dIyKD","../img/stars.jpg":"kkMWq","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"dIyKD":[function(require,module,exports) {
 module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "stars2.125a7e49.jpg" + "?" + Date.now();
 
-},{"./helpers/bundle-url":"dqALS"}],"kkMWq":[function(require,module,exports) {
+},{"./helpers/bundle-url":"dqALS"}],"dqALS":[function(require,module,exports) {
+"use strict";
+var bundleURL = {};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return "/";
+}
+function getBaseURL(url) {
+    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
+} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
+    if (!matches) throw new Error("Origin not found");
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
+
+},{}],"kkMWq":[function(require,module,exports) {
 module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "stars.53150d19.jpg" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"dqALS"}],"6uZCg":[function(require,module,exports) {
@@ -31030,10 +30963,7 @@ const clock = new (0, _three.Clock)();
     }
 }
 
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"31HPx":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "sun.333c8fe4.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"d7mmq":[function(require,module,exports) {
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"d7mmq":[function(require,module,exports) {
 module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "mercury.9f4c36df.jpg" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"dqALS"}],"e4Qe0":[function(require,module,exports) {
@@ -31086,7 +31016,10 @@ function Sun() {
     return sun;
 }
 
-},{"three":"ktPTu","../img/sun.jpg":"31HPx","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"jwdA2":[function(require,module,exports) {
+},{"three":"ktPTu","../img/sun.jpg":"31HPx","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"31HPx":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("6Pt6Q") + "sun.333c8fe4.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}],"jwdA2":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 /**
@@ -31123,6 +31056,54 @@ class Planet {
         this.planet.rotateY(this.speed_r);
         this.orbit.rotateY(this.speed_t);
     }
+}
+
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"1JwAm":[function(require,module,exports) {
+/**
+ * @author: Alexis Tercero
+ * @mail : alexistercero55@gmail.com
+ * @github: AlexisTercero55
+ */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "III_Grapher2D", ()=>III_Grapher2D);
+parcelHelpers.export(exports, "III_CircleGraph", ()=>III_CircleGraph);
+var _three = require("three");
+class III_Grapher2D {
+    constructor(f, min, max, steps = 10, color = 0x0000ff){
+        let x = min;
+        const step = (max - min) / steps;
+        const points = [];
+        for(let i = 0; i < steps; i++){
+            points.push(new _three.Vector3(x, f(x), 0));
+            x += step;
+        }
+        const material = new _three.LineBasicMaterial({
+            color: 0x0000ff
+        });
+        const geometry = new _three.BufferGeometry().setFromPoints(points);
+        this.graph = new _three.Line(geometry, material);
+    }
+}
+class III_CircleGraph {
+    constructor(radius, color = 0x0000ff, steps = 64){
+        let angle = 0;
+        //TODO : WHY (2 * Math.PI) / steps; CANT CLOSE THE CIRCLE
+        const step = 2.1 * Math.PI / steps;
+        const points = [];
+        for(let i = 0; i < steps; i++){
+            const x = Math.cos(angle);
+            const y = Math.sin(angle);
+            points.push(new _three.Vector3(x, 0, y));
+            angle += step;
+        }
+        const material = new _three.LineBasicMaterial({
+            color: color
+        });
+        const geometry = new _three.BufferGeometry().setFromPoints(points);
+        this.circle = new _three.Line(geometry, material);
+        this.circle.scale.set(radius, radius, radius);
+    }
+    nextFrame = ()=>{};
 }
 
 },{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}]},["8bbSP","jXCJb"], "jXCJb", "parcelRequiree0a3")
