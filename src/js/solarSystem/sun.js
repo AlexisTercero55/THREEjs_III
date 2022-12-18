@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 /**textures */
-import sunTexture from '../img/sun.jpg';
+import sunTexture from '../../img/sun.jpg';
 
 export function Sun()
 {

@@ -3,15 +3,14 @@
  * @mail : alexistercero55@gmail.com
  * @github: AlexisTercero55
  */
-import { createCamera } from './camera.js';
-import { createCube } from './cube.js';
-import { createLight } from './lights.js';
-import { createScene } from './scene.js';
-import { createRenderer } from './renderer.js';
-import { createControls } from './controls.js'
-
-import { Resizer } from './Resizer.js';
-import { Loop } from './Loop.js';
+import * as THREE from 'three';
+import { createCamera } from '../../threejs_iii/camera';
+import { createLight } from '../../threejs_iii/lights.js';
+import { createScene } from '../../threejs_iii/scene.js';
+import { createRenderer } from '../../threejs_iii/renderer.js';
+import { createControls } from '../../threejs_iii/controls.js'
+import { Resizer } from '../../threejs_iii/Resizer.js';
+import { Loop } from '../../threejs_iii/Loop.js';
 
 /** Global variabes */
 export let camera;
@@ -21,22 +20,31 @@ export let loop;
 export let gui;
 export let controls;
 
-/**textures */
-import mercuryTexture from '../../img/mercury.jpg';
-import venusTexture from '../../img/venus.jpg';
-import earthTexture from '../../img/earth.jpg';
-import marsTexture from '../../img/mars.jpg';
-import jupiterTexture from '../../img/jupiter.jpg';
-import saturnTexture from '../../img/saturn.jpg';
-import saturnRingTexture from '../../img/saturn ring.png';
-import uranusTexture from '../../img/uranus.jpg';
-import uranusRingTexture from '../../img/uranus ring.png';
-import neptuneTexture from '../../img/neptune.jpg';
-import plutoTexture from '../../img/pluto.jpg';
+/**Shaders */
+const _VS =`
+varying vec3 vUv; 
 
-//my
-import { Sun } from '../solarSystem/sun.js';
-import { Planet } from '../solarSystem/planet.js';
+void main() {
+  vUv = position; 
+
+  vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+  gl_Position = projectionMatrix * modelViewPosition; 
+}
+`;
+const _FS =`
+uniform vec3 colorA; 
+uniform vec3 colorB; 
+varying vec3 vUv;
+
+void main() {
+  gl_FragColor = vec4(mix(colorA, colorB, vUv.z), 1.0);
+}
+`;
+// import sunShader from "./shaders/sunShader.glsl";
+import { createCube } from '../../threejs_iii/cube';
+
+
+
 
 class III_SPACE
 {
@@ -61,68 +69,83 @@ class III_SPACE
         const resizer = new Resizer(container, camera, renderer);
     }
 
+
+
     lights()
     {
-        const ambientLight = createLight();
-        const pointLight = createLight('point');
-        scene.add(ambientLight, pointLight);
+        let pointLight = new THREE.PointLight(0xdddddd)
+        //pointLight.position.set(-5, -3, 3)
+        pointLight.position.set(10, 0, 0)
+        scene.add(pointLight)
+      
+        let ambientLight = new THREE.AmbientLight(0x505050)
+        scene.add(ambientLight)
     }
+    // {
+    //     const ambientLight = createLight('directional');
+    //     ambientLight.position.set(100, 0,0);
+    //     // const pointLight = createLight('point');
+    //     scene.add(ambientLight);
+    // }
+
+    vertexShader() 
+    {
+        return `
+        varying vec3 v_Normal;
+        void main() 
+        {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            v_Normal = normal;
+        }
+        `;
+        // return `
+        //   varying vec3 vUv; 
+      
+        //   void main() {
+        //     vUv = position; 
+      
+        //     vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+        //     gl_Position = projectionMatrix * modelViewPosition; 
+        //   }
+        // `;
+      }
+
+    fragmentShader() {
+        return `
+        varying vec3 v_Normal;
+        void main() 
+        {
+            gl_FragColor = vec4(v_Normal,1.0);
+        }
+        `;
+    //     return `
+    //     uniform vec3 colorA; 
+    //     uniform vec3 colorB; 
+    //     varying vec3 vUv;
+  
+    //     void main() {
+    //       gl_FragColor = vec4(mix(colorA, colorB, vUv.z), 1.0);
+    //     }
+    // `;
+      }
 
     createObjects()
     {
-        const sun = Sun();
-        this.addObject(sun);
-
-        //adding plantes
-        const mercury = new Planet(3.2, mercuryTexture, 28,
-                                  0.004, 0.04);
-        scene.add(mercury.orbit);
-        loop.add(mercury);
-
-        const venus = new Planet(5.8, venusTexture, 44, 0.002,0.015);
-        scene.add(venus.orbit);
-        loop.add(venus);
-
-        const earth = new Planet(6, earthTexture, 62, 0.02, 0.01);
-        scene.add(earth.orbit);
-        loop.add(earth);
-
-        const mars = new Planet(4, marsTexture, 78, 0.018, 0.008);
-        scene.add(mars.orbit);
-        loop.add(mars);
-
-        const jupiter = new Planet(12, jupiterTexture, 100,0.04,0.002);
-        scene.add(jupiter.orbit);
-        loop.add(jupiter);
-
-        const saturn = new Planet(10, saturnTexture, 138,
-                                  0.038, 0.0009,
-                                 {
-                                     innerRadius: 10,
-                                     outerRadius: 20,
-                                     texture: saturnRingTexture
-                                 });
-        scene.add(saturn.orbit);
-        loop.add(saturn);
-
-        const uranus = new Planet(7, uranusTexture, 176,
-                                    0.03, 0.0004,
-                                {
-                                    innerRadius: 7,
-                                    outerRadius: 12,
-                                    texture: uranusRingTexture
-                                });
-        scene.add(uranus.orbit);
-        loop.add(uranus);
-
-        const neptune = new Planet(7, neptuneTexture, 200,0.032, 0.0001);
-        scene.add(neptune.orbit);
-        loop.add(neptune);
-
-        const pluto = new Planet(2.8, plutoTexture, 216,0.008, 0.00007);
+        let uniforms = {
+            colorB: {type: 'vec3', value: new THREE.Color(0xACB6E5)},
+            colorA: {type: 'vec3', value: new THREE.Color(0x74ebd5)}
+        }
+    
+        let geometry = new THREE.SphereGeometry(1, 30, 30);
+        let material =  new THREE.ShaderMaterial({
+            uniforms: uniforms,
+            fragmentShader: this.fragmentShader(),
+            vertexShader: this.vertexShader(),
+        })
         
-        scene.add(pluto.orbit);
-        loop.add(pluto);
+        let mesh = new THREE.Mesh(geometry, material)
+        // mesh.position.x = 2
+        scene.add(mesh)
     }
     
     addObject(obj)

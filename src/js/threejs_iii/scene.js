@@ -3,9 +3,8 @@ import { Color,
   CubeTextureLoader
  } from 'three';
 
-import stars from '../../img/stars2.jpg';
 /**textures */
-import starsTexture from '../img/stars.jpg';
+import starsTexture from '../../img/stars.jpg';
 
 /**
  * TODO convert to a class
