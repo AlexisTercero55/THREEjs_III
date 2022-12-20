@@ -19,6 +19,7 @@ class Loop
    */
   constructor(camera, scene, renderer) 
   {
+    // this.mixer = null;
     this.camera = camera;
     this.scene = scene;
     this.renderer = renderer;
@@ -38,7 +39,6 @@ class Loop
     {
       // tell every animated object to tick forward one frame
       this.#nextFrame();
-
       // render a frame
       this.renderer.render(this.scene, this.camera);
     });
