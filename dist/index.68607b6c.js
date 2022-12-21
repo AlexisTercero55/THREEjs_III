@@ -567,7 +567,8 @@ var _controlsJs = require("../threejs_iii/controls.js");
 var _resizerJs = require("../threejs_iii/Resizer.js");
 var _loopJs = require("../threejs_iii/Loop.js");
 var _objsJs = require("./objs.js");
-let camera;
+const log = console.log;
+var camera;
 let renderer;
 let scene;
 let loop;
@@ -578,20 +579,18 @@ let controls;
      * 
      * @param {DOMElement} container - where space will be render.
      */ constructor(container){
-        camera = (0, _cameraJs.createCamera)(15, 15, 15);
+        camera = (0, _cameraJs.createCamera)(0.1, 3.18, 8.36);
         renderer = (0, _rendererJs.createRenderer)();
         scene = (0, _sceneJs.createScene)();
         loop = new (0, _loopJs.Loop)(camera, scene, renderer);
         container.append(renderer.domElement);
         controls = (0, _controlsJs.createControls)(camera, renderer.domElement);
         loop.add(controls);
+        // loop.add(camera);
+        controls.target.set(0, 3, 0);
         this.lights();
         const n = 5;
-        this.createObjects(0, new _three.Vector3(0, 0, n));
-        this.createObjects(1, new _three.Vector3(n, 0, 0));
-        this.createObjects(2, new _three.Vector3(-n, 0, 0));
-        this.createObjects(3, new _three.Vector3(0, 0, -n));
-        this.createObjects(5);
+        this.createObjects();
         const resizer = new (0, _resizerJs.Resizer)(container, camera, renderer);
     }
     lights() {
@@ -599,16 +598,15 @@ let controls;
         // const pointLight = createLight('point');
         // pointLight.position.z = 15;
         // scene.add(ambientLight, pointLight);
-        const lig = (0, _lightsJs.createLight)("directional");
-        lig.position.set(10, 10, 100);
+        const lig = (0, _lightsJs.createLight)("directional", 25);
+        lig.position.set(0, 20, 0);
         scene.add(lig);
-        const l = (0, _lightsJs.createLight)("point");
-        l.position.set(5, 5, 5);
+        const l = (0, _lightsJs.createLight)("point", 100);
+        l.position.set(5, 8, 5);
         scene.add(l);
     }
     createObjects(n = 0, v = new _three.Vector3(0, 0, 0)) {
-        const log = console.log;
-        const grid = new _three.GridHelper(30, 30, 0x00ff00, 0xff0000);
+        const grid = new _three.GridHelper(90, 90, 0x00ff00, 0xff0000);
         scene.add(grid);
         (0, _objsJs.glbLoad)(scene, loop, n, v);
     }
@@ -628,11 +626,6 @@ let controls;
     #cameraCut() {
         camera.position.set(1, 2, 3);
         camera.rotation.set(0.5, 0, 0);
-    }
-    #cameraTransition() {
-        controls.enabled = false;
-        controls.saveState();
-        controls.reset();
     }
 }
 
@@ -32290,10 +32283,11 @@ parcelHelpers.export(exports, "createCamera", ()=>createCamera);
 var _three = require("three");
 /**
  * @returns A camera representing human view
- */ function createCamera(x = 5, y = 5, z = 5) {
+ */ function createCamera(x = 5, y = 5, z = 5, lookat = new (0, _three.Vector3)()) {
     const camera = new (0, _three.PerspectiveCamera)(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     // move the camera back so we can view the scene
     camera.position.set(x, y, z);
+    camera.nextFrame = (delta)=>console.log("camera:", camera.position);
     return camera;
 }
 
@@ -32306,10 +32300,11 @@ parcelHelpers.defineInteropFlag(exports);
  * @returns 
  */ parcelHelpers.export(exports, "createLight", ()=>createLight);
 var _three = require("three");
-function createLight(lightType = "ambient") {
+function createLight(lightType = "ambient", intensity = 0) {
     let light;
     switch(lightType){
         case "directional":
+            if (!intensity) intensity = 8;
             light = new _three.DirectionalLight("white", 8);
             // move the light right, up, and towards us
             light.position.set(100, 100, 100);
@@ -32318,7 +32313,8 @@ function createLight(lightType = "ambient") {
             light = new _three.AmbientLight(0x333333, 5);
             break;
         case "point":
-            light = new _three.PointLight(0xFFFFFF, 200, 300);
+            if (!intensity) intensity = 100;
+            light = new _three.PointLight("white", intensity, 100);
             break;
     }
     return light;
@@ -33246,15 +33242,18 @@ parcelHelpers.export(exports, "glbLoad", ()=>glbLoad);
 var _three = require("three");
 var _gltfloader = require("three/examples/jsm/loaders/GLTFLoader");
 function glbLoad(scene, loop, n, v) {
-    const monkeyUrl = new URL(require("3227ce3db0cd6d14"));
+    const monkeyUrl = new URL(require("ac7dfd64f635d26"));
     // log(monkeyUrl);
     const assetLoader = new (0, _gltfloader.GLTFLoader)();
+    var model;
     assetLoader.load(monkeyUrl.href, function(gltf) {
-        const model = gltf.scene;
+        model = gltf.scene;
         model.position.set(v.x, 0.8, v.z);
+        model.scale.set(10, 10, 10);
+        model.rotateY(-Math.PI);
         const clips = gltf.animations;
         const mixer = new _three.AnimationMixer(model);
-        const action = mixer.clipAction(clips[n]);
+        const action = mixer.clipAction(clips[0]);
         action.play();
         // named animations view on blender
         // const clip = THREE.AnimationClip.findByName(clips, 'HeadAction');
@@ -33265,16 +33264,19 @@ function glbLoad(scene, loop, n, v) {
         //     const action = mixer.clipAction(clip);
         //     action.play();
         // });
-        model.nextFrame = (delta)=>mixer.update(delta);
+        model.nextFrame = (delta)=>{
+            mixer.update(delta);
+        };
         loop.add(model);
         scene.add(model);
     }, undefined, function(error) {
         console.error(error);
     });
+    return model;
 }
 
-},{"three":"ktPTu","three/examples/jsm/loaders/GLTFLoader":"dVRsF","3227ce3db0cd6d14":"6I3gd","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"6I3gd":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("a4mQ1") + "animated_triceratops_skeleton.9c9f8f3a.glb" + "?" + Date.now();
+},{"three":"ktPTu","three/examples/jsm/loaders/GLTFLoader":"dVRsF","ac7dfd64f635d26":"7N01C","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"7N01C":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("a4mQ1") + "mech_drone.861ec189.glb" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"dqALS"}]},["akrTR","lMknr"], "lMknr", "parcelRequiree0a3")
 

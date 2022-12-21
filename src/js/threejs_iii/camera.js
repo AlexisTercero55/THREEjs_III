@@ -1,10 +1,10 @@
-import { PerspectiveCamera } from 'three';
+import { PerspectiveCamera, Vector3 } from 'three';
 
 
 /**
  * @returns A camera representing human view
  */
-function createCamera(x=5,y=5,z=5) 
+function createCamera(x=5,y=5,z=5, lookat=new Vector3()) 
 {
   const camera = new PerspectiveCamera(
     45, // fov = Field Of View
@@ -15,6 +15,7 @@ function createCamera(x=5,y=5,z=5)
 
   // move the camera back so we can view the scene
   camera.position.set(x,y,z);
+  camera.nextFrame = (delta) => console.log('camera:',camera.position);
 
 
   return camera;
