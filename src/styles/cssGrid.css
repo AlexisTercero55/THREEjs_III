@@ -1,0 +1,184 @@
+/* @author: Alexis Tercero
+   @gitHub: AlexisTercero55 
+   
+   @Description: here is declared a basic structure 4
+   a responsive threejs_iii website
+   
+   Footnotes:
+   
+   flexbox: Better for aling elements iside a grid.
+   cssGrid: Better for structure*/
+
+/* What is box-sizing border-box?
+border-box tells the browser to account for any border and padding in the values you specify for an element's width and height. If you set an element's width to 100 pixels, that 100 pixels will include any border or padding you added, and the content box will shrink to absorb that extra width. */
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body{
+    width: 100%;
+    height: 100%;
+}
+body::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+
+.page-container{
+    /* default */
+    background-color: #201315;
+    /* border: 10px solid #FF0000; */
+    width: 100%;
+    height: 100vh;
+
+    margin: auto;
+    padding: 40px 30px;
+
+    /* layout cssGrid*/
+    display: grid;
+    /* two colums */
+    grid-template-columns: 3fr 1fr; /*auto*/
+    gap: 10px;
+
+    
+    /* layout flex box */
+    /* display: flex;
+    gap: 15px; */
+}
+
+.grid1{
+    /* default */
+    /* border: 2px solid #04ff00; */
+
+    /* layout cssGrid*/
+    display: grid;
+    /* 3colums 1fr size */
+    grid-template-columns: repeat(2,1fr);
+    gap: 15px;
+    /* gap issue from flexbox was removed */
+
+    
+    /* layout flex box */
+    /* width: 70%;
+    display: flex;
+    flex-wrap: wrap; */
+    /*gap: 15px;  see line 66 */
+}
+
+.card {
+    /* default */
+    border: 2px solid #65382d;
+    border-radius: 40px;
+    
+	/* min-height: 200px; */
+    /* height: 100%; */
+    font-weight: bold;
+	padding: 0;
+	position: relative;
+    /* important for threejs_iii scene container or in claass scene-container */
+	overflow: hidden;
+	background-size: cover;
+	background-position: center center;
+
+	/* layout cssGrid*/
+
+    
+    /* layout flex box */
+    /* width:  calc(33.33% - 15px);  */
+}
+
+.card .txt {
+    /* default */
+    /* border: 2px solid #ff7300; */
+	height: 100%;
+	
+    /* layout cssGrid*/
+    /* display: grid;
+    grid-template-rows: 1fr auto; */
+
+    
+    /* layout flex box */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+	
+}
+
+.titulo {
+	font-size: 24px;
+	padding: 20px 0;
+    color: #e76d57;
+}
+
+.banner {
+    /* default */
+    /* border: 11px solid #f700ff; */
+    color: #f8f3eb;
+	border-radius: 10px;
+	text-align: center;
+	padding: 20px;
+	background-size: cover;
+	background-position: center center;
+
+    /* layout cssGrid*/
+    /* display: grid;
+    grid-template-rows: repeat(3, auto);
+    align-items: center; */
+
+    
+    /* layout flex box */
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between;  */
+}
+
+.banner ul {
+    /* border: 2px solid #ff008c; */
+	list-style: none;
+}
+
+.banner ul li {
+    /* border: 2px solid #91ff00; */
+    color: #65382d;
+	margin: 15px;
+	font-weight: bold;
+}
+
+.banner .boton {
+    /* border: 2px solid #ffa200; */
+    border: 4px solid #65382d;
+	background: #201315;
+    color: #e76d57;
+	display: block;
+	width: 100%;
+	font-weight: bold;
+	font-size: 14px;
+	text-align: center;
+	padding: 10px;
+	/* border: none; */
+	border-radius: 100px;
+	font-family: 'Roboto', sans-serif;
+	cursor: pointer;
+}
+
+/* THREEJS_III set up */
+
+.scene-container {
+    /* tell our scene container to take up the full page or container */
+    /* Bellow is defined the render resolution */
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+    /*
+        Set the container's background color to the same as the scene's
+        background to prevent flashing on load
+    */
+    background-color: #201315;
+}
+
+/* #sceneID_1{
+    width: 100%;
+    height: 100%;
+} */
