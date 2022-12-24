@@ -1,15 +1,19 @@
 import { III_SPACE } from './III_SPACE.js';
 
-function main() 
+// TODO : Ract component of SPACE
+function createSpace(containerId) 
 {
   // Get a reference to the container element
-  const container = document.querySelector('#scene-container');
-
+  const container = document.querySelector(containerId);
   // create a new world
-  const world = new III_SPACE(container);
-
+  const Space = new III_SPACE(container);
   // start the animation loop
-  world.start();
+  Space.start();
+}
+
+function main() 
+{
+  createSpace('#sceneID_1');
 }
 
 main();

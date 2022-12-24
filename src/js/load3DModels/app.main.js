@@ -12,11 +12,6 @@ function createSpace(containerId)
 function main() 
 {
   createSpace('#sceneID_1');
-  createSpace('#sceneID_2');
-  createSpace('#sceneID_3');
-  createSpace('#sceneID_4');
-  createSpace('#sceneID_5');
-  createSpace('#sceneID_6');
 }
 
 main();

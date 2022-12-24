@@ -2,6 +2,7 @@ import { III_SPACE } from './III_SPACE.js';
 
 function main() 
 {
+  console.log('Starting: Diplacement & alpha maps project of THREEJS_III')
   // Get a reference to the container element
   const container = document.querySelector('#sceneID_1');
 
