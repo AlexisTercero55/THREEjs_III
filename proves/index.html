@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- Import three.js from a CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.148.0/three.min.js" integrity="sha512-TBsRPqWeusJljmmEij9waZ9K+qO2m6W1pu+5h5BjxvdizD1Izn1wwJyVYNFFFH42tIfedURxTsgtXF2Lah2PXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        // Set up the scene, camera, and renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Load the OBJ file
+        const loader = new THREE.OBJLoader();
+        const objFile = 'bunny.obj';
+        loader.load(objFile, (obj) => {
+        // Set the color of the mesh based on the time value
+        obj.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+            child.material = new THREE.MeshBasicMaterial({
+                color: new THREE.Color().setHSL(
+                (time % 1) / 1, // Hue oscillates between 0 and 1 with a period of 1 second
+                1.0, // Saturation is always 100%
+                0.5  // Lightness is 50%
+                )
+            });
+            }
+        });
+
+        // Add the obj to the scene
+        scene.add(obj);
+        });
+
+        // Animate the time variable to update the color of the mesh
+        let time = 0;
+        function animate() {
+        requestAnimationFrame(animate);
+
+        time += 0.01; // Increment the time value by 0.01 seconds
+
+        renderer.render(scene, camera);
+        }
+
+        animate();
+
+    </script>
+</body>
+</html>

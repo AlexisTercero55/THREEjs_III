@@ -3,9 +3,8 @@
  * @mail : alexistercero55@gmail.com
  * @github: AlexisTercero55
  */
-const log = console.log;
 import * as THREE from 'three';
-import { GUI } from 'dat.gui';
+// import { GUI } from 'dat.gui';
 
 import { createCamera } from '../threejs_iii/camera.js';
 import { createLight } from '../threejs_iii/lights.js';
@@ -22,7 +21,7 @@ export let renderer;
 export let scene;
 export let loop;
 //TODO make function to create custom GUI objects | III update: createGUI() -> GUI
-export const gui = new GUI();
+// export const gui = new GUI();
 export let controls;
 
 // textures
@@ -31,7 +30,7 @@ import img2 from './displacementmap.png';
 import { MOUSE } from 'three';
 
 
-class III_SPACE
+export class III_DISPLACEMTMPAS
 {
     /**
      * 
@@ -39,26 +38,24 @@ class III_SPACE
      */
     constructor(container) 
     {
-        camera = createCamera(3,1.2,3);
+        camera = createCamera({x:3,y:1.2,z:3});
         renderer = createRenderer();
         scene = createScene();
         loop = new Loop(camera, scene, renderer);
         container.append(renderer.domElement);
-        // controls = createControls(camera, renderer.domElement);
-        // loop.add(controls);
+        controls = createControls(camera, renderer.domElement);
+        loop.add(controls);
         camera.lookAt(scene.position);
         
         this.lights();
 
         this.createObjects();
-
         const resizer = new Resizer(container, camera, renderer);
     }
 
     lights()
     {
         const ambientLight = createLight('ambient',1);
-        log('intensiry',ambientLight.intensity);
         const pointLight = createLight('point',1);
         pointLight.color.setHex(0x0000FF);
         pointLight.position.set(0,1,0);
@@ -72,19 +69,17 @@ class III_SPACE
         }
         loop.add(pointLight);
 
-        log('ambient light:',ambientLight.position);
-        log('point light:',pointLight.position);
         scene.add(ambientLight, pointLight);
 
-        const d = gui.addFolder('awa');
-        const a = gui.addFolder('awu');
-        const f = gui.addFolder('light');
-        f.open();
-        f.add(pointLight.position, 'x',0,3,0.01);
-        f.add(pointLight.position, 'y',0,3,0.01);
-        f.add(pointLight.position, 'z',0,3,0.01);
-        f.add(pointLight,'intensity',1,100,0.01).name('intensity');
-        f.close();
+        // const d = gui.addFolder('awa');
+        // const a = gui.addFolder('awu');
+        // const f = gui.addFolder('light');
+        // f.open();
+        // f.add(pointLight.position, 'x',0,3,0.01);
+        // f.add(pointLight.position, 'y',0,3,0.01);
+        // f.add(pointLight.position, 'z',0,3,0.01);
+        // f.add(pointLight,'intensity',1,100,0.01).name('intensity');
+        // f.close();
     }
 
     createObjects()
@@ -111,9 +106,11 @@ class III_SPACE
         document.addEventListener("mousemove",(e) =>{
             mouseY = e.clientY + 50;
         })
+        var s = 0;
         plane.nextFrame = (delta) => 
         {
-            plane.material.displacementScale = mouseY *0.0013 ;
+            plane.material.displacementScale = Math.sin(s);//mouseY *0.0013 ;
+            s+=0.02;
             plane.rotation.z += 0.003;
         }
         scene.add(plane);
@@ -156,4 +153,3 @@ class III_SPACE
     //     controls.reset();
     // }
 }
-export {III_SPACE};

@@ -27,7 +27,8 @@ body::-webkit-scrollbar {
 
 .page-container{
     /* default */
-    background-color: #201315;
+    /* background-color: #031d52 ; */
+    background: linear-gradient(110deg, #5cdb95 41.3%, #05386B 41.3%);
     /* border: 10px solid #FF0000; */
     width: 100%;
     height: 100vh;
@@ -68,7 +69,7 @@ body::-webkit-scrollbar {
 
 .card {
     /* default */
-    border: 2px solid #65382d;
+    border: 2px solid #379683;
     border-radius: 40px;
     
 	/* min-height: 200px; */
@@ -108,7 +109,7 @@ body::-webkit-scrollbar {
 .titulo {
 	font-size: 24px;
 	padding: 20px 0;
-    color: #e76d57;
+    color: #5cdb95;
 }
 
 .banner {
@@ -140,16 +141,16 @@ body::-webkit-scrollbar {
 
 .banner ul li {
     /* border: 2px solid #91ff00; */
-    color: #65382d;
+    color: #379683;
 	margin: 15px;
 	font-weight: bold;
 }
 
 .banner .boton {
     /* border: 2px solid #ffa200; */
-    border: 4px solid #65382d;
-	background: #201315;
-    color: #e76d57;
+    border: 4px solid #379683;
+	background: #5cdb95;
+    color: #EDF5E1;
 	display: block;
 	width: 100%;
 	font-weight: bold;
@@ -175,7 +176,7 @@ body::-webkit-scrollbar {
         Set the container's background color to the same as the scene's
         background to prevent flashing on load
     */
-    background-color: #201315;
+    /* background-color: #201315; */
 }
 
 /* #sceneID_1{

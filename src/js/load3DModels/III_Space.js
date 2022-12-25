@@ -26,7 +26,7 @@ export let controls;
 
 /**textures */
 
-class III_SPACE
+export class III_GLBMODEL
 {
     /**
      * 
@@ -34,7 +34,7 @@ class III_SPACE
      */
     constructor(container) 
     {
-        camera = createCamera(0.1,3.18,8.36);
+        camera = createCamera({x:0,y:3.18,z:8.36});
         renderer = createRenderer();
         scene = createScene();
         loop = new Loop(camera, scene, renderer);
@@ -110,4 +110,3 @@ class III_SPACE
     //     controls.reset();
     // }
 }
-export {III_SPACE};

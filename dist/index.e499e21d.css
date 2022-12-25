@@ -16,7 +16,7 @@ body::-webkit-scrollbar {
 .page-container {
   width: 100%;
   height: 100vh;
-  background-color: #201315;
+  background: linear-gradient(110deg, #5cdb95 41.3%, #05386b 41.3%);
   grid-template-columns: 3fr 1fr;
   gap: 10px;
   margin: auto;
@@ -33,7 +33,7 @@ body::-webkit-scrollbar {
 .card {
   background-position: center;
   background-size: cover;
-  border: 2px solid #65382d;
+  border: 2px solid #379683;
   border-radius: 40px;
   padding: 0;
   font-weight: bold;
@@ -49,7 +49,7 @@ body::-webkit-scrollbar {
 }
 
 .titulo {
-  color: #e76d57;
+  color: #5cdb95;
   padding: 20px 0;
   font-size: 24px;
 }
@@ -70,18 +70,18 @@ body::-webkit-scrollbar {
 }
 
 .banner ul li {
-  color: #65382d;
+  color: #379683;
   margin: 15px;
   font-weight: bold;
 }
 
 .banner .boton {
-  color: #e76d57;
+  color: #edf5e1;
   width: 100%;
   text-align: center;
   cursor: pointer;
-  background: #201315;
-  border: 4px solid #65382d;
+  background: #5cdb95;
+  border: 4px solid #379683;
   border-radius: 100px;
   padding: 10px;
   font-family: Roboto, sans-serif;
@@ -93,7 +93,6 @@ body::-webkit-scrollbar {
 .scene-container {
   width: 100%;
   height: 100%;
-  background-color: #201315;
   position: absolute;
 }
 

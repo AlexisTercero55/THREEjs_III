@@ -3,7 +3,7 @@ import { III_SPACE } from './III_SPACE.js';
 function main() 
 {
   // Get a reference to the container element
-  const container = document.querySelector('#scene-container');
+  const container = document.querySelector('#sceneID_1');
 
   // create a new world
   const world = new III_SPACE(container);

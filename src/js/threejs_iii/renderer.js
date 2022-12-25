@@ -7,11 +7,13 @@ import { WebGLRenderer } from 'three';
  * 
  * @returns {THREE.WebGLRenderer}
  */
+// TODO: add custom params
 function createRenderer()
 {
   const renderer = new WebGLRenderer({ antialias: true });//anti-Jaggies
 
   renderer.physicallyCorrectLights = true;
+  renderer.shadowMap.enabled = true;
 
   return renderer;
 }

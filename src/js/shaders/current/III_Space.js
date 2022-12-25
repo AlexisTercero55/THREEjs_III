@@ -19,7 +19,9 @@ export let scene;
 export let loop;
 export let gui;
 export let controls;
+export let loadImg;
 
+// TODO add shaders to custom shaders class III_Shaders
 /**Shaders */
 const _VS =`
 varying vec3 vUv; 
@@ -43,7 +45,9 @@ void main() {
 // import sunShader from "./shaders/sunShader.glsl";
 import { createCube } from '../../threejs_iii/cube';
 
-
+// textures
+import nebula from '../../../img/nebula.jpg';
+import { TextureLoader } from 'three';
 
 
 class III_SPACE
@@ -54,15 +58,16 @@ class III_SPACE
      */
     constructor(container) 
     {
-        camera = createCamera();
+        camera = createCamera({y:-10,z:15});
         renderer = createRenderer();
         scene = createScene();
         loop = new Loop(camera, scene, renderer);
         container.append(renderer.domElement);
         controls = createControls(camera, renderer.domElement);
         loop.add(controls);
+        loadImg = new TextureLoader();
         
-        this.lights();
+        // this.lights();
 
         this.createObjects();
 
@@ -91,46 +96,116 @@ class III_SPACE
     vertexShader() 
     {
         return `
-        varying vec3 v_Normal;
+        uniform float u_time;
+        varying vec2 vUv;
         void main() 
         {
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-            v_Normal = normal;
+            vUv = uv;
+            float newX = sin(position.x * u_time) * sin(position.y * u_time);
+
+            vec3 newPosition = vec3(newX, position.y, position.z);
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); //vec4(newPosition, 1.0);
         }
         `;
-        // return `
-        //   varying vec3 vUv; 
-      
-        //   void main() {
-        //     vUv = position; 
-      
-        //     vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-        //     gl_Position = projectionMatrix * modelViewPosition; 
-        //   }
-        // `;
       }
 
-    fragmentShader() {
+    /**
+     * reference: https://www.youtube.com/watch?v=xZM8UJqN1eY&list=PLjcjAqAnHd1EIxV4FSZIiJZvsdrBc1Xho&index=4
+     * @returns shader code on strimg mode.
+     */
+      fragmentShader() {
+        // TODO: document the shaders terms
+        
         return `
-        varying vec3 v_Normal;
+        uniform float u_time;
+        uniform vec2 u_resolution;
+        uniform vec2 u_mouse;
+
+        uniform sampler2D img;
+
+        varying vec2 vUv;
+
         void main() 
         {
-            gl_FragColor = vec4(v_Normal,1.0);
+            //gl_FragCoord
+            //TODO documentation for st meas see reference:
+            vec2 st = gl_FragCoord.xy / u_resolution;
+
+            vec4 texture = texture2D(img,vUv);
+            float effect_negative = abs(sin(texture.x + u_time));
+
+            gl_FragColor = vec4(vec3(effect_negative), 1.0);
+            // gl_FragColor = vec4(texture.r, texture.g, texture.b, 1.0);
         }
         `;
-    //     return `
-    //     uniform vec3 colorA; 
-    //     uniform vec3 colorB; 
-    //     varying vec3 vUv;
-  
-    //     void main() {
-    //       gl_FragColor = vec4(mix(colorA, colorB, vUv.z), 1.0);
-    //     }
-    // `;
       }
 
     createObjects()
     {
+        const uniforms = {
+            u_time : {type : 'f', value : 0.0},
+
+            u_resolution : {type : 'v2',
+                value : new THREE.Vector2( 
+                    window.innerWidth, window.innerHeight
+                ).multiplyScalar(window.devicePixelRatio),
+            },
+
+            u_mouse : {type : 'v2',
+                value : new THREE.Vector2(0,0),
+            },
+
+            img : {type : 't', 
+                    value: loadImg.load(nebula)},
+
+            nextFrame(delta, ElapsedTime)
+            {
+                this.u_time.value = ElapsedTime;
+            }
+        };
+        loop.add(uniforms);
+        window.addEventListener('mousemove',(e) =>
+        {
+            uniforms.u_mouse.value.set(
+                e.screenX / window.innerWidth,
+                1 - e.screenY / window.innerHeight
+            );
+        });
+
+        const geometry = new THREE.PlaneGeometry(10,10,30,30);
+        const material = new THREE.ShaderMaterial(
+        {
+            side: THREE.DoubleSide,
+            vertexShader: this.vertexShader(),
+            fragmentShader : this.fragmentShader(),
+            wireframe: false,
+            uniforms,
+        });
+        const plane = new THREE.Mesh(geometry,material);
+        scene.add(plane);
+
+        scene.add(new THREE.AxesHelper(10));
+    }
+
+    createSphereShader()
+    {
+        // return `
+        // varying vec3 v_Normal;
+        // void main() 
+        // {
+        //     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        //     v_Normal = normal;
+        // }
+        // `;
+
+        // return `
+        // varying vec3 v_Normal;
+        // void main() 
+        // {
+        //     gl_FragColor = vec4(v_Normal,1.0);
+        // }
+        // `;
         let uniforms = {
             colorB: {type: 'vec3', value: new THREE.Color(0xACB6E5)},
             colorA: {type: 'vec3', value: new THREE.Color(0x74ebd5)}

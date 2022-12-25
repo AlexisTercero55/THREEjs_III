@@ -535,7 +535,7 @@ function hmrAcceptRun(bundle, id) {
 var _iiiSpaceJs = require("./III_SPACE.js");
 function main() {
     // Get a reference to the container element
-    const container = document.querySelector("#scene-container");
+    const container = document.querySelector("#sceneID_1");
     // create a new world
     const world = new (0, _iiiSpaceJs.III_SPACE)(container);
     // start the animation loop
@@ -30102,6 +30102,7 @@ var _three = require("three");
         antialias: true
     }); //anti-Jaggies
     renderer.physicallyCorrectLights = true;
+    renderer.shadowMap.enabled = true;
     return renderer;
 }
 

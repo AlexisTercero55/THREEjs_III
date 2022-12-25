@@ -19,17 +19,17 @@ export let gui;
 export let controls;
 
 /**textures */
-import mercuryTexture from '../img/mercury.jpg';
-import venusTexture from '../img/venus.jpg';
-import earthTexture from '../img/earth.jpg';
-import marsTexture from '../img/mars.jpg';
-import jupiterTexture from '../img/jupiter.jpg';
-import saturnTexture from '../img/saturn.jpg';
-import saturnRingTexture from '../img/saturn ring.png';
-import uranusTexture from '../img/uranus.jpg';
-import uranusRingTexture from '../img/uranus ring.png';
-import neptuneTexture from '../img/neptune.jpg';
-import plutoTexture from '../img/pluto.jpg';
+import mercuryTexture from '../../img/mercury.jpg';
+import venusTexture from '../../img/venus.jpg';
+import earthTexture from '../../img/earth.jpg';
+import marsTexture from '../../img/mars.jpg';
+import jupiterTexture from '../../img/jupiter.jpg';
+import saturnTexture from '../../img/saturn.jpg';
+import saturnRingTexture from '../../img/saturn ring.png';
+import uranusTexture from '../../img/uranus.jpg';
+import uranusRingTexture from '../../img/uranus ring.png';
+import neptuneTexture from '../../img/neptune.jpg';
+import plutoTexture from '../../img/pluto.jpg';
 
 //my
 import { Sun } from './sun.js';
@@ -52,7 +52,7 @@ import { III_CircleGraph } from '../threejs_iii/math/Grapher.class.js';
  *          - meshes
  *              - animations
  */
-class III_SPACE
+export class III_SOLARSYSTEM
 {
     /**
      * 
@@ -60,7 +60,7 @@ class III_SPACE
      */
     constructor(container) 
     {
-        camera = createCamera();
+        camera = createCamera({x:300,y:120,z:280});
         renderer = createRenderer();
         scene = createScene();
         loop = new Loop(camera, scene, renderer);
@@ -205,4 +205,3 @@ class III_SPACE
         controls.reset();
     }
 }
-export {III_SPACE};

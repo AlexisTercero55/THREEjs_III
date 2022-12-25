@@ -142,13 +142,13 @@
       this[globalName] = mainExports;
     }
   }
-})({"kngMp":[function(require,module,exports) {
+})({"6S9Mv":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "83ad24c657e611e7";
+module.bundle.HMR_BUNDLE_ID = "857e6e4b48a05fc0";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -531,19 +531,19 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"8T6es":[function(require,module,exports) {
-var _iiiSpaceJs = require("./III_SPACE.js");
+},{}],"gMvnB":[function(require,module,exports) {
+var _iiiSpace = require("./III_SPACE");
 function main() {
     // Get a reference to the container element
     const container = document.querySelector("#sceneID_1");
     // create a new world
-    const world = new (0, _iiiSpaceJs.III_SPACE)(container);
+    const world = new (0, _iiiSpace.III_SPACE)(container);
     // start the animation loop
     world.start();
 }
 main();
 
-},{"./III_SPACE.js":"kntHg"}],"kntHg":[function(require,module,exports) {
+},{"./III_SPACE":"cXlhH"}],"cXlhH":[function(require,module,exports) {
 /**
  * @author: Alexis Tercero
  * @mail : alexistercero55@gmail.com
@@ -556,106 +556,198 @@ parcelHelpers.export(exports, "scene", ()=>scene);
 parcelHelpers.export(exports, "loop", ()=>loop);
 parcelHelpers.export(exports, "gui", ()=>gui);
 parcelHelpers.export(exports, "controls", ()=>controls);
+parcelHelpers.export(exports, "loadImg", ()=>loadImg);
 parcelHelpers.export(exports, "III_SPACE", ()=>III_SPACE);
-var _cameraJs = require("./camera.js");
-var _cubeJs = require("./cube.js");
-var _lightsJs = require("./lights.js");
-var _sceneJs = require("./scene.js");
-var _rendererJs = require("./renderer.js");
-var _controlsJs = require("./controls.js");
-var _resizerJs = require("./Resizer.js");
-var _loopJs = require("./Loop.js");
-/**textures */ var _mercuryJpg = require("../../img/mercury.jpg");
-var _mercuryJpgDefault = parcelHelpers.interopDefault(_mercuryJpg);
-var _venusJpg = require("../../img/venus.jpg");
-var _venusJpgDefault = parcelHelpers.interopDefault(_venusJpg);
-var _earthJpg = require("../../img/earth.jpg");
-var _earthJpgDefault = parcelHelpers.interopDefault(_earthJpg);
-var _marsJpg = require("../../img/mars.jpg");
-var _marsJpgDefault = parcelHelpers.interopDefault(_marsJpg);
-var _jupiterJpg = require("../../img/jupiter.jpg");
-var _jupiterJpgDefault = parcelHelpers.interopDefault(_jupiterJpg);
-var _saturnJpg = require("../../img/saturn.jpg");
-var _saturnJpgDefault = parcelHelpers.interopDefault(_saturnJpg);
-var _saturnRingPng = require("../../img/saturn ring.png");
-var _saturnRingPngDefault = parcelHelpers.interopDefault(_saturnRingPng);
-var _uranusJpg = require("../../img/uranus.jpg");
-var _uranusJpgDefault = parcelHelpers.interopDefault(_uranusJpg);
-var _uranusRingPng = require("../../img/uranus ring.png");
-var _uranusRingPngDefault = parcelHelpers.interopDefault(_uranusRingPng);
-var _neptuneJpg = require("../../img/neptune.jpg");
-var _neptuneJpgDefault = parcelHelpers.interopDefault(_neptuneJpg);
-var _plutoJpg = require("../../img/pluto.jpg");
-var _plutoJpgDefault = parcelHelpers.interopDefault(_plutoJpg);
-//my
-var _sunJs = require("../solarSystem/sun.js");
-var _planetJs = require("../solarSystem/planet.js");
+var _three = require("three");
+var _camera = require("../../threejs_iii/camera");
+var _lightsJs = require("../../threejs_iii/lights.js");
+var _sceneJs = require("../../threejs_iii/scene.js");
+var _rendererJs = require("../../threejs_iii/renderer.js");
+var _controlsJs = require("../../threejs_iii/controls.js");
+var _resizerJs = require("../../threejs_iii/Resizer.js");
+var _loopJs = require("../../threejs_iii/Loop.js");
+// import sunShader from "./shaders/sunShader.glsl";
+var _cube = require("../../threejs_iii/cube");
+// textures
+var _nebulaJpg = require("../../../img/nebula.jpg");
+var _nebulaJpgDefault = parcelHelpers.interopDefault(_nebulaJpg);
 let camera;
 let renderer;
 let scene;
 let loop;
 let gui;
 let controls;
+let loadImg;
+// TODO add shaders to custom shaders class III_Shaders
+/**Shaders */ const _VS = `
+varying vec3 vUv; 
+
+void main() {
+  vUv = position; 
+
+  vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+  gl_Position = projectionMatrix * modelViewPosition; 
+}
+`;
+const _FS = `
+uniform vec3 colorA; 
+uniform vec3 colorB; 
+varying vec3 vUv;
+
+void main() {
+  gl_FragColor = vec4(mix(colorA, colorB, vUv.z), 1.0);
+}
+`;
 class III_SPACE {
     /**
      * 
      * @param {DOMElement} container - where space will be render.
      */ constructor(container){
-        camera = (0, _cameraJs.createCamera)(300, 300, 60);
+        camera = (0, _camera.createCamera)({
+            y: -10,
+            z: 15
+        });
         renderer = (0, _rendererJs.createRenderer)();
         scene = (0, _sceneJs.createScene)();
         loop = new (0, _loopJs.Loop)(camera, scene, renderer);
         container.append(renderer.domElement);
         controls = (0, _controlsJs.createControls)(camera, renderer.domElement);
         loop.add(controls);
-        this.lights();
+        loadImg = new (0, _three.TextureLoader)();
+        // this.lights();
         this.createObjects();
         const resizer = new (0, _resizerJs.Resizer)(container, camera, renderer);
     }
     lights() {
-        const ambientLight = (0, _lightsJs.createLight)();
-        const pointLight = (0, _lightsJs.createLight)("point");
-        scene.add(ambientLight, pointLight);
+        let pointLight = new _three.PointLight(0xdddddd);
+        //pointLight.position.set(-5, -3, 3)
+        pointLight.position.set(10, 0, 0);
+        scene.add(pointLight);
+        let ambientLight = new _three.AmbientLight(0x505050);
+        scene.add(ambientLight);
+    }
+    // {
+    //     const ambientLight = createLight('directional');
+    //     ambientLight.position.set(100, 0,0);
+    //     // const pointLight = createLight('point');
+    //     scene.add(ambientLight);
+    // }
+    vertexShader() {
+        return `
+        uniform float u_time;
+        varying vec2 vUv;
+        void main() 
+        {
+            vUv = uv;
+            float newX = sin(position.x * u_time) * sin(position.y * u_time);
+
+            vec3 newPosition = vec3(newX, position.y, position.z);
+
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); //vec4(newPosition, 1.0);
+        }
+        `;
+    }
+    /**
+     * reference: https://www.youtube.com/watch?v=xZM8UJqN1eY&list=PLjcjAqAnHd1EIxV4FSZIiJZvsdrBc1Xho&index=4
+     * @returns shader code on strimg mode.
+     */ fragmentShader() {
+        // TODO: document the shaders terms
+        return `
+        uniform float u_time;
+        uniform vec2 u_resolution;
+        uniform vec2 u_mouse;
+
+        uniform sampler2D img;
+
+        varying vec2 vUv;
+
+        void main() 
+        {
+            //gl_FragCoord
+            //TODO documentation for st meas see reference:
+            vec2 st = gl_FragCoord.xy / u_resolution;
+
+            vec4 texture = texture2D(img,vUv);
+            float effect_negative = abs(sin(texture.x + u_time));
+
+            gl_FragColor = vec4(vec3(effect_negative), 1.0);
+            // gl_FragColor = vec4(texture.r, texture.g, texture.b, 1.0);
+        }
+        `;
     }
     createObjects() {
-        const sun = (0, _sunJs.Sun)();
-        this.addObject(sun);
-        //adding plantes
-        const mercury = new (0, _planetJs.Planet)(3.2, (0, _mercuryJpgDefault.default), 28, 0.004, 0.04);
-        scene.add(mercury.orbit);
-        loop.add(mercury);
-        const venus = new (0, _planetJs.Planet)(5.8, (0, _venusJpgDefault.default), 44, 0.002, 0.015);
-        scene.add(venus.orbit);
-        loop.add(venus);
-        const earth = new (0, _planetJs.Planet)(6, (0, _earthJpgDefault.default), 62, 0.02, 0.01);
-        scene.add(earth.orbit);
-        loop.add(earth);
-        const mars = new (0, _planetJs.Planet)(4, (0, _marsJpgDefault.default), 78, 0.018, 0.008);
-        scene.add(mars.orbit);
-        loop.add(mars);
-        const jupiter = new (0, _planetJs.Planet)(12, (0, _jupiterJpgDefault.default), 100, 0.04, 0.002);
-        scene.add(jupiter.orbit);
-        loop.add(jupiter);
-        const saturn = new (0, _planetJs.Planet)(10, (0, _saturnJpgDefault.default), 138, 0.038, 0.0009, {
-            innerRadius: 10,
-            outerRadius: 20,
-            texture: (0, _saturnRingPngDefault.default)
+        const uniforms = {
+            u_time: {
+                type: "f",
+                value: 0.0
+            },
+            u_resolution: {
+                type: "v2",
+                value: new _three.Vector2(window.innerWidth, window.innerHeight).multiplyScalar(window.devicePixelRatio)
+            },
+            u_mouse: {
+                type: "v2",
+                value: new _three.Vector2(0, 0)
+            },
+            img: {
+                type: "t",
+                value: loadImg.load((0, _nebulaJpgDefault.default))
+            },
+            nextFrame (delta, ElapsedTime) {
+                this.u_time.value = ElapsedTime;
+            }
+        };
+        loop.add(uniforms);
+        window.addEventListener("mousemove", (e)=>{
+            uniforms.u_mouse.value.set(e.screenX / window.innerWidth, 1 - e.screenY / window.innerHeight);
         });
-        scene.add(saturn.orbit);
-        loop.add(saturn);
-        const uranus = new (0, _planetJs.Planet)(7, (0, _uranusJpgDefault.default), 176, 0.03, 0.0004, {
-            innerRadius: 7,
-            outerRadius: 12,
-            texture: (0, _uranusRingPngDefault.default)
+        const geometry = new _three.PlaneGeometry(10, 10, 30, 30);
+        const material = new _three.ShaderMaterial({
+            side: _three.DoubleSide,
+            vertexShader: this.vertexShader(),
+            fragmentShader: this.fragmentShader(),
+            wireframe: false,
+            uniforms
         });
-        scene.add(uranus.orbit);
-        loop.add(uranus);
-        const neptune = new (0, _planetJs.Planet)(7, (0, _neptuneJpgDefault.default), 200, 0.032, 0.0001);
-        scene.add(neptune.orbit);
-        loop.add(neptune);
-        const pluto = new (0, _planetJs.Planet)(2.8, (0, _plutoJpgDefault.default), 216, 0.008, 0.00007);
-        scene.add(pluto.orbit);
-        loop.add(pluto);
+        const plane = new _three.Mesh(geometry, material);
+        scene.add(plane);
+        scene.add(new _three.AxesHelper(10));
+    }
+    createSphereShader() {
+        // return `
+        // varying vec3 v_Normal;
+        // void main() 
+        // {
+        //     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        //     v_Normal = normal;
+        // }
+        // `;
+        // return `
+        // varying vec3 v_Normal;
+        // void main() 
+        // {
+        //     gl_FragColor = vec4(v_Normal,1.0);
+        // }
+        // `;
+        let uniforms = {
+            colorB: {
+                type: "vec3",
+                value: new _three.Color(0xACB6E5)
+            },
+            colorA: {
+                type: "vec3",
+                value: new _three.Color(0x74ebd5)
+            }
+        };
+        let geometry = new _three.SphereGeometry(1, 30, 30);
+        let material = new _three.ShaderMaterial({
+            uniforms: uniforms,
+            fragmentShader: this.fragmentShader(),
+            vertexShader: this.vertexShader()
+        });
+        let mesh = new _three.Mesh(geometry, material);
+        // mesh.position.x = 2
+        scene.add(mesh);
     }
     addObject(obj) {
         loop.add(obj);
@@ -748,25 +840,7 @@ class III_SPACE {
     }
 }
 
-},{"./camera.js":"dLmrq","./cube.js":"1nKvg","./lights.js":"3wZi5","./scene.js":"itxJx","./renderer.js":"6uZCg","./controls.js":"6zuxS","./Resizer.js":"14Fhg","./Loop.js":"5MTwe","../../img/mercury.jpg":"4Mru8","../../img/venus.jpg":"d5P72","../../img/earth.jpg":"kFWAW","../../img/mars.jpg":"awdnJ","../../img/jupiter.jpg":"fLNZh","../../img/saturn.jpg":"fcNpP","../../img/saturn ring.png":"8GdOf","../../img/uranus.jpg":"3diF1","../../img/uranus ring.png":"bRgaa","../../img/neptune.jpg":"e06Ck","../../img/pluto.jpg":"jlmyn","../solarSystem/sun.js":"d2mde","../solarSystem/planet.js":"jwdA2","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"dLmrq":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-// createCamera.prototype.camView = function ()
-// {
-// }
-parcelHelpers.export(exports, "createCamera", ()=>createCamera);
-var _three = require("three");
-/**
- * @returns A camera representing human view
- */ function createCamera({ x =0 , y =0 , z =0 , lookat =new (0, _three.Vector3)()  }) {
-    const camera = new (0, _three.PerspectiveCamera)(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    // move the camera back so we can view the scene
-    camera.position.set(x, y, z);
-    camera.nextFrame = (delta)=>console.log("camera:", camera.position);
-    return camera;
-}
-
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","../../threejs_iii/camera":"dLmrq","../../threejs_iii/lights.js":"3wZi5","../../threejs_iii/scene.js":"itxJx","../../threejs_iii/renderer.js":"6uZCg","../../threejs_iii/controls.js":"6zuxS","../../threejs_iii/Resizer.js":"14Fhg","../../threejs_iii/Loop.js":"5MTwe","../../threejs_iii/cube":"1nKvg","../../../img/nebula.jpg":"3FaST","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2022 Three.js Authors
@@ -29971,80 +30045,25 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"1nKvg":[function(require,module,exports) {
+},{}],"dLmrq":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "createCube", ()=>createCube);
+// createCamera.prototype.camView = function ()
+// {
+// }
+parcelHelpers.export(exports, "createCamera", ()=>createCamera);
 var _three = require("three");
-var _uvTestBwPng = require("../../img/uv-test-bw.png");
-var _uvTestBwPngDefault = parcelHelpers.interopDefault(_uvTestBwPng);
-function createMaterial() {
-    // create a texture loader.
-    // const textureLoader = new TextureLoader();
-    // load a texture
-    const texture = new (0, _three.TextureLoader)().load((0, _uvTestBwPngDefault.default));
-    // create a "standard" material
-    const material = new (0, _three.MeshBasicMaterial)({
-        map: texture
-    });
-    return material;
-}
 /**
- * @returns Returns a cube 3D object with geometry and material
- */ function createCube() {
-    const geometry = new (0, _three.BoxGeometry)(2, 2, 2);
-    const material = createMaterial();
-    const cube = new (0, _three.Mesh)(geometry, material);
-    // cube.rotation.set(-0.5, -0.1, 0.8);
-    const radiansPerSecond = (0, _three.MathUtils).degToRad(30);
-    // this method will be called once per frame
-    cube.nextFrame = (delta)=>{
-        // increase the cube's rotation each frame
-        cube.rotation.z += radiansPerSecond * delta;
-    // cube.rotation.x += radiansPerSecond * delta;
-    // cube.rotation.y += radiansPerSecond * delta;
-    };
-    return cube;
+ * @returns A camera representing human view
+ */ function createCamera({ x =0 , y =0 , z =0 , lookat =new (0, _three.Vector3)()  }) {
+    const camera = new (0, _three.PerspectiveCamera)(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // move the camera back so we can view the scene
+    camera.position.set(x, y, z);
+    camera.nextFrame = (delta)=>console.log("camera:", camera.position);
+    return camera;
 }
 
-},{"three":"ktPTu","../../img/uv-test-bw.png":"1lUNY","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"1lUNY":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("biUql") + "uv-test-bw.a9684adb.png" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"dqALS":[function(require,module,exports) {
-"use strict";
-var bundleURL = {};
-function getBundleURLCached(id) {
-    var value = bundleURL[id];
-    if (!value) {
-        value = getBundleURL();
-        bundleURL[id] = value;
-    }
-    return value;
-}
-function getBundleURL() {
-    try {
-        throw new Error();
-    } catch (err) {
-        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
-        if (matches) // The first two stack frames will be this function and getBundleURLCached.
-        // Use the 3rd one, which will be a runtime in the original bundle.
-        return getBaseURL(matches[2]);
-    }
-    return "/";
-}
-function getBaseURL(url) {
-    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
-} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
-function getOrigin(url) {
-    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
-    if (!matches) throw new Error("Origin not found");
-    return matches[0];
-}
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-exports.getOrigin = getOrigin;
-
-},{}],"3wZi5":[function(require,module,exports) {
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"3wZi5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 /**
@@ -30101,10 +30120,44 @@ var _starsJpgDefault = parcelHelpers.interopDefault(_starsJpg);
     return scene;
 }
 
-},{"three":"ktPTu","../../img/stars.jpg":"etBqz","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"etBqz":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("biUql") + "stars.a1d7fe60.jpg" + "?" + Date.now();
+},{"three":"ktPTu","../../img/stars.jpg":"3tHez","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"3tHez":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("bsAfJ") + "stars.a1d7fe60.jpg" + "?" + Date.now();
 
-},{"./helpers/bundle-url":"dqALS"}],"6uZCg":[function(require,module,exports) {
+},{"./helpers/bundle-url":"dqALS"}],"dqALS":[function(require,module,exports) {
+"use strict";
+var bundleURL = {};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return "/";
+}
+function getBaseURL(url) {
+    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
+} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
+    if (!matches) throw new Error("Origin not found");
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
+
+},{}],"6uZCg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createRenderer", ()=>createRenderer);
@@ -30918,8 +30971,8 @@ const clock = new (0, _three.Clock)();
    * @param {THREE.PerspectiveCamera} camera
    * @param {THREE.Scene} scene
    * @param {THREE.WebGLRenderer} renderer
-   */ constructor(camera, scene, renderer, world = null){
-        this.world = world;
+   */ constructor(camera, scene, renderer){
+        // this.mixer = null;
         this.camera = camera;
         this.scene = scene;
         this.renderer = renderer;
@@ -30930,9 +30983,7 @@ const clock = new (0, _three.Clock)();
         this.objs.push(obj);
     }
     /**Start animation and resizing loops. */ start() {
-        const timeStep = 1 / 60;
         this.renderer.setAnimationLoop(()=>{
-            if (this.world) this.world.step(timeStep);
             // tell every animated object to tick forward one frame
             this.#nextFrame();
             // render a frame
@@ -30959,101 +31010,48 @@ const clock = new (0, _three.Clock)();
     }
 }
 
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"4Mru8":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("biUql") + "mercury.e64be2d9.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"d5P72":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("biUql") + "venus.c3875816.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"kFWAW":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("biUql") + "earth.0431f8a5.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"awdnJ":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("biUql") + "mars.39828838.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"fLNZh":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("biUql") + "jupiter.970a44f9.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"fcNpP":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("biUql") + "saturn.f0999ace.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"8GdOf":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("biUql") + "saturn ring.cc9fe67e.png" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"3diF1":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("biUql") + "uranus.03f8200b.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"bRgaa":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("biUql") + "uranus ring.bb04d0b4.png" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"e06Ck":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("biUql") + "neptune.69b29d20.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"jlmyn":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("biUql") + "pluto.cc2d7afe.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"d2mde":[function(require,module,exports) {
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"1nKvg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Sun", ()=>Sun);
+parcelHelpers.export(exports, "createCube", ()=>createCube);
 var _three = require("three");
-/**textures */ var _sunJpg = require("../../img/sun.jpg");
-var _sunJpgDefault = parcelHelpers.interopDefault(_sunJpg);
-function Sun() {
-    const textureLoader = new _three.TextureLoader();
-    const sunGeo = new _three.SphereGeometry(16, 30, 30);
-    const sunMat = new _three.MeshBasicMaterial({
-        map: textureLoader.load((0, _sunJpgDefault.default))
+var _uvTestBwPng = require("../../img/uv-test-bw.png");
+var _uvTestBwPngDefault = parcelHelpers.interopDefault(_uvTestBwPng);
+function createMaterial() {
+    // create a texture loader.
+    // const textureLoader = new TextureLoader();
+    // load a texture
+    const texture = new (0, _three.TextureLoader)().load((0, _uvTestBwPngDefault.default));
+    // create a "standard" material
+    const material = new (0, _three.MeshBasicMaterial)({
+        map: texture
     });
-    const sun = new _three.Mesh(sunGeo, sunMat);
-    sun.nextFrame = (delta)=>{
-        sun.rotateY(0.004);
-    };
-    return sun;
+    return material;
 }
-
-},{"three":"ktPTu","../../img/sun.jpg":"2FVZ4","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"2FVZ4":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("biUql") + "sun.a08d7ba3.jpg" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"dqALS"}],"jwdA2":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
 /**
- * Planet.orbit is added to the scene.
- */ parcelHelpers.export(exports, "Planet", ()=>Planet);
-var _three = require("three");
-class Planet {
-    constructor(size, texture, position, speed_r, speed_t, ring = null){
-        this.speed_r = speed_r;
-        this.speed_t = speed_t;
-        const textureLoader = new _three.TextureLoader();
-        const geo = new _three.SphereGeometry(size, 30, 30);
-        const mat = new _three.MeshStandardMaterial({
-            map: textureLoader.load(texture)
-        });
-        this.planet = new _three.Mesh(geo, mat);
-        //for defining planet traslation (emulates sun).
-        this.orbit = new _three.Object3D();
-        this.orbit.add(this.planet);
-        if (ring) {
-            const ringGeo = new _three.RingGeometry(ring.innerRadius, ring.outerRadius, 32);
-            const ringMat = new _three.MeshBasicMaterial({
-                map: textureLoader.load(ring.texture),
-                side: _three.DoubleSide
-            });
-            const ringMesh = new _three.Mesh(ringGeo, ringMat);
-            this.orbit.add(ringMesh);
-            ringMesh.position.x = position;
-            ringMesh.rotation.x = -0.5 * Math.PI;
-        }
-        this.planet.position.x = position;
-    }
-    nextFrame(delta) {
-        this.planet.rotateY(this.speed_r);
-        this.orbit.rotateY(this.speed_t);
-    }
+ * @returns Returns a cube 3D object with geometry and material
+ */ function createCube() {
+    const geometry = new (0, _three.BoxGeometry)(2, 2, 2);
+    const material = createMaterial();
+    const cube = new (0, _three.Mesh)(geometry, material);
+    // cube.rotation.set(-0.5, -0.1, 0.8);
+    const radiansPerSecond = (0, _three.MathUtils).degToRad(30);
+    // this method will be called once per frame
+    cube.nextFrame = (delta)=>{
+        // increase the cube's rotation each frame
+        cube.rotation.z += radiansPerSecond * delta;
+    // cube.rotation.x += radiansPerSecond * delta;
+    // cube.rotation.y += radiansPerSecond * delta;
+    };
+    return cube;
 }
 
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}]},["kngMp","8T6es"], "8T6es", "parcelRequiree0a3")
+},{"three":"ktPTu","../../img/uv-test-bw.png":"01RSz","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"01RSz":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("bsAfJ") + "uv-test-bw.a9684adb.png" + "?" + Date.now();
 
-//# sourceMappingURL=index.57e611e7.js.map
+},{"./helpers/bundle-url":"dqALS"}],"3FaST":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("bsAfJ") + "nebula.a535bdf2.jpg" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"dqALS"}]},["6S9Mv","gMvnB"], "gMvnB", "parcelRequiree0a3")
+
+//# sourceMappingURL=index.48a05fc0.js.map

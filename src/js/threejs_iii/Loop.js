@@ -17,9 +17,9 @@ class Loop
    * @param {THREE.Scene} scene
    * @param {THREE.WebGLRenderer} renderer
    */
-  constructor(camera, scene, renderer) 
+  constructor(camera, scene, renderer,world=null) 
   {
-    // this.mixer = null;
+    this.world = world;
     this.camera = camera;
     this.scene = scene;
     this.renderer = renderer;
@@ -35,8 +35,14 @@ class Loop
   /**Start animation and resizing loops. */
   start() 
   {
+    const timeStep = 1/60;
     this.renderer.setAnimationLoop(() => 
     {
+      if(this.world)
+      {
+        this.world.step(timeStep);
+      }
+      
       // tell every animated object to tick forward one frame
       this.#nextFrame();
       // render a frame
@@ -56,6 +62,9 @@ class Loop
     // Get the seconds passed since the last call to this method.
     const delta = clock.getDelta();
 
+
+    const ElapsedTime = clock.getElapsedTime();
+
     // console.log(
     //   `The last frame rendered in ${delta * 1000} milliseconds`,
     // );
@@ -68,7 +77,7 @@ class Loop
     for (const object of this.objs) 
     {
       // flag = flags[object.name];
-      object.nextFrame(delta);
+      object.nextFrame(delta,ElapsedTime);
     }
   }
 }
