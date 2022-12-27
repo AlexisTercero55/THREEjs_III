@@ -3,6 +3,7 @@
  * @mail : alexistercero55@gmail.com
  * @github: AlexisTercero55
  */
+import * as THREE from 'three';
 import { createCamera } from '../threejs_iii/camera.js';
 import { createLight } from '../threejs_iii/lights.js';
 import { createScene } from '../threejs_iii/scene.js';
@@ -30,7 +31,7 @@ class III_SPACE
      */
     constructor(container) 
     {
-        camera = createCamera(300,300,60);
+        camera = createCamera({x:10,y:5,z:10});
         renderer = createRenderer();
         scene = createScene();
         loop = new Loop(camera, scene, renderer);
@@ -54,7 +55,7 @@ class III_SPACE
 
     createObjects()
     {
-        
+        scene.add(new THREE.AxesHelper(5));
     }
     
     addObject(obj)

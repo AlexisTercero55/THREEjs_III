@@ -2,3 +2,5 @@
 /node_modules
 /src/textures
 /src/models
+/meta
+/dist

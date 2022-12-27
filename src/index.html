@@ -1,57 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive THREEJS_III</title>
-    <link rel="icon" href="./img/ico/rainbow.ico" type="image/x-icon">
+  <title>ThreeJs_III</title>
 
-    <link rel="stylesheet" href="./styles/cssGrid.css">
-    <script type="module" src="./js/threejs_iii/base/app.main.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+
+  <link rel="icon" href="./img/ico/rainbow.ico" type="image/x-icon">
+
+  <link href="./styles/main_v1.css" rel="stylesheet" type="text/css">
+
+  <script type="module" src="./js/function/app.main.js" defer></script>
 </head>
+
 <body>
-    <div class="page-container">
-        <div class="grid1">
-            <div class="card">
-                <div class="scene-container" id="sceneID_1">
-                    <!-- Our <canvas> will be inserted here -->
-                </div>
-            </div>
-            <div class="card">
-                <div class="scene-container" id="sceneID_2">
-                    <!-- Our <canvas> will be inserted here -->
-                </div>
-            </div>
-            <div class="card">
-                <div class="scene-container" id="sceneID_3">
-                    <!-- Our <canvas> will be inserted here -->
-                </div>
-            </div>
-            <div class="card">
-                <div class="scene-container" id="sceneID_4">
-                    <!-- Our <canvas> will be inserted here -->
-                </div>
-            </div>
-        </div>
+  <h1 id="me">Made with ❤ by <a href="https://www.instagram.com/uri.sab/">&#64;Uri.sab</a></h1>
 
-        <div class="banner">
-			<h3 class="titulo">THREEJS_III</h3>
-			<ul>
-				<li>ALEXIS</li>
-				<li>TERCERO</li>
-				<li>GITHUP</li>
-				<li>LINKEDIN</li>
-				<li>MORE</li>
-			</ul>
-			<button class="boton">PERFORMACE</button>
-		</div>
+  <script id="vertexShader" type="vertex">
+    void main() {
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  </script>
+  <script id="fragmentShader" type="fragment">
+    void main() {
+        gl_FragColor = vec4(1.0, 0.1, 0.3, 1.0);
+    }
+  </script>
 
-        <!-- TODO : need to update APP.main.js -->
-        <!-- <div class="scene-container" id="sceneID_1"> -->
-            <!-- Our <canvas> will be inserted here -->
-        <!-- </div> -->
-        
-    </div>
+  <div id="sceneID_1" class="scene-container">
+    <!-- Our <canvas> will be inserted here -->
+  </div>
 </body>
+
 </html>

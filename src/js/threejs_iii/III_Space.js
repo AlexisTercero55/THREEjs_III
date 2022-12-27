@@ -46,7 +46,7 @@ class III_SPACE
      */
     constructor(container) 
     {
-        camera = createCamera(300,300,60);
+        camera = createCamera({x:300,y:300,z:60});
         renderer = createRenderer();
         scene = createScene();
         loop = new Loop(camera, scene, renderer);

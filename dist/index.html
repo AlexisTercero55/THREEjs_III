@@ -1,57 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive THREEJS_III</title>
-    <link rel="icon" href="rainbow.3f8672c6.ico" type="image/x-icon">
-
-    <link rel="stylesheet" href="index.e499e21d.css">
-    <script src="index.0707ecbe.js" defer=""></script>
-</head>
-<body>
-    <div class="page-container">
-        <div class="grid1">
-            <div class="card">
-                <div class="scene-container" id="sceneID_1">
-                    <!-- Our <canvas> will be inserted here -->
-                </div>
-            </div>
-            <div class="card">
-                <div class="scene-container" id="sceneID_2">
-                    <!-- Our <canvas> will be inserted here -->
-                </div>
-            </div>
-            <div class="card">
-                <div class="scene-container" id="sceneID_3">
-                    <!-- Our <canvas> will be inserted here -->
-                </div>
-            </div>
-            <div class="card">
-                <div class="scene-container" id="sceneID_4">
-                    <!-- Our <canvas> will be inserted here -->
-                </div>
-            </div>
-        </div>
-
-        <div class="banner">
-			<h3 class="titulo">THREEJS_III</h3>
-			<ul>
-				<li>ALEXIS</li>
-				<li>TERCERO</li>
-				<li>GITHUP</li>
-				<li>LINKEDIN</li>
-				<li>MORE</li>
-			</ul>
-			<button class="boton">PERFORMACE</button>
-		</div>
-
-        <!-- TODO : need to update APP.main.js -->
-        <!-- <div class="scene-container" id="sceneID_1"> -->
-            <!-- Our <canvas> will be inserted here -->
-        <!-- </div> -->
-        
-    </div>
-</body>
-</html>
+<!DOCTYPE html><html><head><title>ThreeJs_III</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta charset="utf-8"><link rel="icon" href="rainbow.3fcb0d3f.ico" type="image/x-icon"><link href="index.e880c2d6.css" rel="stylesheet" type="text/css"><script type="module" src="index.ed0df92c.js" defer></script></head><body> <h1 id="me">Made with ❤ by <a href="https://www.instagram.com/uri.sab/">&#64;Uri.sab</a></h1> <script id="vertexShader" type="vertex">
+    void main() {
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  </script> <script id="fragmentShader" type="fragment">
+    void main() {
+        gl_FragColor = vec4(1.0, 0.1, 0.3, 1.0);
+    }
+  </script> <div id="sceneID_1" class="scene-container">  </div> </body></html>
