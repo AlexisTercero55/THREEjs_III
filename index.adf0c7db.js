@@ -593,8 +593,15 @@ parcelHelpers.export(exports, "gui", ()=>gui);
 parcelHelpers.export(exports, "controls", ()=>controls);
 parcelHelpers.export(exports, "III_DYNAMIC_GRAPHER", ()=>III_DYNAMIC_GRAPHER);
 var _three = require("three");
-var _complexClass = require("./Complex.class");
-var _complexClassDefault = parcelHelpers.interopDefault(_complexClass);
+//stackoverflow.com/questions/15696963/three-js-set-and-read-camera-look-vector
+// THREE.Utils = {
+//     cameraLookDir: function(camera) {
+//         var vector = new THREE.Vector3(0, 0, -1);
+//         vector.applyEuler(camera.rotation, camera.eulerOrder);
+//         return vector;
+//     }
+// };
+var _complexClassJs = require("./Complex.class.js");
 var _cameraJs = require("../threejs_iii/camera.js");
 var _lightsJs = require("../threejs_iii/lights.js");
 var _sceneJs = require("../threejs_iii/scene.js");
@@ -602,13 +609,6 @@ var _rendererJs = require("../threejs_iii/renderer.js");
 var _controlsJs = require("../threejs_iii/controls.js");
 var _resizerJs = require("../threejs_iii/Resizer.js");
 var _loopJs = require("../threejs_iii/Loop.js");
-https: _three.Utils = {
-    cameraLookDir: function(camera) {
-        var vector = new _three.Vector3(0, 0, -1);
-        vector.applyEuler(camera.rotation, camera.eulerOrder);
-        return vector;
-    }
-};
 let camera;
 let renderer;
 let scene;
@@ -621,8 +621,8 @@ let controls;
      * @param {DOMElement} container - where space will be render.
      */ constructor(container){
         camera = (0, _cameraJs.createCamera)({
-            x: -0.5009610683084217,
-            y: -0.011919477461989632,
+            x: 0,
+            y: 0,
             z: 3
         });
         renderer = (0, _rendererJs.createRenderer)();
@@ -639,7 +639,7 @@ let controls;
         // THREE.Utils.cameraLookDir(camera);
         // loop.add(camera);        
         // this.lights();
-        this.createObjs();
+        this.Mandelbrot_shader3_uwu();
         const resizer = new (0, _resizerJs.Resizer)(container, camera, renderer);
     }
     lights() {
@@ -648,7 +648,256 @@ let controls;
         scene.add(ambientLight, pointLight);
     }
     createObjs() {
-        this.MandelbrotSet_v2();
+        // Set up the plane geometry
+        const geometry = new _three.PlaneGeometry(2, 2, 256, 256);
+        // Set up the custom shader material
+        const material = new _three.ShaderMaterial({
+            uniforms: {
+                // Set the size of the Mandelbrot set
+                size: {
+                    value: 2.0
+                },
+                // Set the number of iterations to use when calculating the Mandelbrot set
+                iterations: {
+                    value: 256
+                },
+                // Set the color of the points in the Mandelbrot set
+                color: {
+                    value: new _three.Color(0xffffff)
+                }
+            },
+            vertexShader: `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+    }
+  `,
+            fragmentShader: `
+    uniform float size;
+    uniform int iterations;
+    uniform vec3 color;
+    varying vec2 vUv;
+    void main() {
+      vec2 c = vUv * size - vec2(size / 2.0);
+      vec2 z = vec2(0.0, 0.0);
+      int i;
+      for (i = 0; i < iterations; i++) {
+        if (dot(z, z) > 4.0) {
+          break;
+        }
+        z = vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y) + c;
+      }
+      if (i == iterations) {
+        gl_FragColor = vec4(color, 1.0);
+      } else {
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+      }
+    }
+  `
+        });
+        // Create the plane mesh using the geometry and material
+        const plane = new _three.Mesh(geometry, material);
+        // Add the plane to the scene
+        scene.add(plane);
+    }
+    Mandelbrot_shader3_uwu() {
+        // Create the plane geometry
+        const geometry = new _three.PlaneGeometry(2, 2, 256, 256);
+        // Create the shader material
+        const material = new _three.ShaderMaterial({
+            uniforms: {
+                maxIterations: {
+                    value: 1000
+                },
+                minReal: {
+                    value: -2
+                },
+                maxReal: {
+                    value: 1
+                },
+                minImag: {
+                    value: -1
+                },
+                maxImag: {
+                    value: 1
+                }
+            },
+            vertexShader: `
+          varying vec2 vUv;
+          void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+      `,
+            fragmentShader: `
+      uniform int maxIterations;
+      uniform float minReal;
+      uniform float maxReal;
+      uniform float minImag;
+      uniform float maxImag;
+      varying vec2 vUv;
+
+      vec3 toRGB(vec3 hsl);
+      
+      void main() {
+        // Map the UV coordinates to the complex plane
+        float real = mix(minReal, maxReal, vUv.x);
+        float imag = mix(minImag, maxImag, vUv.y);
+        vec2 c = vec2(real, imag);
+        vec2 z = c;
+      
+        // Iterate the Mandelbrot function
+        for (int i = 0; i < maxIterations; i++) {
+          if (length(z) > 2.0) {
+            // Calculate the color based on the number of iterations it took to escape
+            float intensity = float(i) / float(100);
+            vec3 color = vec3(intensity, 1.0, 0.5);
+            gl_FragColor = vec4(toRGB(color), 1.0);
+            return;
+          }
+          z = vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y) + c;
+        }
+      
+        // Color points that do not escape black
+        gl_FragColor = vec4(0,0,0, 1);
+      }
+
+      vec3 toRGB(vec3 hsl) {
+        // Calculate chroma
+        float c = (1.0 - abs(2.0 * hsl.z - 1.0)) * hsl.y;
+      
+        // Calculate the intermediate value 'x'
+        float x = c * (1.0 - abs(mod(hsl.x, 2.0) - 1.0));
+      
+        // Calculate the RGB values based on the hue
+        vec3 rgb;
+        if (hsl.x >= 0.0 && hsl.x < 1.0) {
+          rgb = vec3(c, x, 0.0);
+        } else if (hsl.x >= 1.0 && hsl.x < 2.0) {
+          rgb = vec3(x, c, 0.0);
+        } else if (hsl.x >= 2.0 && hsl.x < 3.0) {
+          rgb = vec3(0.0, c, x);
+        } else if (hsl.x >= 3.0 && hsl.x < 4.0) {
+          rgb = vec3(0.0, x, c);
+        } else if (hsl.x >= 4.0 && hsl.x < 5.0) {
+          rgb = vec3(x, 0.0, c);
+        } else if (hsl.x >= 5.0 && hsl.x < 6.0) {
+          rgb = vec3(c, 0.0, x);
+        }
+      
+        // Calculate the final RGB values by adding the luminance
+        float m = hsl.z - c / 2.0;
+        return rgb + vec3(m, m, m);
+      }
+      `
+        });
+        // Create the plane mesh
+        const mesh = new _three.Mesh(geometry, material);
+        scene.add(mesh);
+    }
+    Mandelbrot_shader2_uwu() {
+        // Create the plane geometry
+        const geometry = new _three.PlaneGeometry(2, 2, 256, 256);
+        // Create the shader material
+        const material = new _three.ShaderMaterial({
+            uniforms: {
+                maxIterations: {
+                    value: 256
+                },
+                minReal: {
+                    value: -2
+                },
+                maxReal: {
+                    value: 1
+                },
+                minImag: {
+                    value: -1
+                },
+                maxImag: {
+                    value: 1
+                }
+            },
+            vertexShader: `
+            varying vec2 vUv;
+            void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+            fragmentShader: `
+            uniform int maxIterations;
+            uniform float minReal;
+            uniform float maxReal;
+            uniform float minImag;
+            uniform float maxImag;
+            varying vec2 vUv;
+            void main() {
+            // Map the UV coordinates to the complex plane
+            float real = mix(minReal, maxReal, vUv.x);
+            float imag = mix(minImag, maxImag, vUv.y);
+            vec2 c = vec2(real, imag);
+            vec2 z = c;
+
+            // Iterate the Mandelbrot function
+            for (int i = 0; i < maxIterations; i++) 
+            {
+                if (length(z) > 2.0) 
+                {
+                // Color the point based on the number of iterations it took to escape
+                gl_FragColor = vec4(float(i) / float(maxIterations), 0, 0, 1);
+                return;
+                }
+                z = vec2(z.x * z.x - z.y * z.y, 2.0 * z.x * z.y) + c;
+            }
+
+            // Color points that do not escape black
+            gl_FragColor = vec4(0, 0, 0, 1);
+            }
+        `
+        });
+        // Create the plane mesh
+        const mesh = new _three.Mesh(geometry, material);
+        scene.add(mesh);
+    }
+    Mandelbrot_shader1() {
+        // this.MandelbrotSet_v2();
+        // create a plane to render the Mandelbrot set on
+        const geometry = new _three.PlaneGeometry(2, 2);
+        const material = new _three.ShaderMaterial({
+            uniforms: {
+                u_resolution: {
+                    value: new _three.Vector2(1000, 1000)
+                },
+                u_offset: {
+                    value: new _three.Vector2(0, 0)
+                },
+                u_zoom: {
+                    value: 1
+                }
+            },
+            fragmentShader: `
+            uniform vec2 u_resolution;
+            uniform vec2 u_offset;
+            uniform float u_zoom;
+
+            void main() {
+              vec2 c = (gl_FragCoord.xy / u_resolution - 0.5) * u_zoom + u_offset;
+              vec2 z = vec2(0.0, 0.0);
+              int maxIterations = 100;
+              int i = 0;
+              while (i < maxIterations && dot(z, z) < 4.0) {
+                z = vec2(z.x * z.x - z.y * z.y + c.x, 2.0 * z.x * z.y + c.y);
+                i++;
+              }
+              gl_FragColor = vec4(vec3(float(i) / float(maxIterations)), 1.0);
+            }
+          `
+        });
+        // create a mesh using the plane geometry and the custom material
+        const mesh = new _three.Mesh(geometry, material);
+        // add the mesh to the scene
+        scene.add(mesh);
     // scene.add(new THREE.AxesHelper(1));
     }
     MandelbrotSet_v2() {
@@ -700,8 +949,8 @@ let controls;
     generateMandelbrotSet(xMin, xMax, yMin, yMax, width, height) {
         const mandelbrotSet = [];
         for(let x = xMin; x < xMax; x++)for(let y = yMin; y < yMax; y++){
-            let c = new (0, _complexClassDefault.default)(x / width * 4 - 2, y / height * 4 - 2);
-            let z = new (0, _complexClassDefault.default)(0, 0);
+            let c = new (0, _complexClassJs.Complex)(x / width * 4 - 2, y / height * 4 - 2);
+            let z = new (0, _complexClassJs.Complex)(0, 0);
             let numIterations = 0;
             for(let i = 0; i < 100; i++){
                 z = z.multiply(z).add(c);
@@ -721,8 +970,8 @@ let controls;
     generateMandelbrotSet_2(width = 5300, height = 5300) {
         const mandelbrotSet = [];
         for(let x = 0; x < width; x++)for(let y = 0; y < height; y++){
-            let c = new (0, _complexClassDefault.default)(x / width * 4 - 2, y / height * 4 - 2);
-            let z = new (0, _complexClassDefault.default)(0, 0);
+            let c = new (0, _complexClassJs.Complex)(x / width * 4 - 2, y / height * 4 - 2);
+            let z = new (0, _complexClassJs.Complex)(0, 0);
             let numIterations = 0;
             for(let i = 0; i < 100; i++){
                 z = z.multiply(z).add(c);
@@ -745,8 +994,8 @@ let controls;
     generateMandelbrotSet_v1(size) {
         const mandelbrotSet = [];
         for(let x = 0; x < size; x++)for(let y = 0; y < size; y++){
-            let c = new (0, _complexClassDefault.default)(x / size * 4 - 2, y / size * 4 - 2);
-            let z = new (0, _complexClassDefault.default)(0, 0);
+            let c = new (0, _complexClassJs.Complex)(x / size * 4 - 2, y / size * 4 - 2);
+            let z = new (0, _complexClassJs.Complex)(0, 0);
             let isPartOfMandelbrotSet = true;
             let numIterations = 0;
             for(let i = 0; i < 100; i++){
@@ -802,8 +1051,8 @@ let controls;
     generateMandelbrotSet_v0() {
         const mandelbrotSet = [];
         for(let real = -2; real <= 2; real += 0.01)for(let imag = -2; imag <= 2; imag += 0.01){
-            let c = new (0, _complexClassDefault.default)(real, imag);
-            let z = new (0, _complexClassDefault.default)(0, 0);
+            let c = new (0, _complexClassJs.Complex)(real, imag);
+            let z = new (0, _complexClassJs.Complex)(0, 0);
             let isPartOfMandelbrotSet = true;
             for(let i = 0; i < 100; i++){
                 z = z.multiply(z).add(c);
@@ -995,7 +1244,7 @@ let controls;
     }
 }
 
-},{"three":"ktPTu","./Complex.class":"g0tRM","../threejs_iii/camera.js":"dLmrq","../threejs_iii/lights.js":"3wZi5","../threejs_iii/scene.js":"itxJx","../threejs_iii/renderer.js":"6uZCg","../threejs_iii/controls.js":"6zuxS","../threejs_iii/Resizer.js":"14Fhg","../threejs_iii/Loop.js":"5MTwe","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","./Complex.class.js":"g0tRM","../threejs_iii/camera.js":"dLmrq","../threejs_iii/lights.js":"3wZi5","../threejs_iii/scene.js":"itxJx","../threejs_iii/renderer.js":"6uZCg","../threejs_iii/controls.js":"6zuxS","../threejs_iii/Resizer.js":"14Fhg","../threejs_iii/Loop.js":"5MTwe","@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2022 Three.js Authors
@@ -30203,6 +30452,7 @@ exports.export = function(dest, destName, get) {
 },{}],"g0tRM":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Complex", ()=>Complex);
 class Complex {
     constructor(real, imag){
         this.real = real;
@@ -30218,7 +30468,6 @@ class Complex {
         return Math.sqrt(this.real * this.real + this.imag * this.imag);
     }
 }
-exports.default = Complex;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"8f7LW"}],"dLmrq":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -30231,7 +30480,7 @@ var _three = require("three");
 /**
  * @returns A camera representing human view
  */ function createCamera({ x =0 , y =0 , z =0 , lookat =new (0, _three.Vector3)()  }) {
-    const camera = new (0, _three.PerspectiveCamera)(45, window.innerWidth / window.innerHeight, 0.01, 1000);
+    const camera = new (0, _three.PerspectiveCamera)(45, window.innerWidth / window.innerHeight, 0.000001, 1000);
     // move the camera back so we can view the scene
     camera.position.set(x, y, z);
     camera.nextFrame = (delta)=>console.log("camera:", camera.position);
