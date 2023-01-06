@@ -1,6 +1,7 @@
 /.parcel-cache
 /node_modules
-/src/textures
-/src/models
+/src/assets/textures
+/src/assets/models
+/src/assets/img
 /meta
 /dist

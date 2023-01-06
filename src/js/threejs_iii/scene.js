@@ -4,7 +4,7 @@ import { Color,
  } from 'three';
 
 /**textures */
-import starsTexture from '../../img/stars.jpg';
+import starsTexture from '../../assets/img/stars.jpg';
 
 /**
  * TODO convert to a class

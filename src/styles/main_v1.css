@@ -11,8 +11,14 @@ body {
   /* color text */
   color: #444;
 }
+
+.margin{
+  margin-top: 60px;
+  /* make sure that the heading is drawn on top */
+  /* z-index: 5; */
+}
   
-h1 {
+.title {
   /* position the heading */
   position: absolute;
   width: 100%;
@@ -30,10 +36,10 @@ h1 {
   color: green;
   
   /* Aplicamos un gradiente lineal en el color del texto del elemento h1 */
-  background: -webkit-linear-gradient(left, green, royalblue);
-  background: -o-linear-gradient(right, green, royalblue);
-  background: -moz-linear-gradient(right, green, royalblue);
-  background: linear-gradient(to right, green, royalblue);
+  background: -webkit-linear-gradient(left, #FF0500, #FFF500);
+  background: -o-linear-gradient(right,#FF0500, #FFF500);
+  background: -moz-linear-gradient(right,#FF0500, #FFF500);
+  background: linear-gradient(to right, #FF0500, #FFF500);
   
   /* Establecemos el color de fondo del elemento h1 en transparente */
   -webkit-background-clip: text;
