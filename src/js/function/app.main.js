@@ -1,7 +1,8 @@
-// import { III_DISPLACEMTMPAS } from '../../diplacementAlphaMaps/III_SPACE';
-// import { III_GLBMODEL } from '../../load3DModels/III_Space';
-import { III_PHYSICS } from '../physics/III_Space.js';
-// import { III_SOLARSYSTEM } from '../../solarSystem/III_Space';
+//  **
+//  * Author: Alexis Tercero
+//  * GitHub: @AlexisTercero55
+//  * mail: AlexisTercero55@gmail.com
+//  **
 
 import {III_DYNAMIC_GRAPHER} from './III_Space'
 
