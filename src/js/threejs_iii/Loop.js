@@ -17,9 +17,10 @@ class Loop
    * @param {THREE.Scene} scene
    * @param {THREE.WebGLRenderer} renderer
    */
-  constructor(camera, scene, renderer,world=null) 
+  constructor(camera, scene, renderer,world=null,cannonDebugger=null) 
   {
     this.world = world;
+    this.cannonDebugger = cannonDebugger;
     this.camera = camera;
     this.scene = scene;
     this.renderer = renderer;
@@ -41,6 +42,8 @@ class Loop
       if(this.world)
       {
         this.world.step(timeStep);
+        // this.world.fixedStep();
+        this.cannonDebugger.update();
       }
       
       // tell every animated object to tick forward one frame
@@ -62,7 +65,7 @@ class Loop
     // Get the seconds passed since the last call to this method.
     const delta = clock.getDelta();
 
-
+    //Get the seconds passed since the clock started.
     const ElapsedTime = clock.getElapsedTime();
 
     // console.log(

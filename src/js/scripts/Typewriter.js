@@ -17,7 +17,7 @@ let SS = {zoom : 'zoom: ',
           pan2 : 'Touchscreen'
         };
 
-waitTime = 500;
+let waitTime = 500;
 
 (typewriter.typeString()
     .typeString(SS['zoom'] + SS['zoom1'])
