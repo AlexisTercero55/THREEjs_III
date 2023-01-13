@@ -74,12 +74,12 @@ class III_MeshLine
             this.addObject(line);
         }
 
-        for (let index = -10; index < 11; index++) {
-            let line = this.plot2D(this.colors[3]);
-            line.position.setX(index);
-            line.rotateY(Math.PI/2);
-            this.addObject(line);
-        }
+        // for (let index = -10; index < 11; index++) {
+        //     let line = this.plot2D(this.colors[3]);
+        //     line.position.setX(index);
+        //     line.rotateY(Math.PI/2);
+        //     this.addObject(line);
+        // }
         
         this.axis();
     }
@@ -120,20 +120,45 @@ class III_MeshLine
 
         // MeshLine also accepts a BufferGeometry looking up the vertices in it
         const points = [];
-        for (let j = -2 * Math.PI; j <= 2 * Math.PI+0.1; j += 2 * Math.PI / 360) 
+        for (let j = -2 * Math.PI; j <= 2 * Math.PI; j += 2 * Math.PI / 360) 
         {
             points.push(new THREE.Vector3( j, Math.sin(j), 0));
         }
 
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
         const _mesh_line = this.meshLineSetUp(geometry,color);
-        
+
+        //adding draw animation
+        let numPoints = _mesh_line.geometry.getAttribute('position').array.length;
+        let vn = 0;
+        let animation = 'draw';
+        let amplitud_change = 1.03;
         _mesh_line.nextFrame = (delta,ElapsetTime) =>
         {
-            points.map( v => {
-                v.set(v.x,5*Math.sin(ElapsetTime)*Math.sin(v.x),v.z);
-            });
-            _mesh_line.meshline.setGeometry(geometry.setFromPoints(points));
+
+            switch (animation) {
+                case 'draw':
+                    // drawing animation
+                    if(vn > numPoints )
+                    {
+                        vn = 0;
+                        animation = 'oscilations';
+                        break;
+                    }
+                    vn += 100;
+                    _mesh_line.geometry.setDrawRange(0,vn);
+                    break;
+            
+                case 'oscilations':
+                    // update vertex positions
+                    points.map( v => {
+                        v.set(v.x,Math.sin(amplitud_change)*Math.sin(v.x),v.z);
+                    });
+                    amplitud_change += 0.03;
+                    _mesh_line.meshline.setGeometry(geometry.setFromPoints(points));
+                    break;
+            }
+            
         };
 
         return _mesh_line;
