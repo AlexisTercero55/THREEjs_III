@@ -31,6 +31,10 @@ class Loop
 
   add(obj)
   {
+    if(!obj.nextFrame)
+    {
+      throw new Error(`${obj} must have nextFrame method to add them to the animation loop.`)
+    }
     this.objs.push(obj);
   }
 
