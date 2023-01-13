@@ -8,7 +8,7 @@ import
   MeshBasicMaterial
 } from 'three';
 
-import imagen from '../../img/uv-test-bw.png';
+import imagen from '../../../assets/textures/carbon/Carbon_Normal.png';
 
 function createMaterial() 
 {
@@ -41,6 +41,7 @@ function createCube()
   // this method will be called once per frame
   cube.nextFrame = (delta) => 
   {
+    // console.log(`${radiansPerSecond}*${delta} = ${radiansPerSecond * delta}`);
     // increase the cube's rotation each frame
     cube.rotation.z += radiansPerSecond * delta;
     // cube.rotation.x += radiansPerSecond * delta;

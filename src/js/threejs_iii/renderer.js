@@ -19,3 +19,14 @@ function createRenderer()
 }
 
 export { createRenderer };
+
+
+export class III_WebGL_Renderer extends WebGLRenderer
+{
+  constructor()
+  {
+    super({ antialias: true });
+    this.physicallyCorrectLights = true;
+    this.shadowMap.enabled = true;
+  }
+}

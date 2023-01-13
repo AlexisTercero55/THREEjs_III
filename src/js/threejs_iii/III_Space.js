@@ -3,15 +3,16 @@
  * @mail : alexistercero55@gmail.com
  * @github: AlexisTercero55
  */
+import * as THREE from 'three';
 import { createCamera } from './camera.js';
-import { createCube } from './cube.js';
 import { createLight } from './lights.js';
-import { createScene } from './scene.js';
-import { createRenderer } from './renderer.js';
-import { createControls } from './controls.js'
+import { III_SCENE, createScene } from './scene.js';
+import { III_WebGL_Renderer, createRenderer } from './renderer.js';
+import { III_CONTROLS_, createControls } from './controls.js'
 
 import { Resizer } from './Resizer.js';
 import { Loop } from './Loop.js';
+import { createCube } from './III_Primitives/cube.js';
 
 /** Global variabes */
 export let camera;
@@ -21,44 +22,28 @@ export let loop;
 export let gui;
 export let controls;
 
-/**textures */
-import mercuryTexture from '../../img/mercury.jpg';
-import venusTexture from '../../img/venus.jpg';
-import earthTexture from '../../img/earth.jpg';
-import marsTexture from '../../img/mars.jpg';
-import jupiterTexture from '../../img/jupiter.jpg';
-import saturnTexture from '../../img/saturn.jpg';
-import saturnRingTexture from '../../img/saturn ring.png';
-import uranusTexture from '../../img/uranus.jpg';
-import uranusRingTexture from '../../img/uranus ring.png';
-import neptuneTexture from '../../img/neptune.jpg';
-import plutoTexture from '../../img/pluto.jpg';
-
-//my
-import { Sun } from '../solarSystem/sun.js';
-import { Planet } from '../solarSystem/planet.js';
-
 class III_SPACE
 {
     /**
      * 
-     * @param {DOMElement} container - where space will be render.
+     * @param {Element} CONTAINER - where space will be render.
      */
-    constructor(container) 
+    constructor(CONTAINER) 
     {
-        camera = createCamera({x:300,y:300,z:60});
-        renderer = createRenderer();
-        scene = createScene();
+        camera = createCamera({x:6,y:6,z:6});
+
+        renderer = new III_WebGL_Renderer(); //createRenderer();
+        scene = new III_SCENE();//createScene();
         loop = new Loop(camera, scene, renderer);
-        container.append(renderer.domElement);
-        controls = createControls(camera, renderer.domElement);
+        CONTAINER.append(renderer.domElement);
+        controls = new III_CONTROLS_(camera, renderer.domElement);//createControls(camera, renderer.domElement);
         loop.add(controls);
         
-        this.lights();
+        // this.lights();
 
         this.createObjects();
 
-        const resizer = new Resizer(container, camera, renderer);
+        const resizer = new Resizer(CONTAINER, camera, renderer);
     }
 
     lights()
@@ -70,59 +55,13 @@ class III_SPACE
 
     createObjects()
     {
-        const sun = Sun();
-        this.addObject(sun);
+        this.addObject(createCube());
+        this.axis();
+    }
 
-        //adding plantes
-        const mercury = new Planet(3.2, mercuryTexture, 28,
-                                  0.004, 0.04);
-        scene.add(mercury.orbit);
-        loop.add(mercury);
-
-        const venus = new Planet(5.8, venusTexture, 44, 0.002,0.015);
-        scene.add(venus.orbit);
-        loop.add(venus);
-
-        const earth = new Planet(6, earthTexture, 62, 0.02, 0.01);
-        scene.add(earth.orbit);
-        loop.add(earth);
-
-        const mars = new Planet(4, marsTexture, 78, 0.018, 0.008);
-        scene.add(mars.orbit);
-        loop.add(mars);
-
-        const jupiter = new Planet(12, jupiterTexture, 100,0.04,0.002);
-        scene.add(jupiter.orbit);
-        loop.add(jupiter);
-
-        const saturn = new Planet(10, saturnTexture, 138,
-                                  0.038, 0.0009,
-                                 {
-                                     innerRadius: 10,
-                                     outerRadius: 20,
-                                     texture: saturnRingTexture
-                                 });
-        scene.add(saturn.orbit);
-        loop.add(saturn);
-
-        const uranus = new Planet(7, uranusTexture, 176,
-                                    0.03, 0.0004,
-                                {
-                                    innerRadius: 7,
-                                    outerRadius: 12,
-                                    texture: uranusRingTexture
-                                });
-        scene.add(uranus.orbit);
-        loop.add(uranus);
-
-        const neptune = new Planet(7, neptuneTexture, 200,0.032, 0.0001);
-        scene.add(neptune.orbit);
-        loop.add(neptune);
-
-        const pluto = new Planet(2.8, plutoTexture, 216,0.008, 0.00007);
-        
-        scene.add(pluto.orbit);
-        loop.add(pluto);
+    axis(n=5)
+    {
+        scene.add(new THREE.AxesHelper(n));
     }
     
     addObject(obj)

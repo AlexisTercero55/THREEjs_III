@@ -6,10 +6,10 @@ function main()
   const container = document.querySelector('#sceneID_1');
 
   // create a new world
-  const world = new III_SPACE(container);
+  const iii_space = new III_SPACE(container);
 
   // start the animation loop
-  world.start();
+  iii_space.start();
 }
 
 main();

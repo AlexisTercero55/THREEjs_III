@@ -31,8 +31,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 /**
  * 
- * @param {*} camera 
- * @param {*} canvas 
+ * @param {THREE.PerspectiveCamera} camera 
+ * @param {HTMLElement} canvas 
  * @returns 
  */
 function createControls(camera, canvas) 
@@ -57,6 +57,25 @@ function createControls(camera, canvas)
 function removeControls(controls)
 {
   controls.dispose();
+}
+
+export class III_CONTROLS_ extends OrbitControls
+{
+  constructor(camera, canvas)
+  {
+    super(camera, canvas);
+    this.enableDamping = true;
+  }
+
+  nextFrame()
+  {
+    this.update();
+  }
+
+  removeControls()
+  {
+    this.dispose();
+  }
 }
 
 export { createControls };

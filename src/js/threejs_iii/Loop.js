@@ -10,7 +10,8 @@ const clock = new Clock();
  *  - resizer system
  */
 class Loop 
-{
+{ //TODO: Update js docs for CANNON settings and new classes
+  // TODO flas systemas for animations.
   /**
    * 
    * @param {THREE.PerspectiveCamera} camera
