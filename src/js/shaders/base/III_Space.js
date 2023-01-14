@@ -7,9 +7,9 @@
 import * as THREE from 'three';
 import { createCamera } from '../../threejs_iii/camera';
 import { createLight } from '../../threejs_iii/lights.js';
-import { createScene } from '../../threejs_iii/scene.js';
+import { III_SCENE, createScene } from '../../threejs_iii/scene.js';
 import { III_WebGL_Renderer, createRenderer } from '../../threejs_iii/renderer.js';
-import { createControls } from '../../threejs_iii/controls.js'
+import { III_CONTROLS_, createControls } from '../../threejs_iii/controls.js'
 import { Resizer } from '../../threejs_iii/Resizer.js';
 import { Loop } from '../../threejs_iii/Loop.js';
 
@@ -58,10 +58,10 @@ class III_SPACE
     {
         camera = createCamera({x:6,y:6,z:6});
         renderer = new III_WebGL_Renderer();//createRenderer();
-        scene = createScene();
+        scene = new III_SCENE();
         loop = new Loop(camera, scene, renderer);
         container.append(renderer.domElement);
-        controls = createControls(camera, renderer.domElement);
+        controls = new III_CONTROLS_(camera, renderer.domElement);
         loop.add(controls);
         
         this.lights();
@@ -72,32 +72,6 @@ class III_SPACE
 
         const resizer = new Resizer(container, camera, renderer);
     }
-
-    background()
-    {
-        // background
-        var grometry = new THREE.IcosahedronGeometry(100,2)
-        var back = new THREE.Mesh( grometry, new THREE.MeshBasicMaterial( { map:this.gradTexture([[0.75,0.6,0.4,0.25], ['#1B1D1E','#3D4143','#72797D', '#b0babf']]), side:THREE.BackSide, depthWrite: false, fog:false }  ));
-        // back.geometry.applyMatrix(new THREE.Matrix4().makeRotationZ(15*ToRad));
-        scene.add( back );
-    }
-
-    gradTexture(color) {
-        var c = document.createElement("canvas");
-        var ct = c.getContext("2d");
-        var size = 1024;
-        c.width = 16; c.height = size;
-        var gradient = ct.createLinearGradient(0,0,0,size);
-        var i = color[0].length;
-        while(i--){ gradient.addColorStop(color[0][i],color[1][i]); }
-        ct.fillStyle = gradient;
-        ct.fillRect(0,0,16,size);
-        var texture = new THREE.Texture(c);
-        texture.needsUpdate = true;
-        return texture;
-    }
-
-
 
     lights()
     {
@@ -119,54 +93,26 @@ class III_SPACE
     vertexShader() 
     {
         return `
-        void main() {
+        varying vec3 vUv; 
+
+        void main() 
+        {
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            vUv = position;
         }
         `;
-        // return `
-        // varying vec3 v_Normal;
-        // void main() 
-        // {
-        //     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        //     v_Normal = normal;
-        // }
-        // `;
-        // return `
-        //   varying vec3 vUv; 
-      
-        //   void main() {
-        //     vUv = position; 
-      
-        //     vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-        //     gl_Position = projectionMatrix * modelViewPosition; 
-        //   }
-        // `;
-      }
+    }
 
     fragmentShader() {
         
         return `
+        varying vec3 vUv;
+
         void main() {
-            gl_FragColor = vec4(1.0, 0.1, 0.3, 1.0);
+            gl_FragColor = vec4(1.0,0,0, 1.0);
         }
         `;
-        // return `
-        // varying vec3 v_Normal;
-        // void main() 
-        // {
-        //     gl_FragColor = vec4(v_Normal,1.0);
-        // }
-        // `;
-    //     return `
-    //     uniform vec3 colorA; 
-    //     uniform vec3 colorB; 
-    //     varying vec3 vUv;
-  
-    //     void main() {
-    //       gl_FragColor = vec4(mix(colorA, colorB, vUv.z), 1.0);
-    //     }
-    // `;
-      }
+    }
 
     createObjects()
     {
@@ -174,14 +120,13 @@ class III_SPACE
             colorB: {type: 'vec3', value: new THREE.Color(0xACB6E5)},
             colorA: {type: 'vec3', value: new THREE.Color(0x74ebd5)}
         }
-    
-        let geometry = new THREE.SphereGeometry(1, 30, 30);
         let material =  new THREE.ShaderMaterial({
             uniforms: uniforms,
             fragmentShader: this.fragmentShader(),
             vertexShader: this.vertexShader(),
         })
-        
+
+        let geometry = new THREE.SphereGeometry(1, 30, 30);
         let mesh = new THREE.Mesh(geometry, material)
         // mesh.position.x = 2
         scene.add(mesh)

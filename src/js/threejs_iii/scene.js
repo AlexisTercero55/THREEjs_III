@@ -13,7 +13,7 @@ import starsTexture from '../../assets/img/stars.jpg';
  */
 export class III_SCENE extends Scene
 {
-  constructor(BGType = 'BOX')
+  constructor(BGType = 'html')
   {
     super();
     this.setBG(BGType);
@@ -26,7 +26,12 @@ export class III_SCENE extends Scene
    */
   setBG(BGType,color=0xff0ff4)
   {
+    //TODO: add here the ico gradien bg
     switch (BGType) {
+
+      case 'html':
+      break;
+
       case 'BOX':
         this._BOX_()
         break;
