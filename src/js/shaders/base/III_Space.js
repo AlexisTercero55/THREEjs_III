@@ -3,11 +3,12 @@
  * @mail : alexistercero55@gmail.com
  * @github: AlexisTercero55
  */
+// TODO: migrate shaders templete to THREEJS_III_v2
 import * as THREE from 'three';
 import { createCamera } from '../../threejs_iii/camera';
 import { createLight } from '../../threejs_iii/lights.js';
 import { createScene } from '../../threejs_iii/scene.js';
-import { createRenderer } from '../../threejs_iii/renderer.js';
+import { III_WebGL_Renderer, createRenderer } from '../../threejs_iii/renderer.js';
 import { createControls } from '../../threejs_iii/controls.js'
 import { Resizer } from '../../threejs_iii/Resizer.js';
 import { Loop } from '../../threejs_iii/Loop.js';
@@ -42,7 +43,7 @@ void main() {
 }
 `;
 // import sunShader from "./shaders/sunShader.glsl";
-import { createCube } from '../../threejs_iii/cube';
+import { createCube } from '../../threejs_iii/III_Primitives/cube';
 
 
 
@@ -55,8 +56,8 @@ class III_SPACE
      */
     constructor(container) 
     {
-        camera = createCamera();
-        renderer = createRenderer();
+        camera = createCamera({x:6,y:6,z:6});
+        renderer = new III_WebGL_Renderer();//createRenderer();
         scene = createScene();
         loop = new Loop(camera, scene, renderer);
         container.append(renderer.domElement);
@@ -66,8 +67,34 @@ class III_SPACE
         this.lights();
 
         this.createObjects();
+        // this.background();
+        scene.add(new THREE.AxesHelper(10));
 
         const resizer = new Resizer(container, camera, renderer);
+    }
+
+    background()
+    {
+        // background
+        var grometry = new THREE.IcosahedronGeometry(100,2)
+        var back = new THREE.Mesh( grometry, new THREE.MeshBasicMaterial( { map:this.gradTexture([[0.75,0.6,0.4,0.25], ['#1B1D1E','#3D4143','#72797D', '#b0babf']]), side:THREE.BackSide, depthWrite: false, fog:false }  ));
+        // back.geometry.applyMatrix(new THREE.Matrix4().makeRotationZ(15*ToRad));
+        scene.add( back );
+    }
+
+    gradTexture(color) {
+        var c = document.createElement("canvas");
+        var ct = c.getContext("2d");
+        var size = 1024;
+        c.width = 16; c.height = size;
+        var gradient = ct.createLinearGradient(0,0,0,size);
+        var i = color[0].length;
+        while(i--){ gradient.addColorStop(color[0][i],color[1][i]); }
+        ct.fillStyle = gradient;
+        ct.fillRect(0,0,16,size);
+        var texture = new THREE.Texture(c);
+        texture.needsUpdate = true;
+        return texture;
     }
 
 

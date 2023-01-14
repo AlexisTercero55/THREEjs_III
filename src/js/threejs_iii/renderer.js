@@ -25,8 +25,15 @@ export class III_WebGL_Renderer extends WebGLRenderer
 {
   constructor()
   {
-    super({ antialias: true });
+    super({ antialias: true, alpha:true });
     this.physicallyCorrectLights = true;
     this.shadowMap.enabled = true;
+
+    //transparent bg
+    // this.setPixelRatio((window.devicePixelRatio) ? window.devicePixelRatio : 1);
+    // this.setSize(window.innerWidth, window.innerHeight);
+    // this.autoClear = false;
+    // this.setClearColor(0x0FF000, 0.0);
+
   }
 }

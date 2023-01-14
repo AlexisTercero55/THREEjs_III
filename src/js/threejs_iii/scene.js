@@ -51,9 +51,14 @@ export class III_SCENE extends Scene
   }
 }
 
-function createScene() 
+function createScene(GBType = 'html') 
 {
   const scene = new Scene();
+
+  switch (GBType) {
+    case 'html':
+      return scene;
+  }
 
   // setting up texture background
   // method to change background 
