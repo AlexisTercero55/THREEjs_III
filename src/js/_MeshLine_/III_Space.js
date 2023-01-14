@@ -29,7 +29,7 @@ class III_MeshLine
      */
     constructor(CONTAINER) 
     {
-        camera = createCamera({x:6,y:6,z:6});
+        camera = createCamera({x:0,y:0,z:25});
         renderer = new III_WebGL_Renderer();
         scene = new III_SCENE();
         loop = new Loop(camera, scene, renderer);
@@ -68,11 +68,23 @@ class III_MeshLine
 
     createObjects()
     {
-        for (let index = -10; index < 11; index++) {
-            let line = this.plot2D();
-            line.position.setZ(index);
-            this.addObject(line);
-        }
+        const parametric = (t) =>
+        {
+            // shabe by: https://qr.ae/prYChe
+            let x = t - 1.6*Math.cos(24*t);
+            let y = t - 1.6*Math.sin(25*t);
+            return new THREE.Vector3(t - 1.6*Math.cos(24*t),t - 1.6*Math.sin(25*t),0);
+        };
+
+        let line = this.plot2D(parametric,this.colors[3],5);
+        this.addObject(line);
+        // scene.add(line);
+
+        // for (let index = -10; index < 11; index++) {
+        //     let line = this.plot2D();
+        //     line.position.setZ(index);
+        //     this.addObject(line);
+        // }
 
         // for (let index = -10; index < 11; index++) {
         //     let line = this.plot2D(this.colors[3]);
@@ -81,7 +93,7 @@ class III_MeshLine
         //     this.addObject(line);
         // }
         
-        this.axis();
+        this.axis(50);
     }
 
     meshLineSetUp(geometry, color=this.colors[0], width=10)
@@ -104,7 +116,13 @@ class III_MeshLine
         return mesh;
     }
 
-    plot2D(color=this.colors[0])
+    /**
+     * TODO: f, isparametric, range = [min,max], color
+     * @param {*} f 
+     * @param {*} color 
+     * @returns 
+     */
+    plot2D(f,color=this.colors[5],withd=10)
     {
         /**
          * Create an array of 3D coordinates
@@ -119,49 +137,62 @@ class III_MeshLine
         // line.setPoints(points);
 
         // MeshLine also accepts a BufferGeometry looking up the vertices in it
+        // Parametrics plot: (x,y) = (f(t),g(t))
         const points = [];
-        for (let j = -2 * Math.PI; j <= 2 * Math.PI; j += 2 * Math.PI / 360) 
-        {
-            points.push(new THREE.Vector3( j, Math.sin(j), 0));
+        for (let t = -14; t < 14; t+=0.01) {
+            points.push(f(t))
+            
         }
+        // USUAL PLOT y=f(x)
+        // for (let j = -2 * Math.PI; j <= 2 * Math.PI; j += 2 * Math.PI / 360) 
+        // {
+        //     points.push(new THREE.Vector3( j, Math.sin(j), 0));
+        // }
 
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        const _mesh_line = this.meshLineSetUp(geometry,color);
+        const _mesh_line = this.meshLineSetUp(geometry,color,withd);
 
         //adding draw animation
         let numPoints = _mesh_line.geometry.getAttribute('position').array.length;
         let vn = 0;
         let animation = 'draw';
-        let amplitud_change = 1.03;
+        // let amplitud_change = 1.03;
         _mesh_line.nextFrame = (delta,ElapsetTime) =>
         {
-
-            switch (animation) {
-                case 'draw':
-                    // drawing animation
-                    if(vn > numPoints )
-                    {
-                        vn = 0;
-                        animation = 'oscilations';
-                        break;
-                    }
-                    vn += 100;
-                    _mesh_line.geometry.setDrawRange(0,vn);
-                    break;
-            
-                case 'oscilations':
-                    // update vertex positions
-                    points.map( v => {
-                        v.set(v.x,Math.sin(amplitud_change)*Math.sin(v.x),v.z);
-                    });
-                    amplitud_change += 0.03;
-                    _mesh_line.meshline.setGeometry(geometry.setFromPoints(points));
-                    break;
+            if(vn > numPoints )
+            {
+                vn = 0;
+                // animation = 'oscilations';
             }
-            
+            vn += 5;
+            _mesh_line.geometry.setDrawRange(0,vn);            
         };
 
         return _mesh_line;
+
+        
+            // switch (animation) {
+            //     case 'draw':
+            //         // drawing animation
+            //         if(vn > numPoints )
+            //         {
+            //             vn = 0;
+            //             // animation = 'oscilations';
+            //             break;
+            //         }
+            //         vn += 50;
+            //         _mesh_line.geometry.setDrawRange(0,vn);
+            //         break;
+            
+            //     // case 'oscilations':
+            //     //     // update vertex positions
+            //     //     points.map( v => {
+            //     //         v.set(v.x,Math.sin(amplitud_change)*Math.sin(v.x),v.z);
+            //     //     });
+            //     //     amplitud_change += 0.03;
+            //     //     _mesh_line.meshline.setGeometry(geometry.setFromPoints(points));
+            //     //     break;
+            // }
     }
 
     axis(n=5)
