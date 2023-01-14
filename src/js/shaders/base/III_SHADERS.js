@@ -12,6 +12,7 @@ import { III_WebGL_Renderer, createRenderer } from '../../threejs_iii/renderer.j
 import { III_CONTROLS_, createControls } from '../../threejs_iii/controls.js'
 import { Resizer } from '../../threejs_iii/Resizer.js';
 import { Loop } from '../../threejs_iii/Loop.js';
+import { FresnelShader } from './shaders/fresnel';
 
 /** Global variabes */
 export let camera;
@@ -21,34 +22,19 @@ export let loop;
 export let gui;
 export let controls;
 
-// TODO add shaders to custom shaders class III_Shaders
-/**Shaders */
-const _VS =`
-varying vec3 vUv; 
 
-void main() {
-  vUv = position; 
+["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 
-  vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
-  gl_Position = projectionMatrix * modelViewPosition; 
-}
-`;
-const _FS =`
-uniform vec3 colorA; 
-uniform vec3 colorB; 
-varying vec3 vUv;
+/**textures */
+import tiles from '../../../assets/textures/tiles.jpg';
+import a from '../../../textures/dawnmountain-xpos.png';
+import aa from '../../../textures/dawnmountain-xneg.png';
+import aaa from '../../../textures/dawnmountain-ypos.png';
+import aaaa from '../../../textures/dawnmountain-yneg.png';
+import aaaaa from '../../../textures/dawnmountain-zpos.png';
+import aaaaaa from '../../../textures/dawnmountain-zneg.png';
 
-void main() {
-  gl_FragColor = vec4(mix(colorA, colorB, vUv.z), 1.0);
-}
-`;
-// import sunShader from "./shaders/sunShader.glsl";
-import { createCube } from '../../threejs_iii/III_Primitives/cube';
-
-
-
-
-class III_SPACE
+class III_SHADERS
 {
     /**
      * 
@@ -58,37 +44,163 @@ class III_SPACE
     {
         camera = createCamera({x:6,y:6,z:6});
         renderer = new III_WebGL_Renderer();//createRenderer();
-        scene = new III_SCENE();
+        scene = new III_SCENE('BOX');
         loop = new Loop(camera, scene, renderer);
         container.append(renderer.domElement);
         controls = new III_CONTROLS_(camera, renderer.domElement);
+        controls.autoRotate = true;
         loop.add(controls);
         
         this.lights();
+        this.floor();
+        this.sky();
 
-        this.createObjects();
+        
+        let d = 2;
+        const s1 = this._fresnel_bubble('transparent');
+        s1.position.set(d,2,d);
+
+        const s2 = this._fresnel_bubble('metalic');
+        s2.position.set(-d,2,-d);
         // this.background();
         scene.add(new THREE.AxesHelper(10));
 
         const resizer = new Resizer(container, camera, renderer);
     }
 
+    floor()
+    {
+        // FLOOR
+        var floorTexture = new THREE.TextureLoader().load(tiles);
+        floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+        floorTexture.repeat.set( 10, 10 );
+        var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
+        var floorGeometry = new THREE.PlaneGeometry(10, 10, 10, 10);
+        var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+        // floor.position.y = -50.5;
+        floor.rotateX(-Math.PI / 2);
+        scene.add(floor);
+    }
+
+    //TODO: move to main class as buffer
+    sky()
+    {
+        // SKYBOX
+        var skyGeometry = new THREE.BoxGeometry( 100, 100, 100 );	
+        
+        var urls = [a,aa,aaa,aaaa,aaaaa,aaaaaa];
+        var materialArray = [];
+        const loader_ = new THREE.TextureLoader();
+        urls.forEach((url) =>
+        {
+            materialArray.push( new THREE.MeshBasicMaterial({
+                map: loader_.load(url),
+                side: THREE.BackSide
+            }));
+        });
+            
+        // var skyMaterial = new THREE.CubeTextureLoader ( materialArray );
+        var skyBox = new THREE.Mesh( skyGeometry, materialArray );
+        scene.add( skyBox );
+    }
+
+    _fresnel_bubble(type = 'transparent')
+    {
+        /*
+            Based on https://github.com/stemkoski/stemkoski.github.com/blob/master/Three.js/Bubble.html
+            By: Lee Stemkoski
+            Date: July 2013 (three.js v59dev)
+
+
+            this.refractSphereCamera = new THREE.CubeCamera( 0.1, 5000, 512 );
+	        scene.add( refractSphereCamera );
+        */
+        
+        var fShader = FresnelShader ;
+
+        // Create cube render target
+        const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256);//( 128, { generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter } );
+        cubeRenderTarget.texture.type = THREE.HalfFloatType;
+
+
+        // Create cube camera
+        const refractSphereCamera = new THREE.CubeCamera( 1, 100000, cubeRenderTarget );
+        // scene.add( refractSphereCamera );
+
+        // const refractSphereCamera = new THREE.CubeCamera( 0.1, 5000, 512 );
+        // scene.add( refractSphereCamera );
+
+        var fresnelUniforms = 
+        {
+            "mRefractionRatio": { type: "f", value: 1.02 },
+            "mFresnelBias": 	{ type: "f", value: 0.1 },
+            "mFresnelPower": 	{ type: "f", value: 2.0 },
+            "mFresnelScale": 	{ type: "f", value: 1.0 },
+            "tCube": 			{ type: "t", value: cubeRenderTarget.texture } //  textureCube }
+        };
+
+        // create custom material for the shader
+        let customMaterial;
+        switch (type) {
+            case 'transparent':
+                customMaterial = new THREE.ShaderMaterial( 
+                    {
+                        uniforms: 		fresnelUniforms,
+                        vertexShader:   fShader.vertexShader,
+                        fragmentShader: fShader.fragmentShader,
+                    }   );
+                
+                break;
+        
+            case 'metalic':
+                customMaterial = new THREE.MeshStandardMaterial( {
+                    envMap: cubeRenderTarget.texture,
+                    roughness: 0.05,
+                    metalness: 1
+                } );
+            break;
+        }
+
+        // var customMaterial = new THREE.ShaderMaterial( 
+        // {
+        //     uniforms: 		fresnelUniforms,
+        //     vertexShader:   fShader.vertexShader,
+        //     fragmentShader: fShader.fragmentShader,
+        // }   );
+
+        // const material = new THREE.MeshStandardMaterial( {
+        //     // envMap: cubeRenderTarget.texture,
+        //     roughness: 0.05,
+        //     metalness: 1
+        // } );
+
+        // var sphereGeometry = new THREE.SphereGeometry( 2, 64, 32 );
+        let sphere = new THREE.Mesh( new THREE.IcosahedronGeometry( 2, 8 ), customMaterial );//new THREE.Mesh( sphereGeometry, customMaterial );
+        sphere.position.set(0, 2,0);
+        scene.add(sphere);
+        
+        refractSphereCamera.position.set(sphere.position.x,
+                                        sphere.position.y,
+                                        sphere.position.z  );
+
+        sphere.nextFrame = (_,__) =>
+        {
+            sphere.visible = false;
+            refractSphereCamera.update( renderer, scene );
+            sphere.visible = true;
+        };
+        loop.add(sphere);
+
+        return sphere;
+
+    }
+
     lights()
     {
-        let pointLight = new THREE.PointLight(0xdddddd)
-        //pointLight.position.set(-5, -3, 3)
-        pointLight.position.set(10, 0, 0)
-        scene.add(pointLight)
-      
-        let ambientLight = new THREE.AmbientLight(0x505050)
-        scene.add(ambientLight)
+        var light = new THREE.PointLight(0xff00ff);
+        light.position.set(0,1,0);
+        scene.add(light);
     }
-    // {
-    //     const ambientLight = createLight('directional');
-    //     ambientLight.position.set(100, 0,0);
-    //     // const pointLight = createLight('point');
-    //     scene.add(ambientLight);
-    // }
 
     vertexShader() 
     {
@@ -240,4 +352,4 @@ class III_SPACE
         controls.reset();
     }
 }
-export {III_SPACE};
+export {III_SHADERS};

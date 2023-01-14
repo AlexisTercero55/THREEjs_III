@@ -46,6 +46,7 @@ class III_SPACE
 
         const gridHelper = new THREE.GridHelper( size, divisions );
         scene.add( gridHelper );
+        // new THREE.FresnelShader()
 
         const resizer = new Resizer(container, camera, renderer);
     }

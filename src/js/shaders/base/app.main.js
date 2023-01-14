@@ -1,4 +1,4 @@
-import { III_SPACE } from './III_SPACE.js';
+import { III_SHADERS } from './III_SHADERS.js';
 
 function main() 
 {
@@ -6,7 +6,7 @@ function main()
   const container = document.querySelector('#sceneID_1');
 
   // create a new world
-  const world = new III_SPACE(container);
+  const world = new III_SHADERS(container);
 
   // start the animation loop
   world.start();
