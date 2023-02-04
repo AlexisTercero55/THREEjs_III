@@ -1,0 +1,23 @@
+{
+  "name": "three-iii-websites",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite build && vite preview --host",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "devDependencies": {
+    "vite": "^4.0.0"
+  },
+  "dependencies": {
+    "cannon-es": "^0.20.0",
+    "cannon-es-debugger": "^1.0.0",
+    "gsap": "^3.11.4",
+    "nipplejs": "^0.10.0",
+    "three": "^0.149.0"
+  }
+}
