@@ -65,10 +65,10 @@ export default class III_PHYSICS_SPACE
         
         // this.lights();
         // this.physics_test();
-        this.III_PHYSICS_test();
+        // this.III_PHYSICS_test();
         this.sky();
-        // this.joystickTest1();
-        // this.floor();
+        this.joystickTest1();
+        this.floor();
 
         // this.createObjects();
 
@@ -119,7 +119,7 @@ export default class III_PHYSICS_SPACE
         let mesh = this.createSphere();
         mesh.position.setY(1);
         let joystick = nipplejs.create({
-            zone: this.container,
+            zone: this.#container,
             color: 'blue'
         });
 
@@ -152,11 +152,9 @@ export default class III_PHYSICS_SPACE
             rgtValue = 0
           })
 
-        mesh.nextFrame = (delta, ET) =>{
-            // console.log('Joystick player for: ', mesh.id);
-            // move the player
-            // console.log(mesh.position);
-            const angle = controls.getAzimuthalAngle()
+        mesh.nextFrame = (delta, ET) =>
+        {
+            const angle = this.#controls.getAzimuthalAngle()
             if (fwdValue > 0) {
                 tempVector
                   .set(0, 0, -fwdValue)
@@ -201,9 +199,9 @@ export default class III_PHYSICS_SPACE
           
           //controls.target.set( mesh.position.x, mesh.position.y, mesh.position.z );
           // reposition camera
-          camera.position.sub(controls.target)
-          controls.target.copy(mesh.position)
-          camera.position.add(mesh.position)
+          this.#camera.position.sub(this.#controls.target)
+          this.#controls.target.copy(mesh.position)
+          this.#camera.position.add(mesh.position)
         }
 
         this.addObject(mesh);
