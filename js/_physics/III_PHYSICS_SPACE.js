@@ -4,8 +4,6 @@
  * @github: AlexisTercero55
  */
 import * as THREE from 'three';
-// import * as CANNON from 'cannon-es';
-// import CannonDebugger from 'cannon-es-debugger';
 import nipplejs from 'nipplejs';
 
 //systems
@@ -31,15 +29,6 @@ import aaaaa from '/textures/dawnmountain-zpos.png';
 import aaaaaa from '/textures/dawnmountain-zneg.png';
 import III_PHYSICS from '../threejs_iii/III_Physics';
 
-/** Global variabes */
-//FIXME: to become into private fields and setUp getters and setters
-export let camera;
-export let renderer;
-export let scene;
-export let loop;
-export let gui;
-export let controls;
-
 //_____________joystick code_____________________
 // vars
 let fwdValue = 0;
@@ -53,33 +42,26 @@ let upVector = new THREE.Vector3(0, 1, 0);
 
 export default class III_PHYSICS_SPACE
 {
+    //#region 
+    #camera = null;
+    #renderer = null;
+    #scene = null;
+    #loop = null;
+    #controls = null;
     #container = null;
     #physics = null;
+    //#endregion
+    
     /**
      * 
      * @param {DOMElement} container - where space will be render.
      */
     constructor(container) 
     {
-        // camera = createCamera({x:1,y:2,z:15});
-        camera = new III_Cam({x:0,y:0,z:12});
-        renderer = new III_WebGL_Renderer();//createRenderer();
-        scene = new III_SCENE('BOX');
-        
-        // initCannon();//FIXME: add to PhysicsSystem Class
-        // loop = new Loop(camera, scene, renderer,world,cannonDebugger);
         this.#initSystems();
-
-        controls = new III_CONTROLS_(camera, renderer.domElement);
-        controls.enablePan = false;
-        controls.maxPolarAngle = Math.PI*0.4;
-        controls.minPolarAngle = 0;
-        // controls.enableRotate = false;
-        
-        // loop.add(camera);
-        this.container = container;
-        container.append(renderer.domElement);
-        loop.add(controls);
+        this.#container = container;
+        this.#container.append(this.#renderer.domElement);
+        this.#loop.add(this.#controls);
         
         // this.lights();
         // this.physics_test();
@@ -90,18 +72,30 @@ export default class III_PHYSICS_SPACE
 
         // this.createObjects();
 
-        const resizer = new Resizer(container, camera, renderer);
+        const resizer = new Resizer(this.#container, 
+                                    this.#camera, 
+                                    this.#renderer);
     }
 
     #initSystems()
     {
+        this.#camera = new III_Cam({x:0,y:0,z:12});
+        this.#renderer = new III_WebGL_Renderer();
+        this.#scene = new III_SCENE('BOX');
         this.#physics = new III_PHYSICS({
             show : true,
-            scene : scene
+            scene : this.#scene
         });
+        this.#loop = new Loop(this.#camera, 
+                              this.#scene, 
+                              this.#renderer,
+                              this.#physics);
 
-        loop = new Loop(camera, scene, renderer,
-            this.#physics);
+        this.#controls = new III_CONTROLS_(this.#camera, 
+                                           this.#renderer.domElement);
+        this.#controls.enablePan = false;
+        this.#controls.maxPolarAngle = Math.PI*0.4;
+        this.#controls.minPolarAngle = Math.PI*0.2;
     }
 
     floor()
@@ -115,7 +109,7 @@ export default class III_PHYSICS_SPACE
         var floor = new THREE.Mesh(floorGeometry, floorMaterial);
         // floor.position.y = -50.5;
         floor.rotateX(-Math.PI / 2);
-        scene.add(floor);
+        this.#scene.add(floor);
     }
 
     joystickTest1()
@@ -233,7 +227,7 @@ export default class III_PHYSICS_SPACE
             
         // var skyMaterial = new THREE.CubeTextureLoader ( materialArray );
         var skyBox = new THREE.Mesh( skyGeometry, materialArray );
-        scene.add( skyBox );
+        this.#scene.add( skyBox );
     }
 
     III_PHYSICS_test()
@@ -258,14 +252,14 @@ export default class III_PHYSICS_SPACE
         }
         this.addObject(box);
 
-        scene.add(new THREE.AxesHelper(10));
+        this.#scene.add(new THREE.AxesHelper(10));
     }
 
     lights()
     {
         const ambientLight = createLight();
         const pointLight = createLight('point');
-        scene.add(ambientLight, pointLight);
+        this.#scene.add(ambientLight, pointLight);
     }
 
     III_Box()
@@ -275,7 +269,7 @@ export default class III_PHYSICS_SPACE
         return new THREE.Mesh(boxGeo, boxMat);
     }
 
-    physicsTest1()
+    physicsTest1()//TODO : Code refactoring required
     {
         const boxGeo = new THREE.BoxGeometry(2, 2, 2);
         const boxMat = new THREE.MeshBasicMaterial({
@@ -283,7 +277,7 @@ export default class III_PHYSICS_SPACE
             wireframe: true
         });
         const boxMesh = new THREE.Mesh(boxGeo, boxMat);
-        scene.add(boxMesh);
+        this.#scene.add(boxMesh);
 
         const sphereGeo = new THREE.SphereGeometry(2);
         const sphereMat = new THREE.MeshBasicMaterial({ 
@@ -291,7 +285,7 @@ export default class III_PHYSICS_SPACE
             wireframe: true,
         });
         const sphereMesh = this.createSpherePhysics();
-        scene.add(sphereMesh);
+        this.#scene.add(sphereMesh);
 
         const groundGeo = new THREE.PlaneGeometry(30, 30);
         const groundMat = new THREE.MeshBasicMaterial({ 
@@ -300,7 +294,7 @@ export default class III_PHYSICS_SPACE
             wireframe: true 
         });
         const groundMesh = new THREE.Mesh(groundGeo, groundMat);
-        scene.add(groundMesh);
+        this.#scene.add(groundMesh);
 
         // ------------------
         
@@ -411,37 +405,38 @@ export default class III_PHYSICS_SPACE
         if (!("nextFrame" in obj)) {
             throw new Error("obj must have a nextFrame method");
         }
-        loop.add(obj);
-        scene.add(obj);
+        this.#loop.add(obj);
+        this.#scene.add(obj);
     }
 
     render() 
     {
-        renderer.render(scene, camera);
+        this.#renderer.render(this.#scene, 
+                              this.#camera);
     }
     
     start()
     {
-        loop.start();
+        this.#loop.start();
     }
     
     stop()
     {
-        loop.stop();
+        this.#loop.stop();
     }
 
     #cameraCut()
     {
-        camera.position.set(1,2,3);
+        this.#camera.position.set(1,2,3);
 
-        camera.rotation.set(0.5, 0, 0);
+        this.#camera.rotation.set(0.5, 0, 0);
     }
 
     #cameraTransition()
     {
-        controls.enabled = false;
-        controls.saveState();
+        this.#controls.enabled = false;
+        this.#controls.saveState();
 
-        controls.reset();
+        this.#controls.reset();
     }
 }
