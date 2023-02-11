@@ -19,13 +19,17 @@ class Loop
    * @param {THREE.WebGLRenderer} renderer
    */
   // constructor(camera, scene, renderer,world=null,cannonDebugger=null) 
-  constructor(camera, scene, renderer,physics=null) 
+  constructor(camera, scene, renderer,physics=false) 
   {
-    // this.world = world;
-    this.world = physics.world;
+    if(physics)
+    {
+      // this.world = world;
+      this.world = physics.world;
 
-    // this.cannonDebugger = cannonDebugger;
-    this.cannonDebugger = physics.debugger;
+      // this.cannonDebugger = cannonDebugger;
+      this.cannonDebugger = physics.debugger;
+    }
+    
 
 
     this.camera = camera;

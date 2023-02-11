@@ -1,4 +1,4 @@
-import { III_SPACE } from './III_SPACE.js';
+import  III_SPACE  from './III_Space';
 
 function main() 
 {

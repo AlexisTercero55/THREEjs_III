@@ -8,7 +8,7 @@ import
   MeshBasicMaterial
 } from 'three';
 
-import imagen from '../../../assets/textures/carbon/Carbon_Normal.png';
+import imagen from '/textures/Carbon_Normal.png';
 
 function createMaterial() 
 {
@@ -28,7 +28,7 @@ function createMaterial()
 /**
  * @returns Returns a cube 3D object with geometry and material
  */
-function createCube() 
+export function createCube() 
 {
   const geometry = new BoxGeometry(2, 2, 2);
   const material = createMaterial();
@@ -50,5 +50,4 @@ function createCube()
 
   return cube;
 }
-export { createCube };
   
