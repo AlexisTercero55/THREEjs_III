@@ -7,7 +7,7 @@ import { PerspectiveCamera, Vector3 } from 'three';
  */
 export default class III_Cam extends PerspectiveCamera
 {
-  constructor({x=0,y=0,z=0, lookat=new Vector3(), near = 0.1, far = 1000})
+  constructor({x=0,y=0,z=0, near = 0.1, far = 1000, lookat=new Vector3()})
   {
     super(
       75, // fov = Field Of View

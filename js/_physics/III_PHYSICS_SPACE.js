@@ -81,7 +81,7 @@ export default class III_PHYSICS_SPACE
 
     #initSystems()
     {
-        this.#camera = new III_Cam({x:0,y:0,z:12});
+        this.#camera = new III_Cam({x:0,y:0,z:12, far:4000});
         this.#renderer = new III_WebGL_Renderer();
         this.#scene = new III_SCENE('BOX');
         this.#physics = new III_PHYSICS({
