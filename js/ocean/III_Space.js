@@ -4,15 +4,15 @@
  * @github: AlexisTercero55
  */
 import * as THREE from 'three';
-import III_Cam from '../camera';
-import { createLight } from '../lights';
-import { III_SCENE } from '../scene';
-import { III_WebGL_Renderer } from '../renderer';
-import { III_CONTROLS_ } from '../controls'
-import { Resizer } from '../Resizer';
-import { Loop } from '../Loop';
+import III_Cam from '../threejs_iii/camera';
+import { createLight } from '../threejs_iii/lights';
+import { III_SCENE } from '../threejs_iii/scene';
+import { III_WebGL_Renderer } from '../threejs_iii/renderer';
+import { III_CONTROLS_ } from '../threejs_iii/controls'
+import { Resizer } from '../threejs_iii/Resizer';
+import { Loop } from '../threejs_iii/Loop';
 
-import { createCube } from '../III_Primitives/cube';
+import { createCube } from '../threejs_iii/III_Primitives/cube';
 
 
 
