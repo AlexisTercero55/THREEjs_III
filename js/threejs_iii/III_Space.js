@@ -4,55 +4,138 @@
  * @github: AlexisTercero55
  */
 import * as THREE from 'three';
-import { createCamera } from './camera.js';
-import { createLight } from './lights.js';
-import { III_SCENE, createScene } from './scene.js';
-import { III_WebGL_Renderer, createRenderer } from './renderer.js';
-import { III_CONTROLS_, createControls } from './controls.js'
+import III_Cam from './camera';
+import { createLight } from './lights';
+import { III_SCENE } from './scene';
+import { III_WebGL_Renderer } from './renderer';
+import { III_CONTROLS_ } from './controls'
+import { Resizer } from './Resizer';
+import { Loop } from './Loop';
 
-import { Resizer } from './Resizer.js';
-import { Loop } from './Loop.js';
-import { createCube } from './III_Primitives/cube.js';
+import { createCube } from './III_Primitives/cube';
 
-/** Global variabes */
-export let camera;
-export let renderer;
-export let scene;
-export let loop;
-export let gui;
-export let controls;
 
-class III_SPACE
+
+export default class III_SPACE
 {
+    //#region 
+    #camera = null;
+    #renderer = null;
+    #scene = null;
+    #loop = null;
+    #controls = null;
+    #container = null;
+    #physics = null;
+    //#endregion
     /**
      * 
-     * @param {Element} CONTAINER - where space will be render.
+     * @param {DOMElement} container - where space will be render.
      */
-    constructor(CONTAINER) 
+    constructor(container,{
+        SceneRotation=false,
+        POV={x:0,y:6,z:6}
+        }={}
+    ) 
     {
-        camera = createCamera({x:6,y:6,z:6});
-
-        renderer = new III_WebGL_Renderer(); //createRenderer();
-        scene = new III_SCENE();//createScene();
-        loop = new Loop(camera, scene, renderer);
-        CONTAINER.append(renderer.domElement);
-        controls = new III_CONTROLS_(camera, renderer.domElement);//createControls(camera, renderer.domElement);
-        loop.add(controls);
+        this.#container = container;
+        this.#initSystems(
+            SceneRotation,
+            POV
+        );
+        this.#container.append(this.#renderer.domElement);
+        this.#loop.add(this.#controls);
         
         // this.lights();
 
         this.createObjects();
 
-        const resizer = new Resizer(CONTAINER, camera, renderer);
+        const resizer = new Resizer(this.#container, 
+                                    this.#camera, 
+                                    this.#renderer);
     }
+
+    get scene()
+    {
+        return this.#scene;
+    }
+    get renderer()
+    {
+        return this.#renderer;
+    }
+
+    /**
+     * * Initit
+     * * Camera
+     * * Renderer
+     * * Scene
+     * * Physics
+     * * Render loop
+     * * Control GUI
+     * * Joystick
+     */
+    #initSystems(SceneRotation,
+        POV
+    )
+    {
+        this.#camera = new III_Cam({...POV, far:4000});
+        this.#renderer = new III_WebGL_Renderer();
+        this.#scene = new III_SCENE('BOX');
+        // this.#physics = new III_PHYSICS({
+        //     show : true,
+        //     scene : this.#scene
+        // });
+        this.#loop = new Loop(this.#camera, 
+                              this.#scene, 
+                              this.#renderer);
+
+        this.#controls = new III_CONTROLS_(this.#camera, 
+                                           this.#renderer.domElement);
+        this.#controls.autoRotate = SceneRotation;
+        // this.#controls.enablePan = false;
+        // this.#controls.maxPolarAngle = Math.PI*0.4;
+        // this.#controls.minPolarAngle = Math.PI*0.2;
+
+        // Joystick = new III_Joystick(this.#container,
+        //                                   this.#camera,
+        //                                   this.#controls);
+    }
+
+    // beta
+
+    background()
+    {
+        // background
+        var grometry = new THREE.IcosahedronGeometry(100,2)
+        var back = new THREE.Mesh( grometry, new THREE.MeshBasicMaterial( { map:this.gradTexture([[0.75,0.6,0.4,0.25], ['#1B1D1E','#3D4143','#72797D', '#b0babf']]), side:THREE.BackSide, depthWrite: false, fog:false }  ));
+        // back.geometry.applyMatrix(new THREE.Matrix4().makeRotationZ(15*ToRad));
+        this.#scene.add( back );
+    }
+
+    gradTexture(color) {
+        var c = document.createElement("canvas");
+        var ct = c.getContext("2d");
+        var size = 1024;
+        c.width = 16; c.height = size;
+        var gradient = ct.createLinearGradient(0,0,0,size);
+        var i = color[0].length;
+        while(i--){ gradient.addColorStop(color[0][i],color[1][i]); }
+        ct.fillStyle = gradient;
+        ct.fillRect(0,0,16,size);
+        var texture = new THREE.Texture(c);
+        texture.needsUpdate = true;
+        return texture;
+    }
+
+    // release
 
     lights()
     {
         const ambientLight = createLight();
         const pointLight = createLight('point');
-        scene.add(ambientLight, pointLight);
+        this.#scene.add(ambientLight, pointLight);
     }
 
+    //? Implemets by extending III_SPACE
     createObjects()
     {
         this.addObject(createCube());
@@ -61,13 +144,21 @@ class III_SPACE
 
     axis(n=5)
     {
-        scene.add(new THREE.AxesHelper(n));
+        this.#scene.add(new THREE.AxesHelper(n));
     }
     
-    addObject(obj)
+    addObject(obj,anim=false)
     {
-        loop.add(obj);
-        scene.add(obj);
+        if (!(obj instanceof THREE.Mesh)) {
+            throw new Error("obj must be an instance of THREE.Mesh");
+        }
+        this.#scene.add(obj);
+        if (anim) {
+            if (!("nextFrame" in obj)) {
+                throw new Error("obj must have a nextFrame method");
+            }
+            this.#loop.add(obj);
+        }
     }
 
     /**
@@ -75,7 +166,8 @@ class III_SPACE
      */
     render() 
     {
-        renderer.render(scene, camera);
+        this.#renderer.render(this.#scene, 
+                              this.#camera);
     }
     
     /** Animation manager
@@ -88,7 +180,7 @@ class III_SPACE
      */
     start()
     {
-        loop.start();
+        this.#loop.start();
     }
     
     /** Animation manager
@@ -97,7 +189,7 @@ class III_SPACE
      */
     stop()
     {
-        loop.stop();
+        this.#loop.stop();
     }
 
     /** Working With the Camera While Using OrbitControls
@@ -136,11 +228,9 @@ class III_SPACE
      */
     #cameraCut()
     {
-        // move the camera
-        camera.position.set(1,2,3);
+        this.#camera.position.set(1,2,3);
 
-        // and/or rotate the camera
-        camera.rotation.set(0.5, 0, 0);
+        this.#camera.rotation.set(0.5, 0, 0);
     }
     /** # Smoothly Transition to a New Camera Position
      * 
@@ -165,11 +255,9 @@ class III_SPACE
      * */
     #cameraTransition()
     {
-        controls.enabled = false;
-        controls.saveState();
+        this.#controls.enabled = false;
+        this.#controls.saveState();
 
-        // sometime later
-        controls.reset();
+        this.#controls.reset();
     }
 }
-export {III_SPACE};

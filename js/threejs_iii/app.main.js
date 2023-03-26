@@ -1,4 +1,4 @@
-import { III_SPACE } from './III_SPACE.js';
+import  III_SPACE  from './III_Space';
 
 function main() 
 {
@@ -6,7 +6,7 @@ function main()
   const container = document.querySelector('#sceneID_1');
 
   // create a new world
-  const iii_space = new III_SPACE(container);
+  const iii_space = new III_SPACE(container,{SceneRotation:true});
 
   // start the animation loop
   iii_space.start();
