@@ -1,4 +1,4 @@
-import { III_SHADERS } from './III_SHADERS.js';
+import  III_SHADERS  from './III_SHADERS.js';
 
 function main() 
 {

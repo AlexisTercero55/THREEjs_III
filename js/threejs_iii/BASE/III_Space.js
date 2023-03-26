@@ -31,10 +31,16 @@ export default class III_SPACE
      * 
      * @param {DOMElement} container - where space will be render.
      */
-    constructor(container) 
+    constructor(container,{
+        SceneRotation=false,
+        POV={x:0,y:6,z:6}
+    }) 
     {
         this.#container = container;
-        this.#initSystems();
+        this.#initSystems(
+            SceneRotation,
+            POV
+        );
         this.#container.append(this.#renderer.domElement);
         this.#loop.add(this.#controls);
         
@@ -47,6 +53,15 @@ export default class III_SPACE
                                     this.#renderer);
     }
 
+    get scene()
+    {
+        return this.#scene;
+    }
+    get renderer()
+    {
+        return this.#renderer;
+    }
+
     /**
      * * Initit
      * * Camera
@@ -57,9 +72,11 @@ export default class III_SPACE
      * * Control GUI
      * * Joystick
      */
-    #initSystems()
+    #initSystems(SceneRotation,
+        POV
+    )
     {
-        this.#camera = new III_Cam({x:0,y:0,z:12, far:4000});
+        this.#camera = new III_Cam({...POV, far:4000});
         this.#renderer = new III_WebGL_Renderer();
         this.#scene = new III_SCENE('BOX');
         // this.#physics = new III_PHYSICS({
@@ -72,6 +89,7 @@ export default class III_SPACE
 
         this.#controls = new III_CONTROLS_(this.#camera, 
                                            this.#renderer.domElement);
+        this.#controls.autoRotate = SceneRotation;
         // this.#controls.enablePan = false;
         // this.#controls.maxPolarAngle = Math.PI*0.4;
         // this.#controls.minPolarAngle = Math.PI*0.2;
@@ -116,10 +134,11 @@ export default class III_SPACE
         this.#scene.add(ambientLight, pointLight);
     }
 
+    //? Implemets by extending III_SPACE
     createObjects()
     {
         this.addObject(createCube());
-        // this.axis();
+        this.axis();
     }
 
     axis(n=5)
@@ -127,16 +146,18 @@ export default class III_SPACE
         this.#scene.add(new THREE.AxesHelper(n));
     }
     
-    addObject(obj)
+    addObject(obj,anim=false)
     {
         if (!(obj instanceof THREE.Mesh)) {
             throw new Error("obj must be an instance of THREE.Mesh");
         }
-        if (!("nextFrame" in obj)) {
-            throw new Error("obj must have a nextFrame method");
-        }
-        this.#loop.add(obj);
         this.#scene.add(obj);
+        if (anim) {
+            if (!("nextFrame" in obj)) {
+                throw new Error("obj must have a nextFrame method");
+            }
+            this.#loop.add(obj);
+        }
     }
 
     /**

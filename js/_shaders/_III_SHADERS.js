@@ -23,16 +23,15 @@ export let gui;
 export let controls;
 
 
-["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
 
-/**textures */
+/**textures 
 import tiles from '/textures/tiles.jpg';
 import a from '/textures/dawnmountain-xpos.png';
 import aa from '/textures/dawnmountain-xneg.png';
 import aaa from '/textures/dawnmountain-ypos.png';
 import aaaa from '/textures/dawnmountain-yneg.png';
 import aaaaa from '/textures/dawnmountain-zpos.png';
-import aaaaaa from '/textures/dawnmountain-zneg.png';
+import aaaaaa from '/textures/dawnmountain-zneg.png';*/
 
 class III_SHADERS
 {
@@ -51,8 +50,8 @@ class III_SHADERS
         controls.autoRotate = true;
         loop.add(controls);
         
-        this.lights();
-        this.floor();
+        // this.lights();
+        // this.floor();
         this.sky();
 
         
@@ -68,140 +67,142 @@ class III_SHADERS
         const resizer = new Resizer(container, camera, renderer);
     }
 
-    floor()
-    {
-        // FLOOR
-        var floorTexture = new THREE.TextureLoader().load(tiles);
-        floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
-        floorTexture.repeat.set( 10, 10 );
-        var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
-        var floorGeometry = new THREE.PlaneGeometry(10, 10, 10, 10);
-        var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-        // floor.position.y = -50.5;
-        floor.rotateX(-Math.PI / 2);
-        scene.add(floor);
-    }
+    // floor()
+    // {
+    //     // FLOOR
+    //     var floorTexture = new THREE.TextureLoader().load(tiles);
+    //     floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
+    //     floorTexture.repeat.set( 10, 10 );
+    //     var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
+    //     var floorGeometry = new THREE.PlaneGeometry(10, 10, 10, 10);
+    //     var floor = new THREE.Mesh(floorGeometry, floorMaterial);
+    //     // floor.position.y = -50.5;
+    //     floor.rotateX(-Math.PI / 2);
+    //     scene.add(floor);
+    // }
 
-    //TODO: move to main class as buffer
-    sky()
-    {
-        // SKYBOX
-        var skyGeometry = new THREE.BoxGeometry( 100, 100, 100 );	
+    // //TODO: move to III_Backgrounds
+    // sky()
+    // {
+    //     // SKYBOX
+    //     var skyGeometry = new THREE.BoxGeometry( 100, 100, 100 );	
         
-        var urls = [a,aa,aaa,aaaa,aaaaa,aaaaaa];
-        var materialArray = [];
-        const loader_ = new THREE.TextureLoader();
-        urls.forEach((url) =>
-        {
-            materialArray.push( new THREE.MeshBasicMaterial({
-                map: loader_.load(url),
-                side: THREE.BackSide
-            }));
-        });
+    //     var urls = [a,aa,aaa,aaaa,aaaaa,aaaaaa];
+    //     var materialArray = [];
+    //     const loader_ = new THREE.TextureLoader();
+    //     urls.forEach((url) =>
+    //     {
+    //         materialArray.push( new THREE.MeshBasicMaterial({
+    //             map: loader_.load(url),
+    //             side: THREE.BackSide
+    //         }));
+    //     });
             
-        // var skyMaterial = new THREE.CubeTextureLoader ( materialArray );
-        var skyBox = new THREE.Mesh( skyGeometry, materialArray );
-        scene.add( skyBox );
-    }
+    //     // var skyMaterial = new THREE.CubeTextureLoader ( materialArray );
+    //     var skyBox = new THREE.Mesh( skyGeometry, materialArray );
+    //     scene.add( skyBox );
+    // }
 
-    _fresnel_bubble(type = 'transparent')
-    {
-        /*
-            Based on https://github.com/stemkoski/stemkoski.github.com/blob/master/Three.js/Bubble.html
-            By: Lee Stemkoski
-            Date: July 2013 (three.js v59dev)
+    // //! move to III_SHAPES
+    // _fresnel_bubble(type = 'transparent')
+    // {
+    //     /*
+    //         Based on https://github.com/stemkoski/stemkoski.github.com/blob/master/Three.js/Bubble.html
+    //         By: Lee Stemkoski
+    //         Date: July 2013 (three.js v59dev)
 
 
-            this.refractSphereCamera = new THREE.CubeCamera( 0.1, 5000, 512 );
-	        scene.add( refractSphereCamera );
-        */
+    //         this.refractSphereCamera = new THREE.CubeCamera( 0.1, 5000, 512 );
+	//         scene.add( refractSphereCamera );
+    //     */
         
-        var fShader = FresnelShader ;
+    //     var fShader = FresnelShader ;
 
-        // Create cube render target
-        const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256);//( 128, { generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter } );
-        cubeRenderTarget.texture.type = THREE.HalfFloatType;
+    //     // Create cube render target
+    //     const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256);//( 128, { generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter } );
+    //     cubeRenderTarget.texture.type = THREE.HalfFloatType;
 
 
-        // Create cube camera
-        const refractSphereCamera = new THREE.CubeCamera( 1, 100000, cubeRenderTarget );
-        // scene.add( refractSphereCamera );
+    //     // Create cube camera
+    //     const refractSphereCamera = new THREE.CubeCamera( 1, 100000, cubeRenderTarget );
+    //     // scene.add( refractSphereCamera );
 
-        // const refractSphereCamera = new THREE.CubeCamera( 0.1, 5000, 512 );
-        // scene.add( refractSphereCamera );
+    //     // const refractSphereCamera = new THREE.CubeCamera( 0.1, 5000, 512 );
+    //     // scene.add( refractSphereCamera );
 
-        var fresnelUniforms = 
-        {
-            "mRefractionRatio": { type: "f", value: 1.02 },
-            "mFresnelBias": 	{ type: "f", value: 0.1 },
-            "mFresnelPower": 	{ type: "f", value: 2.0 },
-            "mFresnelScale": 	{ type: "f", value: 1.0 },
-            "tCube": 			{ type: "t", value: cubeRenderTarget.texture } //  textureCube }
-        };
+    //     var fresnelUniforms = 
+    //     {
+    //         "mRefractionRatio": { type: "f", value: 1.02 },
+    //         "mFresnelBias": 	{ type: "f", value: 0.1 },
+    //         "mFresnelPower": 	{ type: "f", value: 2.0 },
+    //         "mFresnelScale": 	{ type: "f", value: 1.0 },
+    //         "tCube": 			{ type: "t", value: cubeRenderTarget.texture } //  textureCube }
+    //     };
 
-        // create custom material for the shader
-        let customMaterial;
-        switch (type) {
-            case 'transparent':
-                customMaterial = new THREE.ShaderMaterial( 
-                    {
-                        uniforms: 		fresnelUniforms,
-                        vertexShader:   fShader.vertexShader,
-                        fragmentShader: fShader.fragmentShader,
-                    }   );
+    //     // create custom material for the shader
+    //     let customMaterial;
+    //     switch (type) {
+    //         case 'transparent':
+    //             customMaterial = new THREE.ShaderMaterial( 
+    //                 {
+    //                     uniforms: 		fresnelUniforms,
+    //                     vertexShader:   fShader.vertexShader,
+    //                     fragmentShader: fShader.fragmentShader,
+    //                 }   );
                 
-                break;
+    //             break;
         
-            case 'metalic':
-                customMaterial = new THREE.MeshStandardMaterial( {
-                    envMap: cubeRenderTarget.texture,
-                    roughness: 0.05,
-                    metalness: 1
-                } );
-            break;
-        }
+    //         case 'metalic':
+    //             customMaterial = new THREE.MeshStandardMaterial( {
+    //                 envMap: cubeRenderTarget.texture,
+    //                 roughness: 0.05,
+    //                 metalness: 1
+    //             } );
+    //         break;
+    //     }
 
-        // var customMaterial = new THREE.ShaderMaterial( 
-        // {
-        //     uniforms: 		fresnelUniforms,
-        //     vertexShader:   fShader.vertexShader,
-        //     fragmentShader: fShader.fragmentShader,
-        // }   );
+    //     // var customMaterial = new THREE.ShaderMaterial( 
+    //     // {
+    //     //     uniforms: 		fresnelUniforms,
+    //     //     vertexShader:   fShader.vertexShader,
+    //     //     fragmentShader: fShader.fragmentShader,
+    //     // }   );
 
-        // const material = new THREE.MeshStandardMaterial( {
-        //     // envMap: cubeRenderTarget.texture,
-        //     roughness: 0.05,
-        //     metalness: 1
-        // } );
+    //     // const material = new THREE.MeshStandardMaterial( {
+    //     //     // envMap: cubeRenderTarget.texture,
+    //     //     roughness: 0.05,
+    //     //     metalness: 1
+    //     // } );
 
-        // var sphereGeometry = new THREE.SphereGeometry( 2, 64, 32 );
-        let sphere = new THREE.Mesh( new THREE.IcosahedronGeometry( 2, 8 ), customMaterial );//new THREE.Mesh( sphereGeometry, customMaterial );
-        sphere.position.set(0, 2,0);
-        scene.add(sphere);
+    //     // var sphereGeometry = new THREE.SphereGeometry( 2, 64, 32 );
+    //     let sphere = new THREE.Mesh( new THREE.IcosahedronGeometry( 2, 8 ), customMaterial );//new THREE.Mesh( sphereGeometry, customMaterial );
+    //     sphere.position.set(0, 2,0);
+    //     scene.add(sphere);
         
-        refractSphereCamera.position.set(sphere.position.x,
-                                        sphere.position.y,
-                                        sphere.position.z  );
+    //     refractSphereCamera.position.set(sphere.position.x,
+    //                                     sphere.position.y,
+    //                                     sphere.position.z  );
 
-        sphere.nextFrame = (_,__) =>
-        {
-            sphere.visible = false;
-            refractSphereCamera.update( renderer, scene );
-            sphere.visible = true;
-        };
-        loop.add(sphere);
+    //     sphere.nextFrame = (_,__) =>
+    //     {
+    //         sphere.visible = false;
+    //         refractSphereCamera.update( renderer, scene );
+    //         sphere.visible = true;
+    //     };
+    //     loop.add(sphere);
 
-        return sphere;
+    //     return sphere;
 
-    }
+    // }
 
-    lights()
-    {
-        var light = new THREE.PointLight(0xff00ff);
-        light.position.set(0,1,0);
-        scene.add(light);
-    }
+    // lights()
+    // {
+    //     var light = new THREE.PointLight(0xff00ff);
+    //     light.position.set(0,1,0);
+    //     scene.add(light);
+    // }
 
+    //! move to III_SHADERS
     vertexShader() 
     {
         return `
@@ -215,6 +216,7 @@ class III_SHADERS
         `;
     }
 
+    //! move to III_SHADERS
     fragmentShader() {
         
         return `
