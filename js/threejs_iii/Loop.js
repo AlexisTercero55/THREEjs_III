@@ -31,11 +31,12 @@ class Loop
     }
     
 
-
+    //! ISSUE | make private fields
     this.camera = camera;
     this.scene = scene;
     this.renderer = renderer;
     this.objs = []; // need a setter for metadata extraction
+    //under review
     this.flags = {};
   }
 

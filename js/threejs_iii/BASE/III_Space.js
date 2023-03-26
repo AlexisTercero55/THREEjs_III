@@ -119,7 +119,7 @@ export default class III_SPACE
     createObjects()
     {
         this.addObject(createCube());
-        this.axis();
+        // this.axis();
     }
 
     axis(n=5)

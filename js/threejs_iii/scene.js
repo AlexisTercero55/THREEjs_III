@@ -26,6 +26,7 @@ export class III_SCENE extends Scene
    */
   setBG(BGType,color=0xff0ff4)
   {
+    //! ISSUE | BGTypes Objs
     //TODO: add here the ico gradien bg
     switch (BGType) {
 
@@ -44,14 +45,15 @@ export class III_SCENE extends Scene
 
   _BOX_()
   {
+    let texture = './textures/stars.jpg';
     const cubeTextureLoader = new CubeTextureLoader();
     this.background = cubeTextureLoader.load([
-      starsTexture,
-      starsTexture,
-      starsTexture,
-      starsTexture,
-      starsTexture,
-      starsTexture
+      texture,
+      texture,
+      texture,
+      texture,
+      texture,
+      texture
     ]);
   }
 }
