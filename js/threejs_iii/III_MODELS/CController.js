@@ -150,72 +150,72 @@ export class BasicCharacterController {
         this._mixer.update(timeInSeconds);
       }
     }
-  };
+};
   
-  class BasicCharacterControllerInput {
-    constructor() {
-      this._Init();    
+class BasicCharacterControllerInput {
+  constructor() {
+    this._Init();    
+  }
+
+  _Init() {
+    this._keys = {
+      forward: false,
+      backward: false,
+      left: false,
+      right: false,
+      space: false,
+      shift: false,
+    };
+    document.addEventListener('keydown', (e) => this._onKeyDown(e), false);
+    document.addEventListener('keyup', (e) => this._onKeyUp(e), false);
+  }
+
+  _onKeyDown(event) {
+    switch (event.keyCode) {
+      case 87: // w
+        this._keys.forward = true;
+        break;
+      case 65: // a
+        this._keys.left = true;
+        break;
+      case 83: // s
+        this._keys.backward = true;
+        break;
+      case 68: // d
+        this._keys.right = true;
+        break;
+      case 32: // SPACE
+        this._keys.space = true;
+        break;
+      case 16: // SHIFT
+        this._keys.shift = true;
+        break;
     }
-  
-    _Init() {
-      this._keys = {
-        forward: false,
-        backward: false,
-        left: false,
-        right: false,
-        space: false,
-        shift: false,
-      };
-      document.addEventListener('keydown', (e) => this._onKeyDown(e), false);
-      document.addEventListener('keyup', (e) => this._onKeyUp(e), false);
+  }
+
+  _onKeyUp(event) {
+    switch(event.keyCode) {
+      case 87: // w
+        this._keys.forward = false;
+        break;
+      case 65: // a
+        this._keys.left = false;
+        break;
+      case 83: // s
+        this._keys.backward = false;
+        break;
+      case 68: // d
+        this._keys.right = false;
+        break;
+      case 32: // SPACE
+        this._keys.space = false;
+        break;
+      case 16: // SHIFT
+        this._keys.shift = false;
+        break;
     }
-  
-    _onKeyDown(event) {
-      switch (event.keyCode) {
-        case 87: // w
-          this._keys.forward = true;
-          break;
-        case 65: // a
-          this._keys.left = true;
-          break;
-        case 83: // s
-          this._keys.backward = true;
-          break;
-        case 68: // d
-          this._keys.right = true;
-          break;
-        case 32: // SPACE
-          this._keys.space = true;
-          break;
-        case 16: // SHIFT
-          this._keys.shift = true;
-          break;
-      }
-    }
-  
-    _onKeyUp(event) {
-      switch(event.keyCode) {
-        case 87: // w
-          this._keys.forward = false;
-          break;
-        case 65: // a
-          this._keys.left = false;
-          break;
-        case 83: // s
-          this._keys.backward = false;
-          break;
-        case 68: // d
-          this._keys.right = false;
-          break;
-        case 32: // SPACE
-          this._keys.space = false;
-          break;
-        case 16: // SHIFT
-          this._keys.shift = false;
-          break;
-      }
-    }
-  };
+  }
+};
   
   
 /**
@@ -227,133 +227,133 @@ The FSM class keeps track of its current state and a dictionary of all available
 
 The FSM also has an Update() method that updates the current state every frame by calling its Update() method. This allows for the execution of state-specific behavior every frame.
  */
-  class FiniteStateMachine {
-    constructor() {
-      this._states = {};//{name:type}
-      this._currentState = null;
-    }
+class FiniteStateMachine {
+  constructor() {
+    this._states = {};//{name:type}
+    this._currentState = null;
+  }
   
-    _AddState(name, type) {
-      this._states[name] = type;
-    }
-  
-    SetState(name) {
-      const prevState = this._currentState;
-      
-      if (prevState) {
-        if (prevState.Name == name) {
-          return;
-        }
-        prevState.Exit();
+  _AddState(name, type) {
+    this._states[name] = type;
+  }
+
+  SetState(name) {
+    const prevState = this._currentState;
+    
+    if (prevState) {
+      if (prevState.Name == name) {
+        return;
       }
-  
-      const state = new this._states[name](this);
-  
-      this._currentState = state;
-      state.Enter(prevState);
+      prevState.Exit();
     }
-  
-    Update(timeElapsed, input) {
-      if (this._currentState) {
-        this._currentState.Update(timeElapsed, input);
-      }
+
+    const state = new this._states[name](this);
+
+    this._currentState = state;
+    state.Enter(prevState);
+  }
+
+  Update(timeElapsed, input) {
+    if (this._currentState) {
+      this._currentState.Update(timeElapsed, input);
     }
-  };
+  }
+};
   
   
 class CharacterFSM extends FiniteStateMachine {
-    constructor(proxy) {// proxy.animations
+  constructor(proxy) {// proxy.animations
 
-        if (!(proxy instanceof BasicCharacterControllerProxy)) {
-            throw new Error('Invalid data type for parameter "proxy". Expected instance of BasicCharacterControllerProxy.');
-        }
-        super();//_states & _currentState
-        this._proxy = proxy;
-        this._Init();
-    }
+      if (!(proxy instanceof BasicCharacterControllerProxy)) {
+          throw new Error('Invalid data type for parameter "proxy". Expected instance of BasicCharacterControllerProxy.');
+      }
+      super();//_states & _currentState
+      this._proxy = proxy;
+      this._Init();
+  }
 
-    _Init() {
-        this._AddState('idle', IdleState);
-        this._AddState('walk', WalkState);
-        this._AddState('run', RunState);
-        this._AddState('dance', DanceState);
-    }
+  _Init() {
+      this._AddState('idle', IdleState);
+      this._AddState('walk', WalkState);
+      this._AddState('run', RunState);
+      this._AddState('dance', DanceState);
+  }
 };
   
   
 /**Templete for especific animations */
 class State {//Enter() Exit() Update()
-    constructor(parent) {
-        this._parent = parent;
-    }
+  constructor(parent) {
+      this._parent = parent;
+  }
 
-    Enter() {}
-    Exit() {}
-    Update() {}
+  Enter() {}
+  Exit() {}
+  Update() {}
 };
   
   
 class DanceState extends State {
-    constructor(parent) {//_FinishedCallback
-        super(parent);
+  constructor(parent) {//_FinishedCallback
+      super(parent);
 
-        this._FinishedCallback = () => {
-            this._Finished();
-        }
-    }
+      this._FinishedCallback = () => {
+          this._Finished();
+      }
+  }
 
-    get Name() {
-        return 'dance';
-    }
+  get Name() {
+      return 'dance';
+  }
 
-    Enter(prevState) {
-        const curAction = this._parent._proxy._animations['dance'].action;
-        const mixer = curAction.getMixer();
-        mixer.addEventListener('finished', this._FinishedCallback);
+  Enter(prevState) {
+      const curAction = this._parent._proxy._animations['dance'].action;
+      const mixer = curAction.getMixer();
+      mixer.addEventListener('finished', this._FinishedCallback);
 
-        if (prevState) {
-        const prevAction = this._parent._proxy._animations[prevState.Name].action;
+      if (prevState) {
+      const prevAction = this._parent._proxy._animations[prevState.Name].action;
 
-        curAction.reset();  
-        curAction.setLoop(THREE.LoopOnce, 1);
-        curAction.clampWhenFinished = true;
-        curAction.crossFadeFrom(prevAction, 0.2, true);
-        curAction.play();
-        } else {
-        curAction.play();
-        }
-    }
+      curAction.reset();  
+      curAction.setLoop(THREE.LoopOnce, 1);
+      curAction.clampWhenFinished = true;
+      curAction.crossFadeFrom(prevAction, 0.2, true);
+      curAction.play();
+      } else {
+      curAction.play();
+      }
+  }
 
-    _Finished() {
-        this._Cleanup();
-        this._parent.SetState('idle');
-    }
+  _Finished() {
+      this._Cleanup();
+      this._parent.SetState('idle');
+  }
 
-    _Cleanup() {
-        const action = this._parent._proxy._animations['dance'].action;
-        
-        action.getMixer().removeEventListener('finished', this._CleanupCallback);
-    }
+  _Cleanup() {
+      const action = this._parent._proxy._animations['dance'].action;
+      
+      action.getMixer().removeEventListener('finished', this._CleanupCallback);
+  }
 
-    Exit() {
-        this._Cleanup();
-    }
+  Exit() {
+      this._Cleanup();
+  }
 
-    Update(_) {
-    }
+  Update(_) {
+  }
 };
 
 
 class WalkState extends State {
-constructor(parent) {
-    super(parent);
-}
+  constructor(parent) {
+      super(parent);
+  }
 
-get Name() {
-    return 'walk';
-}
+  get Name() {
+      return 'walk';
+  }
 
-Enter(prevState) {
+  Enter(prevState) {
     const curAction = this._parent._proxy._animations['walk'].action;
     if (prevState) {
     const prevAction = this._parent._proxy._animations[prevState.Name].action;
@@ -374,12 +374,12 @@ Enter(prevState) {
     } else {
     curAction.play();
     }
-}
+  }
 
-Exit() {
-}
+  Exit() {
+  }
 
-Update(timeElapsed, input) {
+  Update(timeElapsed, input) {
     if (input._keys.forward || input._keys.backward) {
     if (input._keys.shift) {
         this._parent.SetState('run');
@@ -388,20 +388,20 @@ Update(timeElapsed, input) {
     }
 
     this._parent.SetState('idle');
-}
+  }
 };
 
 
 class RunState extends State {
-constructor(parent) {
+  constructor(parent) {
     super(parent);
-}
+  }
 
-get Name() {
+  get Name() {
     return 'run';
-}
+  }
 
-Enter(prevState) {
+  Enter(prevState) {
     const curAction = this._parent._proxy._animations['run'].action;
     if (prevState) {
     const prevAction = this._parent._proxy._animations[prevState.Name].action;
@@ -422,12 +422,12 @@ Enter(prevState) {
     } else {
     curAction.play();
     }
-}
+  }
 
-Exit() {
-}
+  Exit() {
+  }
 
-Update(timeElapsed, input) {
+  Update(timeElapsed, input) {
     if (input._keys.forward || input._keys.backward) {
     if (!input._keys.shift) {
         this._parent.SetState('walk');
@@ -436,198 +436,198 @@ Update(timeElapsed, input) {
     }
 
     this._parent.SetState('idle');
-}
+  }
 };
 
 
 class IdleState extends State {
   constructor(parent) {
-      super(parent);
+    super(parent);
   }
 
   get Name() {
-      return 'idle';
+    return 'idle';
   }
 
   Enter(prevState) {
-      const idleAction = this._parent._proxy._animations['idle'].action;
-      if (prevState) {
-        const prevAction = this._parent._proxy._animations[prevState.Name].action;
-        idleAction.time = 0.0;
-        idleAction.enabled = true;
-        idleAction.setEffectiveTimeScale(1.0);
-        idleAction.setEffectiveWeight(1.0);
-        idleAction.crossFadeFrom(prevAction, 0.5, true);
-        idleAction.play();
-      } else {
-        idleAction.play();
-      }
+    const idleAction = this._parent._proxy._animations['idle'].action;
+    if (prevState) {
+      const prevAction = this._parent._proxy._animations[prevState.Name].action;
+      idleAction.time = 0.0;
+      idleAction.enabled = true;
+      idleAction.setEffectiveTimeScale(1.0);
+      idleAction.setEffectiveWeight(1.0);
+      idleAction.crossFadeFrom(prevAction, 0.5, true);
+      idleAction.play();
+    } else {
+      idleAction.play();
+    }
   }
 
   Exit() {}
 
   Update(_, input) {
-      if (input._keys.forward || input._keys.backward) {
+    if (input._keys.forward || input._keys.backward) {
       this._parent.SetState('walk');
-      } else if (input._keys.space) {
+    } else if (input._keys.space) {
       this._parent.SetState('dance');
-      }
+    }
   }
 };
 
-class CharacterControllerDemo {
-    constructor() {
-      this._Initialize();
-    }
+// class CharacterControllerDemo {
+//     constructor() {
+//       this._Initialize();
+//     }
   
-    _Initialize() {
-      this._threejs = new THREE.WebGLRenderer({
-        antialias: true,
-      });
-      this._threejs.outputEncoding = THREE.sRGBEncoding;
-      this._threejs.shadowMap.enabled = true;
-      this._threejs.shadowMap.type = THREE.PCFSoftShadowMap;
-      this._threejs.setPixelRatio(window.devicePixelRatio);
-      this._threejs.setSize(window.innerWidth, window.innerHeight);
+//     _Initialize() {
+//       this._threejs = new THREE.WebGLRenderer({
+//         antialias: true,
+//       });
+//       this._threejs.outputEncoding = THREE.sRGBEncoding;
+//       this._threejs.shadowMap.enabled = true;
+//       this._threejs.shadowMap.type = THREE.PCFSoftShadowMap;
+//       this._threejs.setPixelRatio(window.devicePixelRatio);
+//       this._threejs.setSize(window.innerWidth, window.innerHeight);
   
-      document.body.appendChild(this._threejs.domElement);
+//       document.body.appendChild(this._threejs.domElement);
   
-      window.addEventListener('resize', () => {
-        this._OnWindowResize();
-      }, false);
+//       window.addEventListener('resize', () => {
+//         this._OnWindowResize();
+//       }, false);
   
-      const fov = 60;
-      const aspect = 1920 / 1080;
-      const near = 1.0;
-      const far = 1000.0;
-      this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-      this._camera.position.set(25, 10, 25);
+//       const fov = 60;
+//       const aspect = 1920 / 1080;
+//       const near = 1.0;
+//       const far = 1000.0;
+//       this._camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+//       this._camera.position.set(25, 10, 25);
   
-      this._scene = new THREE.Scene();
+//       this._scene = new THREE.Scene();
   
-      let light = new THREE.DirectionalLight(0xFFFFFF, 1.0);
-      light.position.set(-100, 100, 100);
-      light.target.position.set(0, 0, 0);
-      light.castShadow = true;
-      light.shadow.bias = -0.001;
-      light.shadow.mapSize.width = 4096;
-      light.shadow.mapSize.height = 4096;
-      light.shadow.camera.near = 0.1;
-      light.shadow.camera.far = 500.0;
-      light.shadow.camera.near = 0.5;
-      light.shadow.camera.far = 500.0;
-      light.shadow.camera.left = 50;
-      light.shadow.camera.right = -50;
-      light.shadow.camera.top = 50;
-      light.shadow.camera.bottom = -50;
-      this._scene.add(light);
+//       let light = new THREE.DirectionalLight(0xFFFFFF, 1.0);
+//       light.position.set(-100, 100, 100);
+//       light.target.position.set(0, 0, 0);
+//       light.castShadow = true;
+//       light.shadow.bias = -0.001;
+//       light.shadow.mapSize.width = 4096;
+//       light.shadow.mapSize.height = 4096;
+//       light.shadow.camera.near = 0.1;
+//       light.shadow.camera.far = 500.0;
+//       light.shadow.camera.near = 0.5;
+//       light.shadow.camera.far = 500.0;
+//       light.shadow.camera.left = 50;
+//       light.shadow.camera.right = -50;
+//       light.shadow.camera.top = 50;
+//       light.shadow.camera.bottom = -50;
+//       this._scene.add(light);
   
-      light = new THREE.AmbientLight(0xFFFFFF, 0.25);
-      this._scene.add(light);
+//       light = new THREE.AmbientLight(0xFFFFFF, 0.25);
+//       this._scene.add(light);
   
-      const controls = new OrbitControls(
-        this._camera, this._threejs.domElement);
-      controls.target.set(0, 10, 0);
-      controls.update();
+//       const controls = new OrbitControls(
+//         this._camera, this._threejs.domElement);
+//       controls.target.set(0, 10, 0);
+//       controls.update();
   
-      const loader = new THREE.CubeTextureLoader();
-      const texture = loader.load([
-          './resources/posx.jpg',
-          './resources/negx.jpg',
-          './resources/posy.jpg',
-          './resources/negy.jpg',
-          './resources/posz.jpg',
-          './resources/negz.jpg',
-      ]);
-      texture.encoding = THREE.sRGBEncoding;
-      this._scene.background = texture;
+//       const loader = new THREE.CubeTextureLoader();
+//       const texture = loader.load([
+//           './resources/posx.jpg',
+//           './resources/negx.jpg',
+//           './resources/posy.jpg',
+//           './resources/negy.jpg',
+//           './resources/posz.jpg',
+//           './resources/negz.jpg',
+//       ]);
+//       texture.encoding = THREE.sRGBEncoding;
+//       this._scene.background = texture;
   
-      const plane = new THREE.Mesh(
-          new THREE.PlaneGeometry(100, 100, 10, 10),
-          new THREE.MeshStandardMaterial({
-              color: 0x808080,
-            }));
-      plane.castShadow = false;
-      plane.receiveShadow = true;
-      plane.rotation.x = -Math.PI / 2;
-      this._scene.add(plane);
+//       const plane = new THREE.Mesh(
+//           new THREE.PlaneGeometry(100, 100, 10, 10),
+//           new THREE.MeshStandardMaterial({
+//               color: 0x808080,
+//             }));
+//       plane.castShadow = false;
+//       plane.receiveShadow = true;
+//       plane.rotation.x = -Math.PI / 2;
+//       this._scene.add(plane);
   
-      this._mixers = [];
-      this._previousRAF = null;
+//       this._mixers = [];
+//       this._previousRAF = null;
   
-      this._LoadAnimatedModel();
-      this._RAF();
-    }
+//       this._LoadAnimatedModel();
+//       this._RAF();
+//     }
   
-    _LoadAnimatedModel() {
-      const params = {
-        camera: this._camera,
-        scene: this._scene,
-      }
-      this._controls = new BasicCharacterController(params);
-    }
+//     _LoadAnimatedModel() {
+//       const params = {
+//         camera: this._camera,
+//         scene: this._scene,
+//       }
+//       this._controls = new BasicCharacterController(params);
+//     }
   
-    _LoadAnimatedModelAndPlay(path, modelFile, animFile, offset) {
-      const loader = new FBXLoader();
-      loader.setPath(path);
-      loader.load(modelFile, (fbx) => {
-        fbx.scale.setScalar(0.1);
-        fbx.traverse(c => {
-          c.castShadow = true;
-        });
-        fbx.position.copy(offset);
+//     _LoadAnimatedModelAndPlay(path, modelFile, animFile, offset) {
+//       const loader = new FBXLoader();
+//       loader.setPath(path);
+//       loader.load(modelFile, (fbx) => {
+//         fbx.scale.setScalar(0.1);
+//         fbx.traverse(c => {
+//           c.castShadow = true;
+//         });
+//         fbx.position.copy(offset);
   
-        const anim = new FBXLoader();
-        anim.setPath(path);
-        anim.load(animFile, (anim) => {
-          const m = new THREE.AnimationMixer(fbx);
-          this._mixers.push(m);
-          const idle = m.clipAction(anim.animations[0]);
-          idle.play();
-        });
-        this._scene.add(fbx);
-      });
-    }
+//         const anim = new FBXLoader();
+//         anim.setPath(path);
+//         anim.load(animFile, (anim) => {
+//           const m = new THREE.AnimationMixer(fbx);
+//           this._mixers.push(m);
+//           const idle = m.clipAction(anim.animations[0]);
+//           idle.play();
+//         });
+//         this._scene.add(fbx);
+//       });
+//     }
   
-    _LoadModel() {
-      const loader = new GLTFLoader();
-      loader.load('./resources/thing.glb', (gltf) => {
-        gltf.scene.traverse(c => {
-          c.castShadow = true;
-        });
-        this._scene.add(gltf.scene);
-      });
-    }
+//     _LoadModel() {
+//       const loader = new GLTFLoader();
+//       loader.load('./resources/thing.glb', (gltf) => {
+//         gltf.scene.traverse(c => {
+//           c.castShadow = true;
+//         });
+//         this._scene.add(gltf.scene);
+//       });
+//     }
   
-    _OnWindowResize() {
-      this._camera.aspect = window.innerWidth / window.innerHeight;
-      this._camera.updateProjectionMatrix();
-      this._threejs.setSize(window.innerWidth, window.innerHeight);
-    }
+//     _OnWindowResize() {
+//       this._camera.aspect = window.innerWidth / window.innerHeight;
+//       this._camera.updateProjectionMatrix();
+//       this._threejs.setSize(window.innerWidth, window.innerHeight);
+//     }
   
-    _RAF() {
-      requestAnimationFrame((t) => {
-        if (this._previousRAF === null) {
-          this._previousRAF = t;
-        }
+//     _RAF() {
+//       requestAnimationFrame((t) => {
+//         if (this._previousRAF === null) {
+//           this._previousRAF = t;
+//         }
   
-        this._RAF();
+//         this._RAF();
   
-        this._threejs.render(this._scene, this._camera);
-        this._Step(t - this._previousRAF);
-        this._previousRAF = t;
-      });
-    }
+//         this._threejs.render(this._scene, this._camera);
+//         this._Step(t - this._previousRAF);
+//         this._previousRAF = t;
+//       });
+//     }
   
-    _Step(timeElapsed) {
-      const timeElapsedS = timeElapsed * 0.001;
-      if (this._mixers) {
-        this._mixers.map(m => m.update(timeElapsedS));
-      }
+//     _Step(timeElapsed) {
+//       const timeElapsedS = timeElapsed * 0.001;
+//       if (this._mixers) {
+//         this._mixers.map(m => m.update(timeElapsedS));
+//       }
   
-      if (this._controls) {
-        this._controls.Update(timeElapsedS);
-      }
-    }
-  }
+//       if (this._controls) {
+//         this._controls.Update(timeElapsedS);
+//       }
+//     }
+//   }
   
