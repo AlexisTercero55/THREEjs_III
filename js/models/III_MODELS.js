@@ -7,13 +7,14 @@ import * as  THREE from 'three';
 import III_SPACE from "../threejs_iii/III_Space";
 import glbLoad from '../threejs_iii/III_MODELS/glbLoad';
 import createLight from '../threejs_iii/lights';
+import { BasicCharacterController } from '../threejs_iii/III_MODELS/CController';
 
 
 export default class III_MODELS extends III_SPACE
 {
     constructor(container,{
         SceneRotation=false,
-        POV={x:0,y:4,z:-7.5},
+        POV={x:0,y:10,z:-10},
     }={}){
         super(container,{
             SceneRotation,
@@ -27,9 +28,35 @@ export default class III_MODELS extends III_SPACE
     {
         const grid = new THREE.GridHelper(90, 90,0x00ff00,0xff0000);
         this.addObject(grid);
-        let model = glbLoad('./models/tyrannosaurus_rex.glb',
-        this.scene,
-        this.loop);
+        const params = {
+            camera: this.camera,
+            scene: this.scene,
+        }
+        
+        // characters //!Review content
+        var controls = new BasicCharacterController(params);
+
+        controls.nextFrame = (delta,_) =>{
+            controls.Update(delta);
+        }
+        this.addLoop(controls);
+
+        const l = createLight('ambient')
+        this.addObject(l);
+
+        this.axis();
+    }
+
+    /**GLB animated load */
+    async _createObjects()
+    {
+        const grid = new THREE.GridHelper(90, 90,0x00ff00,0xff0000);
+        this.addObject(grid);
+        let model = await glbLoad('./models/tyrannosaurus_rex.glb',
+        new THREE.Vector3(0,0.8,0));
+        model.rotateY(-Math.PI);
+        // model.scale.multiplyScalar(1);
+        this.addObject(model,true);
 
         // model.scale;
 
