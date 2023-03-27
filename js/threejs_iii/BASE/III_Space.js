@@ -5,7 +5,7 @@
  */
 import * as THREE from 'three';
 import III_Cam from '../camera';
-import { createLight } from '../lights';
+import  createLight  from '../lights';
 import { III_SCENE } from '../scene';
 import { III_WebGL_Renderer } from '../renderer';
 import { III_CONTROLS_ } from '../controls'
@@ -53,6 +53,10 @@ export default class III_SPACE
                                     this.#renderer);
     }
 
+    get loop()
+    {
+        return this.#loop;
+    }
     get scene()
     {
         return this.#scene;
@@ -148,8 +152,8 @@ export default class III_SPACE
     
     addObject(obj,anim=false)
     {
-        if (!(obj instanceof THREE.Mesh)) {
-            throw new Error("obj must be an instance of THREE.Mesh");
+        if (!(obj instanceof THREE.Object3D)) {
+            throw new Error("obj must be an instance of THREE.Object3D");
         }
         this.#scene.add(obj);
         if (anim) {
