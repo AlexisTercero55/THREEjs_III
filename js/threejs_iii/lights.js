@@ -26,7 +26,7 @@ function createLight(lightType = 'ambient',intensity=0)
       light.position.set(100, 100, 100);
       break;
     case 'ambient':
-      light = new AmbientLight(0x333333,5);
+      light = new AmbientLight(0xFFFFFF,15);
       break;
     case 'point':
       if(!intensity){intensity = 100;}

@@ -41,24 +41,7 @@ export default class III_MODELS extends III_SPACE
         }
         this.addLoop(controls);
 
-        let lig = createLight('directional',100);
-        lig.position.set(0, 10, 0);
-        this.addObject(lig);
-
-        lig = createLight('directional',100);
-        lig.position.set(5, 10,-3 );
-        this.addObject(lig);
-
-        lig = createLight('directional',100);
-        lig.position.set(-5, 10,-3 );
-        this.addObject(lig);
-
-        lig = createLight('directional',200);
-        lig.position.set(0, 4,-7 );
-        this.addObject(lig);
-
-        const l = createLight('point',10)
-        // l.position.set(0, 5, -5);
+        const l = createLight('ambient')
         this.addObject(l);
 
         this.axis();
