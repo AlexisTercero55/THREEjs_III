@@ -4,6 +4,8 @@ Another abstraction level for computer graphics on the web.
 
 ![Screenshot_3](https://user-images.githubusercontent.com/87354316/227800425-31b38e3c-b4ae-49fe-b195-3c381eca72ce.png)
 
+![Screenshot_4](https://user-images.githubusercontent.com/87354316/227851549-2b21eab5-8918-46dc-894c-3e7b0ad5f292.png)
+
 ## Usage
 
 Implements pipeline by extending `III_SPACE` class:
