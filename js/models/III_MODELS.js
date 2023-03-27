@@ -23,13 +23,15 @@ export default class III_MODELS extends III_SPACE
         this.controlsLookAt(new THREE.Vector3(0,5,0));
     }
 
-    createObjects()
+    async createObjects()
     {
         const grid = new THREE.GridHelper(90, 90,0x00ff00,0xff0000);
         this.addObject(grid);
-        let model = glbLoad('./models/tyrannosaurus_rex.glb',
-        this.scene,
-        this.loop);
+        let model = await glbLoad('./models/tyrannosaurus_rex.glb',
+        new THREE.Vector3(0,0.8,0));
+        model.rotateY(-Math.PI);
+        // model.scale.multiplyScalar(1);
+        this.addObject(model,true);
 
         // model.scale;
 
