@@ -59,6 +59,10 @@ export default class III_SPACE
     {
         return this.#loop;
     }
+    get camera()
+    {
+        return this.#camera;
+    }
     get scene()
     {
         return this.#scene;
@@ -154,6 +158,14 @@ export default class III_SPACE
     axis(n=5)
     {
         this.#scene.add(new THREE.AxesHelper(n));
+    }
+
+    addLoop(obj)
+    {
+        if (!("nextFrame" in obj)) {
+            throw new Error("obj must have a nextFrame method");
+        }
+        this.#loop.add(obj);
     }
     
     addObject(obj,anim=false)
