@@ -65,12 +65,17 @@ export class BasicCharacterController {
         this._target = fbx;
         this._params.scene.add(this._target);
   
+        // this._target:Object3D - the object whose animations shall be played by this mixer.
         this._mixer = new THREE.AnimationMixer(this._target);
   
-        const _OnLoad = (animName, anim ) => {
-          const clip = anim.animations[0];
-          const action = this._mixer.clipAction(clip);
-    
+        // for each animation file (FBX)
+        const _OnLoadAnimation = (animName, FBX ) => {
+
+          // get an AnimationClip
+          const clip = FBX.animations[0];
+          // Schedule animation playback
+          const action = this._mixer.clipAction(clip);//:AnimationAction
+          //animations = {animName:{clip,action},...,{}}
           this._animations[animName] = {
             clip: clip,
             action: action,
@@ -83,12 +88,13 @@ export class BasicCharacterController {
           this._stateMachine.SetState('idle');
         };
   
+        //Once character is loaded then load its animations from FBX files.
         const loader = new FBXLoader(this._manager);
         // loader.setPath('./models/');
-        loader.load('./models/walk.fbx', (a) => { _OnLoad('walk', a); });
-        loader.load('./models/run.fbx', (a) => { _OnLoad('run', a); });
-        loader.load('./models/idle.fbx', (a) => { _OnLoad('idle', a); });
-        loader.load('./models/dance.fbx', (a) => { _OnLoad('dance', a); });
+        loader.load('./models/walk.fbx', (a) => { _OnLoadAnimation('walk', a); });
+        loader.load('./models/run.fbx', (a) => { _OnLoadAnimation('run', a); });
+        loader.load('./models/idle.fbx', (a) => { _OnLoadAnimation('idle', a); });
+        loader.load('./models/dance.fbx', (a) => { _OnLoadAnimation('dance', a); });
       });
     }
   
@@ -97,8 +103,10 @@ export class BasicCharacterController {
         return;
       }
   
+      // update the current state | keep walking and traslating.
       this._stateMachine.Update(timeInSeconds, this._input);
   
+      // Calculate the frame deceleration based on the object's velocity
       const velocity = this._velocity;
       const frameDecceleration = new THREE.Vector3(
           velocity.x * this._decceleration.x,
@@ -109,41 +117,47 @@ export class BasicCharacterController {
       frameDecceleration.z = Math.sign(frameDecceleration.z) * Math.min(
           Math.abs(frameDecceleration.z), Math.abs(velocity.z));
   
+      // Update the object's velocity based on the frame deceleration
       velocity.add(frameDecceleration);
   
+      // Get the target object and its current orientation
       const controlObject = this._target;
       const _Q = new THREE.Quaternion();
       const _A = new THREE.Vector3();
       const _R = controlObject.quaternion.clone();
   
-      const acc = this._acceleration.clone();
+      // Calculate the acceleration based on user input
+      const acc = this._acceleration.clone()
+      // If shift is pressed, double the acceleration;
       if (this._input._keys.shift) {
         acc.multiplyScalar(2.0);
       }
-  
+      // If the object is in the "dance" state, set acceleration to zero
       if (this._stateMachine._currentState?.Name == 'dance') {
         acc.multiplyScalar(0.0);
       }
-  
+      // Update the object's velocity based on user input
       if (this._input._keys.forward) {
         velocity.z += acc.z * timeInSeconds;
       }
       if (this._input._keys.backward) {
         velocity.z -= acc.z * timeInSeconds;
       }
+      // Rotate the object left around its vertical axis
       if (this._input._keys.left) {
         _A.set(0, 1, 0);
         _Q.setFromAxisAngle(_A, 4.0 * Math.PI * timeInSeconds * this._acceleration.y);
         _R.multiply(_Q);
       }
+      // Rotate the object right around its vertical axis
       if (this._input._keys.right) {
         _A.set(0, 1, 0);
         _Q.setFromAxisAngle(_A, 4.0 * -Math.PI * timeInSeconds * this._acceleration.y);
         _R.multiply(_Q);
       }
-  
+      // Update the object's orientation
       controlObject.quaternion.copy(_R);
-  
+      // Calculate the object's new position based on its velocity and orientation
       const oldPosition = new THREE.Vector3();
       oldPosition.copy(controlObject.position);
   
@@ -157,12 +171,12 @@ export class BasicCharacterController {
   
       sideways.multiplyScalar(velocity.x * timeInSeconds);
       forward.multiplyScalar(velocity.z * timeInSeconds);
-  
+      // Update the object's position
       controlObject.position.add(forward);
       controlObject.position.add(sideways);
   
+      // Update the object's animation mixer (if one exists)
       oldPosition.copy(controlObject.position);
-  
       if (this._mixer) {
         this._mixer.update(timeInSeconds);
       }
@@ -281,22 +295,30 @@ class FiniteStateMachine {
 };
   
   
+/**
+ * Initialize the custom states for 
+ * manipulate a 3D character model.
+ * * IdleState
+ * * WalkState
+ * * RunState
+ * * DanceState
+ */
 class CharacterFSM extends FiniteStateMachine {
   constructor(proxy) {// proxy.animations
 
-      if (!(proxy instanceof BasicCharacterControllerProxy)) {
-          throw new Error('Invalid data type for parameter "proxy". Expected instance of BasicCharacterControllerProxy.');
-      }
-      super();//_states & _currentState
-      this._proxy = proxy;
-      this._Init();
+    if (!(proxy instanceof BasicCharacterControllerProxy)) {
+        throw new Error('Invalid data type for parameter "proxy". Expected instance of BasicCharacterControllerProxy.');
+    }
+    super();//_states & _currentState
+    this._proxy = proxy;
+    this._Init();
   }
 
   _Init() {
-      this._AddState('idle', IdleState);
-      this._AddState('walk', WalkState);
-      this._AddState('run', RunState);
-      this._AddState('dance', DanceState);
+    this._AddState('idle', IdleState);
+    this._AddState('walk', WalkState);
+    this._AddState('run', RunState);
+    this._AddState('dance', DanceState);
   }
 };
   
