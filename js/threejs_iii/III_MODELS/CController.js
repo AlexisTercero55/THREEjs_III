@@ -8,13 +8,29 @@ import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 
 class BasicCharacterControllerProxy {
-    constructor(animations) {
-      this._animations = animations;
-    }
-  
-    get animations() {
-      return this._animations;
-    }
+    
+  /**
+    //! TS interface
+
+  `
+  animations = {
+    name : {
+        clip: AnimationAction,
+        action: AnimationClip,
+      },
+  }`
+   * @param {Object} animations 
+   * 
+   */
+  constructor(animations) {
+
+    // console.log(animations);
+    this._animations = animations;
+  }
+
+  get animations() {
+    return this._animations;
+  }
 };
 
 export class BasicCharacterController {
@@ -51,11 +67,6 @@ export class BasicCharacterController {
   
         this._mixer = new THREE.AnimationMixer(this._target);
   
-        this._manager = new THREE.LoadingManager();
-        this._manager.onLoad = () => {
-          this._stateMachine.SetState('idle');
-        };
-  
         const _OnLoad = (animName, anim ) => {
           const clip = anim.animations[0];
           const action = this._mixer.clipAction(clip);
@@ -64,6 +75,12 @@ export class BasicCharacterController {
             clip: clip,
             action: action,
           };
+        };
+
+        this._manager = new THREE.LoadingManager();
+        this._manager.onLoad = () => {
+          //setting the first state when preset state are available
+          this._stateMachine.SetState('idle');
         };
   
         const loader = new FBXLoader(this._manager);
@@ -237,22 +254,25 @@ class FiniteStateMachine {
     this._states[name] = type;
   }
 
+  /**Change the state of this FSM */
   SetState(name) {
     const prevState = this._currentState;
     
     if (prevState) {
       if (prevState.Name == name) {
-        return;
+        return;//if new state is the same state, do nothing.
       }
       prevState.Exit();
     }
 
+    // I'm parent of the new state here
     const state = new this._states[name](this);
 
     this._currentState = state;
     state.Enter(prevState);
   }
 
+  /**Update the animation loop */
   Update(timeElapsed, input) {
     if (this._currentState) {
       this._currentState.Update(timeElapsed, input);
