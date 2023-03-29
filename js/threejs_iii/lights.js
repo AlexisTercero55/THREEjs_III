@@ -21,12 +21,13 @@ function createLight(lightType = 'ambient',intensity=0)
   {
     case 'directional':
       if(!intensity){intensity = 8;}
-      light = new DirectionalLight('white', 8);
+      light = new DirectionalLight('white', intensity);
       // move the light right, up, and towards us
       light.position.set(100, 100, 100);
       break;
     case 'ambient':
-      light = new AmbientLight(0xFFFFFF,15);
+      if(!intensity){intensity = 15;}
+      light = new AmbientLight(0xFFFFFF,intensity);
       break;
     case 'point':
       if(!intensity){intensity = 100;}

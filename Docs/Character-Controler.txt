@@ -1,0 +1,29 @@
+# CController is a finite state machine (FSM)
+
+State:
+    parent : CharacterFSM
+
+    Enter()
+    Exit()
+    Update()
+
+FiniteStateMachine:
+    states : {{name : Class extend State}}
+    currentState : CharacterFSM
+
+    _AddState(name:str, type:Class extend State)
+    SetState(name:str)
+
+CharacterFSM extends FiniteStateMachine:
+    proxy : BasicCharacterControllerProxy
+
+
+BasicCharacterControllerProxy:
+    animations: {
+        name : {
+            clip: AnimationAction,
+            action: AnimationClip,
+        },
+    }
+
+    get animations():this.animations
