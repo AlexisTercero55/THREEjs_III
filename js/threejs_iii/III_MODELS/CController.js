@@ -90,11 +90,11 @@ export class BasicCharacterController {
   
         //Once character is loaded then load its animations from FBX files.
         const loader = new FBXLoader(this._manager);
-        // loader.setPath('./models/');
-        loader.load('./models/walk.fbx', (a) => { _OnLoadAnimation('walk', a); });
-        loader.load('./models/run.fbx', (a) => { _OnLoadAnimation('run', a); });
-        loader.load('./models/idle.fbx', (a) => { _OnLoadAnimation('idle', a); });
-        loader.load('./models/dance.fbx', (a) => { _OnLoadAnimation('dance', a); });
+        loader.setPath('./models/');
+        loader.load('walk.fbx', (a) => { _OnLoadAnimation('walk', a); });
+        loader.load('run.fbx', (a) => { _OnLoadAnimation('run', a); });
+        loader.load('idle.fbx', (a) => { _OnLoadAnimation('idle', a); });
+        loader.load('dance.fbx', (a) => { _OnLoadAnimation('dance', a); });
       });
     }
   
@@ -375,16 +375,15 @@ class DanceState extends State {
       mixer.addEventListener('finished', this._FinishedCallback);
 
       if (prevState) {
-      const prevAction = this._parent._proxy._animations[prevState.Name].action;
+        const prevAction = this._parent._proxy._animations[prevState.Name].action;
 
-      curAction.reset();  
-      curAction.setLoop(THREE.LoopOnce, 1);
-      curAction.clampWhenFinished = true;
-      curAction.crossFadeFrom(prevAction, 0.2, true);
+        curAction.reset();  
+        curAction.setLoop(THREE.LoopOnce, 1);
+        curAction.clampWhenFinished = true;
+        curAction.crossFadeFrom(prevAction, 0.2, true);
+      } 
+      
       curAction.play();
-      } else {
-      curAction.play();
-      }
   }
 
   _Finished() {
@@ -395,7 +394,7 @@ class DanceState extends State {
   _Cleanup() {
       const action = this._parent._proxy._animations['dance'].action;
       
-      action.getMixer().removeEventListener('finished', this._CleanupCallback);
+      action.getMixer().removeEventListener('finished');
   }
 
   Exit() {
@@ -435,10 +434,8 @@ class WalkState extends State {
       }
 
       curAction.crossFadeFrom(prevAction, 0.5, true);
-      // curAction.play();
-    } //else {
+    } 
     curAction.play();
-    // }
   }
 
   Exit() {
@@ -446,10 +443,10 @@ class WalkState extends State {
 
   Update(timeElapsed, input) {
     if (input._keys.forward || input._keys.backward) {
-    if (input._keys.shift) {
-        this._parent.SetState('run');
-    }
-    return;
+      if (input._keys.shift) {
+          this._parent.SetState('run');
+      }
+      return;
     }
 
     this._parent.SetState('idle');
@@ -469,24 +466,23 @@ class RunState extends State {
   Enter(prevState) {
     const curAction = this._parent._proxy._animations['run'].action;
     if (prevState) {
-    const prevAction = this._parent._proxy._animations[prevState.Name].action;
+      const prevAction = this._parent._proxy._animations[prevState.Name].action;
 
-    curAction.enabled = true;
+      curAction.enabled = true;
 
-    if (prevState.Name == 'walk') {
-        const ratio = curAction.getClip().duration / prevAction.getClip().duration;
-        curAction.time = prevAction.time * ratio;
-    } else {
-        curAction.time = 0.0;
-        curAction.setEffectiveTimeScale(1.0);
-        curAction.setEffectiveWeight(1.0);
-    }
+      if (prevState.Name == 'walk') {
+          const ratio = curAction.getClip().duration / prevAction.getClip().duration;
+          curAction.time = prevAction.time * ratio;
+      } else {
+          curAction.time = 0.0;
+          curAction.setEffectiveTimeScale(1.0);
+          curAction.setEffectiveWeight(1.0);
+      }
 
-    curAction.crossFadeFrom(prevAction, 0.5, true);
+      curAction.crossFadeFrom(prevAction, 0.5, true);
+      
+    } 
     curAction.play();
-    } else {
-    curAction.play();
-    }
   }
 
   Exit() {
@@ -494,10 +490,10 @@ class RunState extends State {
 
   Update(timeElapsed, input) {
     if (input._keys.forward || input._keys.backward) {
-    if (!input._keys.shift) {
-        this._parent.SetState('walk');
-    }
-    return;
+      if (!input._keys.shift) {
+          this._parent.SetState('walk');
+      }
+      return;
     }
 
     this._parent.SetState('idle');
@@ -523,10 +519,8 @@ class IdleState extends State {
       currentAction.setEffectiveTimeScale(1.0);
       currentAction.setEffectiveWeight(1.0);
       currentAction.crossFadeFrom(prevAction, 0.5, true);
-      currentAction.play();
-    } else {
-      currentAction.play();
-    }
+    } 
+    currentAction.play();
   }
 
   Exit() {}
