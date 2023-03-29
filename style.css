@@ -23,6 +23,40 @@ body {
   font-family: Sans-Serif;
 }
 
+.buttons{
+  /* position the heading */
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 3em;
+  /* border: #e81111 solid 3px; */
+}
+
+.options{
+  margin-top: 0.5em;
+}
+
+/* Styling the button */
+.btn{
+  display: inline-block;
+  padding: 1em 2em;
+  border: 0;
+  text-decoration: none;
+  border-radius: 15px;
+  background-color: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(30px);
+  color: rgba(255,255,255,0.8);
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.btn:hover {
+  background-color: rgba(255,255,255,0.2);
+}
+
 .title {
   /* position the heading */
   position: absolute;
