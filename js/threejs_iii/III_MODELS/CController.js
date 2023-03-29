@@ -1,11 +1,10 @@
 /**
- * Code by @simondevyoutube
+ * Code based on @simondevyoutube's works
  * https://github.com/simondevyoutube/ThreeJS_Tutorial_CharacterController
  * 
  */
 import * as THREE from 'three';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader';
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 
 class BasicCharacterControllerProxy {
     
