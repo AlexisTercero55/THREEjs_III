@@ -56,7 +56,7 @@ export class BasicCharacterController {
       const loader = new FBXLoader();
       loader.setPath('./models/');
       loader.load('mremireh_o_desbiens.fbx', (fbx) => {
-        fbx.scale.setScalar(0.03);
+        fbx.scale.setScalar(0.05);
         fbx.rotateY(-Math.PI);
         fbx.traverse(c => {
           c.castShadow = true;
@@ -306,9 +306,11 @@ class FiniteStateMachine {
 
   /**Update the animation loop */
   Update(timeElapsed, input) {
-    if (this._currentState) {
-      this._currentState.Update(timeElapsed, input);
-    }
+    this._currentState?.Update(timeElapsed, input);
+    //may be: this._currentState?.Update(timeElapsed, input);
+    // if (this._currentState) {
+    //   this._currentState.Update(timeElapsed, input);
+    // }
   }
 };
   
