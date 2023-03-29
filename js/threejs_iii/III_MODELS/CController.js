@@ -106,46 +106,57 @@ export class BasicCharacterController {
       // update the current state | keep walking and traslating.
       this._stateMachine.Update(timeInSeconds, this._input);
   
+      //Velocity update  -----------------------------------------------
       // Calculate the frame deceleration based on the object's velocity
-      const velocity = this._velocity;
+      // This is a measure of how much the object's velocity is slowing down due to friction or other forces.
+      const velocity = this._velocity;//:THREE.Vector3
+       // The deceleration is computed by multiplying the object's velocity with the deceleration vector.
       const frameDecceleration = new THREE.Vector3(
-          velocity.x * this._decceleration.x,
+          velocity.x * this._decceleration.x,// (-0.0005, -0.0001, -5.0)
           velocity.y * this._decceleration.y,
           velocity.z * this._decceleration.z
       );
+      // Multiply the frame deceleration by the time since the last frame to get a frame-specific deceleration value
+      // {x,y,z}*dt = {x*dt,y*dt,z*dt}
+      // Apply a damping effect to the deceleration in the z-axis direction to simulate ground friction
       frameDecceleration.multiplyScalar(timeInSeconds);
       frameDecceleration.z = Math.sign(frameDecceleration.z) * Math.min(
           Math.abs(frameDecceleration.z), Math.abs(velocity.z));
   
       // Update the object's velocity based on the frame deceleration
       velocity.add(frameDecceleration);
-  
-      // Get the target object and its current orientation
-      const controlObject = this._target;
-      const _Q = new THREE.Quaternion();
-      const _A = new THREE.Vector3();
-      const _R = controlObject.quaternion.clone();
-  
+      //----------------------------------------------------------------
+
       // Calculate the acceleration based on user input
-      const acc = this._acceleration.clone()
+      const currentAcceleration = this._acceleration.clone()
       // If shift is pressed, double the acceleration;
       if (this._input._keys.shift) {
-        acc.multiplyScalar(2.0);
+        currentAcceleration.multiplyScalar(2.0);
       }
       // If the object is in the "dance" state, set acceleration to zero
       if (this._stateMachine._currentState?.Name == 'dance') {
-        acc.multiplyScalar(0.0);
+        currentAcceleration.multiplyScalar(0.0);
       }
       // Update the object's velocity based on user input
       if (this._input._keys.forward) {
-        velocity.z += acc.z * timeInSeconds;
+        velocity.z += currentAcceleration.z * timeInSeconds;
       }
       if (this._input._keys.backward) {
-        velocity.z -= acc.z * timeInSeconds;
+        velocity.z -= currentAcceleration.z * timeInSeconds;
       }
+
+      // Orientation Update _______________________________________________________
+      // Get the target object and its current orientation
+      const controlObject = this._target;//:THREE.Group
+      const _Q = new THREE.Quaternion();
+      const _A = new THREE.Vector3();
+
+      // Quaternions are used in three.js to represent rotations.
+      const _R = controlObject.quaternion.clone();
+
       // Rotate the object left around its vertical axis
       if (this._input._keys.left) {
-        _A.set(0, 1, 0);
+        _A.set(0, 1, 0);//THREE.Vector3
         _Q.setFromAxisAngle(_A, 4.0 * Math.PI * timeInSeconds * this._acceleration.y);
         _R.multiply(_Q);
       }
@@ -157,6 +168,9 @@ export class BasicCharacterController {
       }
       // Update the object's orientation
       controlObject.quaternion.copy(_R);
+      //_______________________________________________________________________________
+
+      //Position update -----------------------------------------------------------------
       // Calculate the object's new position based on its velocity and orientation
       const oldPosition = new THREE.Vector3();
       oldPosition.copy(controlObject.position);
@@ -175,8 +189,12 @@ export class BasicCharacterController {
       controlObject.position.add(forward);
       controlObject.position.add(sideways);
   
+      //! review to delete for duplicate
+      // oldPosition.copy(controlObject.position);
+      //-------------------------------------------------------------------------------
+      
+      
       // Update the object's animation mixer (if one exists)
-      oldPosition.copy(controlObject.position);
       if (this._mixer) {
         this._mixer.update(timeInSeconds);
       }
