@@ -7,7 +7,7 @@ import * as  THREE from 'three';
 import III_SPACE from "../threejs_iii/III_Space";
 import glbLoad from '../threejs_iii/III_MODELS/glbLoad';
 import createLight from '../threejs_iii/lights';
-import { CController } from '../threejs_iii/III_MODELS/FSM';
+import { CController } from '../threejs_iii/III_MODELS/BotFSM';
 
 
 export default class III_MODELS extends III_SPACE
@@ -29,7 +29,7 @@ export default class III_MODELS extends III_SPACE
         const grid = new THREE.GridHelper(90, 90,0x00ff00,0xff0000);
         this.addObject(grid);
         const params = {
-            model : 'mremireh_o_desbiens.fbx',
+            model : 'X Bot.fbx',
             camera: this.camera,
             scene : this.scene,
         }
@@ -42,8 +42,12 @@ export default class III_MODELS extends III_SPACE
         }
         this.addLoop(controls);
 
-        const l = createLight('ambient',5);
+        const l = createLight('ambient',3);
         this.addObject(l);
+
+        let lig = createLight('directional',3);
+        lig.position.set(0, 10, 0);
+        this.addObject(lig);
 
         this.axis();
     }
