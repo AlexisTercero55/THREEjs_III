@@ -13,20 +13,20 @@ import { CController } from '../threejs_iii/III_MODELS/BotFSM';
 export default class III_MODELS extends III_SPACE
 {
     constructor(container,{
-        SceneRotation=false,
-        POV={x:0,y:10,z:-10},
+        SceneRotation=true,
+        POV={x:-10,y:10,z:-10},
     }={}){
         super(container,{
             SceneRotation,
             POV,
         });
 
-        this.controlsLookAt(new THREE.Vector3(0,5,0));
+        this.controlsLookAt(new THREE.Vector3(0,3,0));
     }
 
     createObjects()
     {
-        const grid = new THREE.GridHelper(90, 90,0x00ff00,0xff0000);
+        const grid = new THREE.GridHelper(90, 90,0xFF535D,0xff0000);
         this.addObject(grid);
         const params = {
             model : 'X Bot.fbx',
@@ -34,7 +34,6 @@ export default class III_MODELS extends III_SPACE
             scene : this.scene,
         }
         
-        // characters //!Review content
         var controls = new CController(params);
 
         controls.nextFrame = (delta,_) =>{
@@ -49,7 +48,7 @@ export default class III_MODELS extends III_SPACE
         lig.position.set(0, 10, 0);
         this.addObject(lig);
 
-        this.axis();
+        // this.axis();
     }
 
     /**GLB animated load */

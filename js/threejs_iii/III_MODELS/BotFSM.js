@@ -346,16 +346,33 @@ export class CController{
 
 class DanceState extends State {
     constructor(parent,stateName) {//_FinishedCallback
-        super({parent,stateName});
-  
-        this._FinishedCallback = () => {
-            this._Finished();
-        }
+      super({parent,stateName});
+
+      this._FinishedCallback = () => {
+          this._Finished();
+      }
+
+      // binding for walk, pose and run
+      this.runBTN = document.getElementById('run-btn');
+      this.runClickHandler = ()=>{
+        this._parent.SetState('run');
+      };
+      this.runBTN.addEventListener('click', this.runClickHandler);
+
+      this.walkBTN = document.getElementById('walk-btn');
+      this.walkClickHandler = ()=>{
+        this._parent.SetState('walk');
+      };
+      this.walkBTN.addEventListener('click', this.walkClickHandler);
+
+      this.poseBTN = document.getElementById('pose-btn');
+      this.poseClickHandler = ()=>{
+        this._parent.SetState('idle');
+      };
+      this.poseBTN.addEventListener('click', this.poseClickHandler);
+
+        
     }
-  
-    // get Name() {
-    //     return 'dance';
-    // }
   
     Enter(prevState) {
         const curAction = this._parent._proxy._animations[this._Name].action;
@@ -386,7 +403,10 @@ class DanceState extends State {
     }
   
     Exit() {
-        this._Cleanup();
+      this._Cleanup();
+      this.runBTN.removeEventListener('click',this.runClickHandler);
+      this.walkBTN.removeEventListener('click',this.walkClickHandler);
+      this.poseBTN.removeEventListener('click',this.poseClickHandler);
     }
   
     Update(_) {
@@ -397,6 +417,26 @@ class DanceState extends State {
 class WalkState extends State {
     constructor(parent,stateName) {
       super({parent,stateName});
+      //may be eventListener requiered for run state.
+      this.danceBTN = document.getElementById('dance-btn');
+      this.dandeClickHandler = ()=>{
+        this._parent.SetState('dance');
+      };
+      this.danceBTN.addEventListener('click', this.dandeClickHandler);
+
+      this.poseBTN = document.getElementById('pose-btn');
+      this.poseClickHandler = ()=>{
+        this._parent.SetState('idle');
+      };
+      this.poseBTN.addEventListener('click', this.poseClickHandler);
+
+      this.runBTN = document.getElementById('run-btn');
+      this.runClickHandler = ()=>{
+        this._parent.SetState('run');
+      };
+      this.runBTN.addEventListener('click', this.runClickHandler);
+
+
     }
   
     Enter(prevState) {
@@ -421,17 +461,21 @@ class WalkState extends State {
     }
   
     Exit() {
+      this.danceBTN.removeEventListener('click',this.dandeClickHandler);
+      this.poseBTN.removeEventListener('click',this.poseClickHandler);
+      this.runBTN.removeEventListener('click',this.runClickHandler);
     }
   
     Update(timeElapsed, input) {
-      if (input._keys.forward || input._keys.backward) {
-        if (input._keys.shift) {
-            this._parent.SetState('run');
-        }
+      // if (input._keys.forward || input._keys.backward) {
+      //   if (input._keys.shift) {
+      //       this._parent.SetState('run');
+      //   }
         return;
-      }
+      // }
   
-      this._parent.SetState('idle');
+      // this._parent.SetState('idle');
+
     }
 };
   
@@ -439,6 +483,26 @@ class WalkState extends State {
 class RunState extends State {
     constructor(parent,stateName) {
         super({parent,stateName});
+
+      this.walkBTN = document.getElementById('walk-btn');
+      this.walkClickHandler = ()=>{
+        this._parent.SetState('walk');
+      };
+      this.walkBTN.addEventListener('click', this.walkClickHandler);
+
+      this.poseBTN = document.getElementById('pose-btn');
+      this.poseClickHandler = ()=>{
+        this._parent.SetState('idle');
+      };
+      this.poseBTN.addEventListener('click', this.poseClickHandler);
+
+      this.danceBTN = document.getElementById('dance-btn');
+      this.dandeClickHandler = ()=>{
+        this._parent.SetState('dance');
+      };
+      this.danceBTN.addEventListener('click', this.dandeClickHandler);
+
+
     }
 
     Enter(prevState) {
@@ -464,17 +528,20 @@ class RunState extends State {
     }
   
     Exit() {
+      this.walkBTN.removeEventListener('click',this.walkClickHandler);
+      this.poseBTN.removeEventListener('click',this.poseClickHandler);
+      this.danceBTN.removeEventListener('click',this.dandeClickHandler);
     }
   
     Update(timeElapsed, input) {
-      if (input._keys.forward || input._keys.backward) {
-        if (!input._keys.shift) {
-            this._parent.SetState('walk');
-        }
+      // if (input._keys.forward || input._keys.backward) {
+      //   if (!input._keys.shift) {
+      //       this._parent.SetState('walk');
+      //   }
         return;
-      }
+      // }
   
-      this._parent.SetState('idle');
+      // this._parent.SetState('idle');
     }
 };
   
@@ -482,6 +549,27 @@ class RunState extends State {
 class IdleState extends State {
     constructor(parent,stateName) {
       super({parent,stateName});
+
+      this.danceBTN = document.getElementById('dance-btn');
+      this.dandeClickHandler = ()=>{
+        this._parent.SetState('dance');
+      };
+      this.danceBTN.addEventListener('click', this.dandeClickHandler);
+
+      this.walkBTN = document.getElementById('walk-btn');
+      this.walkClickHandler = ()=>{
+        this._parent.SetState('walk');
+      };
+      this.walkBTN.addEventListener('click', this.walkClickHandler);
+
+      this.runBTN = document.getElementById('run-btn');
+      this.runClickHandler = ()=>{
+        this._parent.SetState('run');
+      };
+      this.runBTN.addEventListener('click', this.runClickHandler);
+
+
+
     }
   
     Enter(prevState) {
@@ -497,7 +585,11 @@ class IdleState extends State {
       currentAction.play();
     }
   
-    Exit() {}
+    Exit() {
+      this.danceBTN.removeEventListener('click',this.dandeClickHandler);
+      this.walkBTN.removeEventListener('click',this.walkClickHandler);
+      this.runBTN.removeEventListener('click',this.runClickHandler);
+    }
   
     /**Checks for set state */
     Update(_, input) {
