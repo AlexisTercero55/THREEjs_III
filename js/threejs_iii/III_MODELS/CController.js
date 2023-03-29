@@ -294,23 +294,24 @@ class FiniteStateMachine {
       if (prevState.Name == name) {
         return;//if new state is the same state, do nothing.
       }
+      // removes the prevState from current state
       prevState.Exit();
     }
 
     // I'm parent of the new state here
+    //instance of specific state
     const state = new this._states[name](this);
 
+    // subscribe as current state or action doing
     this._currentState = state;
+    // starts the state
     state.Enter(prevState);
   }
 
   /**Update the animation loop */
   Update(timeElapsed, input) {
+    //Updte the current state
     this._currentState?.Update(timeElapsed, input);
-    //may be: this._currentState?.Update(timeElapsed, input);
-    // if (this._currentState) {
-    //   this._currentState.Update(timeElapsed, input);
-    // }
   }
 };
   
@@ -407,35 +408,37 @@ class DanceState extends State {
 
 
 class WalkState extends State {
+  #name;
   constructor(parent) {
       super(parent);
+      this.#name='walk';
   }
 
   get Name() {
-      return 'walk';
+      return this.#name;
   }
 
   Enter(prevState) {
-    const curAction = this._parent._proxy._animations['walk'].action;
+    const curAction = this._parent._proxy._animations[this.#name].action;
     if (prevState) {
-    const prevAction = this._parent._proxy._animations[prevState.Name].action;
+      const prevAction = this._parent._proxy._animations[prevState.Name].action;
 
-    curAction.enabled = true;
+      curAction.enabled = true;
 
-    if (prevState.Name == 'run') {
-        const ratio = curAction.getClip().duration / prevAction.getClip().duration;
-        curAction.time = prevAction.time * ratio;
-    } else {
-        curAction.time = 0.0;
-        curAction.setEffectiveTimeScale(1.0);
-        curAction.setEffectiveWeight(1.0);
-    }
+      if (prevState.Name == 'run') {
+          const ratio = curAction.getClip().duration / prevAction.getClip().duration;
+          curAction.time = prevAction.time * ratio;
+      } else {
+          curAction.time = 0.0;
+          curAction.setEffectiveTimeScale(1.0);
+          curAction.setEffectiveWeight(1.0);
+      }
 
-    curAction.crossFadeFrom(prevAction, 0.5, true);
+      curAction.crossFadeFrom(prevAction, 0.5, true);
+      // curAction.play();
+    } //else {
     curAction.play();
-    } else {
-    curAction.play();
-    }
+    // }
   }
 
   Exit() {
@@ -512,22 +515,23 @@ class IdleState extends State {
   }
 
   Enter(prevState) {
-    const idleAction = this._parent._proxy._animations['idle'].action;
+    const currentAction = this._parent._proxy._animations['idle'].action;
     if (prevState) {
       const prevAction = this._parent._proxy._animations[prevState.Name].action;
-      idleAction.time = 0.0;
-      idleAction.enabled = true;
-      idleAction.setEffectiveTimeScale(1.0);
-      idleAction.setEffectiveWeight(1.0);
-      idleAction.crossFadeFrom(prevAction, 0.5, true);
-      idleAction.play();
+      currentAction.time = 0.0;
+      currentAction.enabled = true;
+      currentAction.setEffectiveTimeScale(1.0);
+      currentAction.setEffectiveWeight(1.0);
+      currentAction.crossFadeFrom(prevAction, 0.5, true);
+      currentAction.play();
     } else {
-      idleAction.play();
+      currentAction.play();
     }
   }
 
   Exit() {}
 
+  /**Checks for set state */
   Update(_, input) {
     if (input._keys.forward || input._keys.backward) {
       this._parent.SetState('walk');
