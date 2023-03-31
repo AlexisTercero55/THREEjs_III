@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 async function glbLoad(modelURL,
-                       position= new THREE.Vector3()) 
+                       position= new THREE.Vector3(0,0,0)) 
 {
 
     const assetLoader = new GLTFLoader();
