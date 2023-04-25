@@ -151,6 +151,7 @@ export default class III_SPACE
     //? Implemets by extending III_SPACE
     createObjects()
     {
+        console.log('III.Js Deafult scene overwrite createObjects()');
         this.addObject(createCube());
         this.axis();
     }
