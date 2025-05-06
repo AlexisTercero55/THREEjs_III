@@ -59,78 +59,80 @@ export default class III_SHADERS extends III_SPACE
 
 ### III_SPACE | ThreeJS_III output
 
-```
-|----------------------|
-|      III_SPACE       |
-|----------------------|
-|   - camera           |
-|   - renderer         |
-|   - scene            |
-|   - loop             |
-|   - controls         |
-|   - container        |
-|   - physics          |
-|----------------------|
-|   + #initSystems()   |
-|   + background()     |
-|   + lights()         |
-|   + axis()           |
-|   + addObject()      |
-|   + render()         |
-|   + start()          |
-|   + stop()           |
-|----------------------|
+```mermaid
+classDiagram
+    class III_SPACE {
+        - camera: ThreeJS.Camera
+        - renderer: ThreeJS.WebGLRenderer
+        - scene: ThreeJS.Scene
+        - loop: Object
+        - controls: ThreeJS.OrbitControls
+        - container: HTMLElement
+        - physics: PhysicsEngine
+         
+        # initSystems() void
+        + background() void
+        + lights() void
+        + axis() void
+        + addObject(object: ThreeJS.Object3D) void
+        + render() void
+        + start() void
+        + stop() void
+    }
 ```
 
 ### III_SCENE | Factory of THREE.Scene
 
-```
-|-----------------------|
-|      III_SCENE        |
-|-----------------------|
-|    - BGType           |
-|-----------------------|
-|    + setBG()          |
-|    + #_BOX_           |
-|-----------------------|
+```mermaid
+classDiagram
+    class III_SCENE {
+        - BGType: string
+        
+        + setBG(type: string) void
+        # _BOX_() void
+    }
 ```
 
 ### Loop
 
 Manage the animation loop and the render.
 
-```
-|-----------------------|
-|       Loop            |
-|-----------------------|
-|    - camera           |
-|    - scene            |
-|    - renderer         |
-|-----------------------|
-|    + add()            |
-|    + start()          |
-|    + stop()           |
-|    + #nextFrame()     |
-|-----------------------|
+```mermaid
+classDiagram
+    class Loop {
+        - camera: ThreeJS.Camera
+        - scene: ThreeJS.Scene
+        - renderer: ThreeJS.WebGLRenderer
+        
+        + add(object: ThreeJS.Object3D) void
+        + start() void
+        + stop() void
+        # nextFrame() void
+    }
 ```
 
 ### III_CONTROLS_ | Factory of THREE.OrbitControls
 
-```
-|-----------------------|
-|    III_CONTROLS_      |
-|-----------------------|
-|   + nextFrame()       |
-|   + removeControls()  |
-|-----------------------|
+```mermaid
+classDiagram
+    class III_CONTROLS_ {
+        + nextFrame() void
+        + removeControls() void
+    }
 ```
 
 ### Resizer
 
 Manage the render resize event.
 
-```
-|-----------------------|
-|       Resizer         |
-|-----------------------|
+```mermaid
+classDiagram
+    class Resizer {
+        - container : DOMElement
+        - camera : THREE.Camera
+        - renderer : THREE.WebGLRenderer
+
+        + constructor(container, camera, renderer)
+        # setSize(container, camera, renderer)
+    }
 ```
