@@ -60,6 +60,8 @@ class Loop
       this.#capturer.stop();
       $stop.style.display = 'none';
       this.#capturer.save();
+
+      $start.style.display = 'inline';
     }, false);
   }
 
