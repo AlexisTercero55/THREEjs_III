@@ -90,7 +90,8 @@ export default class III_SPACE
         // });
         this.#loop = new Loop(this.#camera, 
                               this.#scene, 
-                              this.#renderer);
+                              this.#renderer,
+                              this.#container);
 
         this.#controls = new III_CONTROLS_(this.#camera, 
                                            this.#renderer.domElement);

@@ -20,9 +20,11 @@ class Loop
    * @param {THREE.WebGLRenderer} renderer
    */
   #capturer = null;
+  #container = null;
   // constructor(camera, scene, renderer,world=null,cannonDebugger=null) 
-  constructor(camera, scene, renderer,physics=false) 
+  constructor(camera, scene, renderer,container,physics=false) 
   {
+    this.#container = container;
     if(physics)
     {
       // this.world = world;
@@ -46,8 +48,28 @@ class Loop
 	                                   verbose: true,
                                      name : 'alexisuwu'} );
 
-    const $start = document.getElementById('start');
-    const $stop = document.getElementById('stop');
+    const $start = document.createElement('button');
+    $start.textContent = 'Start recording to WebM';
+    $start.className = 'button-85';
+    $start.style.position = 'absolute';
+    $start.style.bottom = '10%';
+    $start.style.left = '50%';
+    $start.style.transform = 'translateX(-50%)';
+    $start.style.zIndex = '1000';
+    this.#container.style.position = 'relative';
+    this.#container.appendChild($start);
+
+    const $stop = document.createElement('button');
+    $stop.textContent = 'Stop recording to WebM';
+    $stop.className = 'button-85';
+    $stop.style.position = 'absolute';
+    $stop.style.bottom = '10%';
+    $stop.style.left = '30%';
+    $stop.style.transform = 'translateX(-50%)';
+    $stop.style.zIndex = '1000';
+    $stop.style.display = 'none';
+    this.#container.appendChild($stop);
+
     $start.addEventListener('click', e => {
       e.preventDefault();
       this.#capturer.start();
