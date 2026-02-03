@@ -1,4 +1,5 @@
 import { Clock } from 'three';
+import {CCapture} from 'ccapture.js-npmfixed';
 
 const clock = new Clock();
 
@@ -18,6 +19,7 @@ class Loop
    * @param {THREE.Scene} scene
    * @param {THREE.WebGLRenderer} renderer
    */
+  #capturer = null;
   // constructor(camera, scene, renderer,world=null,cannonDebugger=null) 
   constructor(camera, scene, renderer,physics=false) 
   {
@@ -38,6 +40,27 @@ class Loop
     this.objs = []; // need a setter for metadata extraction
     //under review
     this.flags = {};
+
+    this.#capturer = new CCapture( { format: 'webm',
+                                     framerate: 30,
+	                                   verbose: true,
+                                     name : 'alexisuwu'} );
+
+    const $start = document.getElementById('start');
+    const $stop = document.getElementById('stop');
+    $start.addEventListener('click', e => {
+      e.preventDefault();
+      this.#capturer.start();
+      $start.style.display = 'none';
+      $stop.style.display = 'block';
+    }, false);
+
+    $stop.addEventListener('click', e => {
+      e.preventDefault();
+      this.#capturer.stop();
+      $stop.style.display = 'none';
+      this.#capturer.save();
+    }, false);
   }
 
   add(obj)
@@ -53,6 +76,7 @@ class Loop
   start() 
   {
     const timeStep = 1/60;
+    //this.#capturer.start();
     this.renderer.setAnimationLoop(() => 
     {
       if(this.world)
@@ -66,6 +90,7 @@ class Loop
       this.#nextFrame();
       // render a frame
       this.renderer.render(this.scene, this.camera);
+      this.#capturer.capture(this.renderer.domElement);
     });
   }
 

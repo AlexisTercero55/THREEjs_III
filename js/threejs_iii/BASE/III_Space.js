@@ -25,7 +25,8 @@ export default class III_SPACE
     #loop = null;
     #controls = null;
     #container = null;
-    #physics = null;
+    // #physics = null;
+    #resizer = null;
     //#endregion
     /**
      * 
@@ -48,7 +49,7 @@ export default class III_SPACE
 
         this.createObjects();
 
-        const resizer = new Resizer(this.#container, 
+        this.#resizer = new Resizer(this.#container, 
                                     this.#camera, 
                                     this.#renderer);
     }
