@@ -33,9 +33,9 @@ export default class III_SPACE
      * @param {DOMElement} container - where space will be render.
      */
     constructor(container,{
-        SceneRotation=false,
-        POV={x:0,y:6,z:6}
-    }) 
+            SceneRotation=Boolean,
+            POV={x:int,y:int,z:int}
+        } = { SceneRotation:true, POV:{x:4,y:4,z:3}}) 
     {
         this.#container = container;
         this.#initSystems(

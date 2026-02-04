@@ -34,10 +34,9 @@ export default class III_SPACE
      * @param {DOMElement} container - where space will be render.
      */
     constructor(container,{
-        SceneRotation=false,
-        POV={x:0,y:6,z:6}
-        }={}
-    ) 
+            SceneRotation=Boolean,
+            POV={x:int,y:int,z:int}
+        } = { SceneRotation:true, POV:{x:4,y:4,z:3}}) 
     {
         this.#container = container;
         this.#initSystems(
@@ -95,7 +94,8 @@ export default class III_SPACE
         // });
         this.#loop = new Loop(this.#camera, 
                               this.#scene, 
-                              this.#renderer);
+                              this.#renderer,
+                              this.#container);
 
         this.#controls = new III_CONTROLS_(this.#camera, 
                                            this.#renderer.domElement);

@@ -56,7 +56,7 @@ class Loop
     $start.style.left = '50%';
     $start.style.transform = 'translateX(-50%)';
     $start.style.zIndex = '1000';
-    this.#container.style.position = 'relative';
+    //this.#container.style.position = 'relative';
     this.#container.appendChild($start);
 
     const $stop = document.createElement('button');
