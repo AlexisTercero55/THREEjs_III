@@ -15,7 +15,36 @@ import { Loop } from '../Loop';
 import { createCube } from '../III_Primitives/cube';
 
 
-
+/**
+ * III_SPACE
+ *
+ * Base 3D application "space" that wires together the core Three.js systems
+ * (camera, scene, renderer), user controls, resize handling and the render
+ * loop. Designed to be extended by scenes/examples which override
+ * `createObjects()` to add custom content.
+ *
+ * Constructor options:
+ * @param {HTMLElement} container - DOM element where the renderer will be mounted.
+ * @param {Object} [options]
+ * @param {boolean} [options.SceneRotation=true] - Enable `OrbitControls` auto-rotation.
+ * @param {{x:number,y:number,z:number}} [options.POV={x:4,y:4,z:3}] - Initial camera position.
+ *
+ * Responsibilities:
+ * - Initialize core systems: camera, renderer, scene, controls, loop, and resizer.
+ * - Provide lifecycle controls: `start()`, `stop()`, and single-frame `render()`.
+ * - Manage scene objects via `addObject(obj, anim)` and utility helpers like `axis()`.
+ *
+ * Extension guidance:
+ * - Subclasses should override `createObjects()` to populate the scene. The base
+ *   implementation adds a simple cube and axes as a sensible default.
+ * - When calling `addObject(obj, true)`, the object must implement a `nextFrame()`
+ *   method so it can be driven by the internal `Loop` animation system.
+ *
+ * Public API (selected):
+ * - Getters: `loop`, `scene`, `renderer`, `camera`
+ * - Scene manipulation: `createObjects()`, `addObject(obj, anim)`, `axis(n)`, `background()`, `lights()`
+ * - Lifecycle: `render()`, `start()`, `stop()`
+ */
 export default class III_SPACE
 {
     //#region 
@@ -65,6 +94,11 @@ export default class III_SPACE
     get renderer()
     {
         return this.#renderer;
+    }
+
+    get camera()
+    {
+        return this.#camera;
     }
 
     /**

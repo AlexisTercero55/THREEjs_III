@@ -25,13 +25,17 @@ export default class III_SHADERS extends III_SPACE
         let d = 2;
         let buuble1 = fresnel_bubble(
             this.renderer,
-            this.scene,'metalic');
+            this.scene,
+            'metalic',
+            this.camera);
         buuble1.position.set(d,2,d);
         this.addObject(buuble1,true)
 
         let buuble2 = fresnel_bubble(
                     this.renderer,
-                    this.scene);
+                    this.scene,
+                    'transparent',
+                    this.camera);
         buuble2.position.set(-d,2,-d);
         this.addObject(buuble2,true)
 
