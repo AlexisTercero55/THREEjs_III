@@ -1,4 +1,4 @@
-/**
+/** 07/03/2026 - CDMX|México
  * @author: Alexis Tercero
  * @mail : alexistercero55@gmail.com
  * @github: AlexisTercero55
@@ -137,6 +137,10 @@ export default class III_SPACE
         // Joystick = new III_Joystick(this.#container,
         //                                   this.#camera,
         //                                   this.#controls);
+    }
+
+    controlsLookAt(v){
+        this.#controls.target.copy(v);
     }
 
     // beta
