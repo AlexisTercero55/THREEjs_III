@@ -1,29 +1,22 @@
 import { defineConfig } from "vite";
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   base: "/THREEjs_III/",
-  plugins: [
-    nodePolyfills({
-      // To add only specific polyfills, add them here. If no option is passed, adds all polyfills
-      include: ['path'],
-      // To exclude specific polyfills, add them to this list. Note: if include is provided, this has no effect
-      exclude: [
-        'http', // Excludes the polyfill for `http` and `node:http`.
-      ],
-      // Whether to polyfill specific globals.
-      globals: {
-        Buffer: true, // can also be 'build', 'dev', or false
-        global: true,
-        process: true,
-      },
-      // Override the default polyfills for specific modules.
-      overrides: {
-        // Since `fs` is not supported in browsers, we can use the `memfs` package to polyfill it.
-        fs: 'memfs',
-      },
-      // Whether to polyfill `node:` protocol imports.
-      protocolImports: true,
-    }),
-  ],
+  // add explicit aliases for Node.js modules to use our custom polyfills
+  resolve: {
+    alias: {
+      buffer: path.resolve(__dirname, './src/polyfills/buffer.js'), // custom buffer polyfill
+      fs: path.resolve(__dirname, './src/polyfills/fs.js'), // dummy fs polyfill for browser environment
+      process: path.resolve(__dirname, './src/polyfills/process.js'), // dummy process polyfill
+    },
+  },
+  // Increase chunk size warning limit for THREE.js applications with physics/shaders
+  build: {
+    chunkSizeWarningLimit: 1000, // Default is 500 kB; THREE.js apps often exceed this
+  },
 });
