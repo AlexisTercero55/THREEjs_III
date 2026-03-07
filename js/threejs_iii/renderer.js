@@ -1,4 +1,9 @@
-import { WebGLRenderer } from 'three';
+/** 07/03/2026 - CDMX|México
+ * @author: Alexis Tercero
+ * @mail : alexistercero55@gmail.com
+ * @github: AlexisTercero55
+ */
+import { WebGLRenderer, SRGBColorSpace } from 'three';
 
 /**
  * createRenderer
@@ -12,7 +17,7 @@ function createRenderer()
 {
   const renderer = new WebGLRenderer({ antialias: true });//anti-Jaggies
 
-  renderer.physicallyCorrectLights = true;
+  renderer.useLegacyLights = false; // use physically correct lighting
   renderer.shadowMap.enabled = true;
 
   return renderer;
@@ -26,8 +31,11 @@ export class III_WebGL_Renderer extends WebGLRenderer
   constructor()
   {
     super({ antialias: true, alpha:true });
-    this.physicallyCorrectLights = true;
+    this.useLegacyLights = false; // use physically correct lighting
     this.shadowMap.enabled = true;
+
+    // color management
+    this.outputColorSpace = SRGBColorSpace;
 
     //transparent bg
     // this.setPixelRatio((window.devicePixelRatio) ? window.devicePixelRatio : 1);

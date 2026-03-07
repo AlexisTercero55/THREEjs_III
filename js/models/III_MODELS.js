@@ -4,7 +4,7 @@
  * @github: AlexisTercero55
  */
 import * as  THREE from 'three';
-import III_SPACE from "../threejs_iii/III_Space";
+import III_SPACE from "../threejs_iii/BASE/III_Space";
 import glbLoad from '../threejs_iii/III_MODELS/glbLoad';
 import createLight from '../threejs_iii/lights';
 import { CController } from '../threejs_iii/III_MODELS/BotFSM';
@@ -13,8 +13,8 @@ import { CController } from '../threejs_iii/III_MODELS/BotFSM';
 export default class III_MODELS extends III_SPACE
 {
     constructor(container,{
-        SceneRotation=false,
-        POV={x:-8,y:3,z:0},
+        SceneRotation=true,
+        POV={x:-11,y:3,z:0},
     }={}){
         super(container,{
             SceneRotation,
@@ -60,7 +60,7 @@ export default class III_MODELS extends III_SPACE
 
         let l = createLight(undefined,8);
         this.addObject(l);
-        // this.axis();
+        this.axis();
         // this.centerLigthing();
 
     }

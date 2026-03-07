@@ -1,4 +1,4 @@
-/**
+/** 07/03/2026 - CDMX|México
  * @author: Alexis Tercero
  * @mail : alexistercero55@gmail.com
  * @github: AlexisTercero55
@@ -15,7 +15,36 @@ import { Loop } from '../Loop';
 import { createCube } from '../III_Primitives/cube';
 
 
-
+/**
+ * III_SPACE
+ *
+ * Base 3D application "space" that wires together the core Three.js systems
+ * (camera, scene, renderer), user controls, resize handling and the render
+ * loop. Designed to be extended by scenes/examples which override
+ * `createObjects()` to add custom content.
+ *
+ * Constructor options:
+ * @param {HTMLElement} container - DOM element where the renderer will be mounted.
+ * @param {Object} [options]
+ * @param {boolean} [options.SceneRotation=true] - Enable `OrbitControls` auto-rotation.
+ * @param {{x:number,y:number,z:number}} [options.POV={x:4,y:4,z:3}] - Initial camera position.
+ *
+ * Responsibilities:
+ * - Initialize core systems: camera, renderer, scene, controls, loop, and resizer.
+ * - Provide lifecycle controls: `start()`, `stop()`, and single-frame `render()`.
+ * - Manage scene objects via `addObject(obj, anim)` and utility helpers like `axis()`.
+ *
+ * Extension guidance:
+ * - Subclasses should override `createObjects()` to populate the scene. The base
+ *   implementation adds a simple cube and axes as a sensible default.
+ * - When calling `addObject(obj, true)`, the object must implement a `nextFrame()`
+ *   method so it can be driven by the internal `Loop` animation system.
+ *
+ * Public API (selected):
+ * - Getters: `loop`, `scene`, `renderer`, `camera`
+ * - Scene manipulation: `createObjects()`, `addObject(obj, anim)`, `axis(n)`, `background()`, `lights()`
+ * - Lifecycle: `render()`, `start()`, `stop()`
+ */
 export default class III_SPACE
 {
     //#region 
@@ -25,16 +54,17 @@ export default class III_SPACE
     #loop = null;
     #controls = null;
     #container = null;
-    #physics = null;
+    // #physics = null;
+    #resizer = null;
     //#endregion
     /**
      * 
      * @param {DOMElement} container - where space will be render.
      */
     constructor(container,{
-        SceneRotation=false,
-        POV={x:0,y:6,z:6}
-    }) 
+            SceneRotation=Boolean,
+            POV={x:int,y:int,z:int}
+        } = { SceneRotation:true, POV:{x:4,y:4,z:3}}) 
     {
         this.#container = container;
         this.#initSystems(
@@ -48,7 +78,7 @@ export default class III_SPACE
 
         this.createObjects();
 
-        const resizer = new Resizer(this.#container, 
+        this.#resizer = new Resizer(this.#container, 
                                     this.#camera, 
                                     this.#renderer);
     }
@@ -64,6 +94,11 @@ export default class III_SPACE
     get renderer()
     {
         return this.#renderer;
+    }
+
+    get camera()
+    {
+        return this.#camera;
     }
 
     /**
@@ -89,7 +124,8 @@ export default class III_SPACE
         // });
         this.#loop = new Loop(this.#camera, 
                               this.#scene, 
-                              this.#renderer);
+                              this.#renderer,
+                              this.#container);
 
         this.#controls = new III_CONTROLS_(this.#camera, 
                                            this.#renderer.domElement);
@@ -101,6 +137,10 @@ export default class III_SPACE
         // Joystick = new III_Joystick(this.#container,
         //                                   this.#camera,
         //                                   this.#controls);
+    }
+
+    controlsLookAt(v){
+        this.#controls.target.copy(v);
     }
 
     // beta

@@ -1,4 +1,5 @@
 import { Clock } from 'three';
+import {CCapture} from 'ccapture.js-npmfixed';
 
 const clock = new Clock();
 
@@ -18,9 +19,12 @@ class Loop
    * @param {THREE.Scene} scene
    * @param {THREE.WebGLRenderer} renderer
    */
+  #capturer = null;
+  #container = null;
   // constructor(camera, scene, renderer,world=null,cannonDebugger=null) 
-  constructor(camera, scene, renderer,physics=false) 
+  constructor(camera, scene, renderer,container,physics=false) 
   {
+    this.#container = container;
     if(physics)
     {
       // this.world = world;
@@ -38,6 +42,49 @@ class Loop
     this.objs = []; // need a setter for metadata extraction
     //under review
     this.flags = {};
+
+    this.#capturer = new CCapture( { format: 'webm',
+                                     framerate: 30,
+	                                   verbose: true,
+                                     name : 'alexisuwu'} );
+
+    const $start = document.createElement('button');
+    $start.textContent = 'Start recording to WebM';
+    $start.className = 'button-85';
+    $start.style.position = 'absolute';
+    $start.style.bottom = '10%';
+    $start.style.left = '50%';
+    $start.style.transform = 'translateX(-50%)';
+    $start.style.zIndex = '1000';
+    //this.#container.style.position = 'relative';
+    this.#container.appendChild($start);
+
+    const $stop = document.createElement('button');
+    $stop.textContent = 'Stop recording to WebM';
+    $stop.className = 'button-85';
+    $stop.style.position = 'absolute';
+    $stop.style.bottom = '10%';
+    $stop.style.left = '30%';
+    $stop.style.transform = 'translateX(-50%)';
+    $stop.style.zIndex = '1000';
+    $stop.style.display = 'none';
+    this.#container.appendChild($stop);
+
+    $start.addEventListener('click', e => {
+      e.preventDefault();
+      this.#capturer.start();
+      $start.style.display = 'none';
+      $stop.style.display = 'block';
+    }, false);
+
+    $stop.addEventListener('click', e => {
+      e.preventDefault();
+      this.#capturer.stop();
+      $stop.style.display = 'none';
+      this.#capturer.save();
+
+      $start.style.display = 'inline';
+    }, false);
   }
 
   add(obj)
@@ -53,6 +100,7 @@ class Loop
   start() 
   {
     const timeStep = 1/60;
+    //this.#capturer.start();
     this.renderer.setAnimationLoop(() => 
     {
       if(this.world)
@@ -66,6 +114,7 @@ class Loop
       this.#nextFrame();
       // render a frame
       this.renderer.render(this.scene, this.camera);
+      this.#capturer.capture(this.renderer.domElement);
     });
   }
 
