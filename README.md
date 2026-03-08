@@ -1,3 +1,8 @@
+<!-- 07/03/2026 - CDMX|México
+ * @author: Alexis Tercero
+ * @mail : alexistercero55@gmail.com
+ * @github: AlexisTercero55
+ */ -->
 # ThreeJS_III
 
 Another abstraction level for computer graphics on the web.
@@ -5,6 +10,92 @@ Another abstraction level for computer graphics on the web.
 ![Screenshot_3](https://user-images.githubusercontent.com/87354316/227800425-31b38e3c-b4ae-49fe-b195-3c381eca72ce.png)
 
 ![Screenshot_4](https://user-images.githubusercontent.com/87354316/227851549-2b21eab5-8918-46dc-894c-3e7b0ad5f292.png)
+
+## Woorkflow
+```mermaid
+classDiagram
+    direction LR
+    class III_SPACE {
+        - camera: III_Cam
+        - renderer: III_WebGL_Renderer
+        - scene: III_SCENE
+        - loop: Loop
+        - controls: III_CONTROLS_
+        - resizer: Resizer
+        + constructor(container, options)
+        + start() void
+        + stop() void
+        + addObject(obj, anim) void
+        + createObjects() void
+        + camera getter
+        + scene getter
+        + renderer getter
+    }
+    class III_Cam {
+        + position: Vector3
+        + aspect: number
+        + fov: number
+        + near: number
+        + far: number
+        + updateProjectionMatrix() void
+    }
+    class III_SCENE {
+        + background: Texture|Color
+        + setBG(type) void
+        + add(obj) void
+        + _BOX_() void
+    }
+    class III_WebGL_Renderer {
+        + domElement: HTMLElement
+        + useLegacyLights: boolean
+        + shadowMap.enabled: boolean
+        + outputColorSpace: SRGBColorSpace
+        + render(scene, camera) void
+        + setSize(width, height) void
+        + setPixelRatio(ratio) void
+    }
+    class III_CONTROLS_ {
+        + target: Vector3
+        + autoRotate: boolean
+        + enableDamping: boolean
+        + update() void
+    }
+    class Loop {
+        + objs: Array
+        + camera: III_Cam
+        + scene: III_SCENE
+        + renderer: III_WebGL_Renderer
+        + start() void
+        + stop() void
+        + add(obj) void
+    }
+    class Resizer {
+        + constructor(container, camera, renderer)
+    }
+    class createLight {
+        + createLight(type, intensity) Light
+    }
+    
+    III_SPACE --> III_Cam : creates
+    III_SPACE --> III_SCENE : creates
+    III_SPACE --> III_WebGL_Renderer : creates
+    III_SPACE --> III_CONTROLS_ : creates
+    III_SPACE --> Loop : creates
+    III_SPACE --> Resizer : creates
+    III_SPACE --> createLight : calls
+    
+    Loop --> III_CONTROLS_ : updates
+    Loop --> III_WebGL_Renderer : renders via
+    Loop --> III_Cam : uses for render
+    Loop --> III_SCENE : renders
+    
+    Resizer --> III_Cam : updates aspect
+    Resizer --> III_WebGL_Renderer : updates size
+    
+    III_CONTROLS_ --> III_Cam : controls
+    III_CONTROLS_ --> III_WebGL_Renderer : listens to domElement
+```
+
 
 ## Usage
 
