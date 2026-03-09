@@ -1,9 +1,9 @@
-/** 07/03/2026 - CDMX|México
+/** 07/03/2026 - CDMX|México - 08/03/2026
  * @author: Alexis Tercero
  * @mail : alexistercero55@gmail.com
  * @github: AlexisTercero55
  */
-import * as THREE from 'three';
+import {IcosahedronGeometry, Mesh,MeshBasicMaterial,Texture,AxesHelper,Object3D} from 'three';
 import III_Cam from '../camera';
 import  createLight  from '../lights';
 import { III_SCENE } from '../scene';
@@ -58,7 +58,6 @@ export default class III_SPACE
     #resizer = null;
     //#endregion
     /**
-     * 
      * @param {DOMElement} container - where space will be render.
      */
     constructor(container,{
@@ -148,9 +147,9 @@ export default class III_SPACE
     background()
     {
         // background
-        var grometry = new THREE.IcosahedronGeometry(100,2)
-        var back = new THREE.Mesh( grometry, new THREE.MeshBasicMaterial( { map:this.gradTexture([[0.75,0.6,0.4,0.25], ['#1B1D1E','#3D4143','#72797D', '#b0babf']]), side:THREE.BackSide, depthWrite: false, fog:false }  ));
-        // back.geometry.applyMatrix(new THREE.Matrix4().makeRotationZ(15*ToRad));
+        var grometry = new IcosahedronGeometry(100,2)
+        var back = new Mesh( grometry, new MeshBasicMaterial( { map:this.gradTexture([[0.75,0.6,0.4,0.25], ['#1B1D1E','#3D4143','#72797D', '#b0babf']]), side:BackSide, depthWrite: false, fog:false }  ));
+        // back.geometry.applyMatrix(new Matrix4().makeRotationZ(15*ToRad));
         this.#scene.add( back );
     }
 
@@ -164,7 +163,7 @@ export default class III_SPACE
         while(i--){ gradient.addColorStop(color[0][i],color[1][i]); }
         ct.fillStyle = gradient;
         ct.fillRect(0,0,16,size);
-        var texture = new THREE.Texture(c);
+        var texture = new Texture(c);
         texture.needsUpdate = true;
         return texture;
     }
@@ -187,7 +186,7 @@ export default class III_SPACE
 
     axis(n=5)
     {
-        this.#scene.add(new THREE.AxesHelper(n));
+        this.#scene.add(new AxesHelper(n));
     }
     
     addObject(obj,anim=false)

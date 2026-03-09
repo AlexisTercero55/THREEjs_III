@@ -36,20 +36,22 @@ classDiagram
     }
     
     class III_SPACE {
-        - camera: III_Cam
-        - renderer: III_WebGL_Renderer
-        - scene: III_SCENE
-        - loop: Loop
         - controls: III_CONTROLS_
         - resizer: Resizer
+        - container: DOMElement
         + constructor(container, options)
         + start() void
         + stop() void
-        + addObject(obj, anim) void
+        + render() void
         + createObjects() void
-        + camera getter
+        + addObject(obj, anim) void
+        + axis(n) void
+        + background() void
+        + lights() void
+        + loop getter
         + scene getter
         + renderer getter
+        + camera getter
     }
 
     class Resizer {
