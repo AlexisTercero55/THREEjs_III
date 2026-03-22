@@ -1,4 +1,4 @@
-/** 07/03/2026 - CDMX|México - 08/03/2026
+/** 21/03/2026 - CDMX|México
  * @author: Alexis Tercero
  * @mail : alexistercero55@gmail.com
  * @github: AlexisTercero55
@@ -191,7 +191,7 @@ export default class III_SPACE
     
     addObject(obj,anim=false)
     {
-        if (!(obj instanceof THREE.Object3D)) {
+        if (!(obj instanceof Object3D)) {
             throw new Error("obj must be an instance of THREE.Object3D");
         }
         this.#scene.add(obj);
@@ -201,6 +201,14 @@ export default class III_SPACE
             }
             this.#loop.add(obj);
         }
+    }
+
+    addLoop(obj)
+    {
+        if (!("nextFrame" in obj)) {
+            throw new Error("obj must have a nextFrame method");
+        }
+        this.#loop.add(obj);
     }
 
     /**
