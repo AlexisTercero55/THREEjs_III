@@ -1,3 +1,8 @@
+/** 21/03/2026 - CDMX|México
+ * @author: Alexis Tercero
+ * @mail : alexistercero55@gmail.com
+ * @github: AlexisTercero55
+ */
 import { Color, 
   Scene,
   CubeTextureLoader
