@@ -11,7 +11,7 @@ Another abstraction level for computer graphics on the web.
 
 ![Screenshot_4](https://user-images.githubusercontent.com/87354316/227851549-2b21eab5-8918-46dc-894c-3e7b0ad5f292.png)
 
-## Workflow
+## Simplified Workflow
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': {
   'background': '#030614',
