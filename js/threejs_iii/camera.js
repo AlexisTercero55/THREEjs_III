@@ -1,5 +1,9 @@
+/** 21/03/2026 - CDMX|México 
+ * @author: Alexis Tercero
+ * @mail : alexistercero55@gmail.com
+ * @github: AlexisTercero55
+ */
 import { PerspectiveCamera, Vector3 } from 'three';
-
 
 /**
  * ref: https://threejs.org/docs/#api/en/cameras/PerspectiveCamera.zoom
@@ -17,7 +21,7 @@ export default class III_Cam extends PerspectiveCamera
     );
 
     this.position.set(x,y,z);
-    this.nextFrame = (delta) => console.log('camera:',this.position);
+    this.nextFrame = (delta, ElapsedTime) => console.log('camera:',this.position);
   }
 }
 
@@ -34,13 +38,7 @@ function createCamera({x=0,y=0,z=0, lookat=new Vector3(), near = 0.1, far = 1000
   camera.position.set(x,y,z);
   camera.nextFrame = (delta) => console.log('camera:',camera.position);
 
-
   return camera;
 }
-
-// createCamera.prototype.camView = function ()
-// {
-
-// }
 
 export { createCamera };

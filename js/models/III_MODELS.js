@@ -1,9 +1,9 @@
-/** 26/03/2022 - CDMX|México
+/** 26/03/2022 - CDMX|México - 21/03/2026
  * @author: Alexis Tercero
  * @mail : alexistercero55@gmail.com
  * @github: AlexisTercero55
  */
-import * as  THREE from 'three';
+import {Vector3, GridHelper} from 'three';
 import III_SPACE from "../threejs_iii/BASE/III_Space";
 import glbLoad from '../threejs_iii/III_MODELS/glbLoad';
 import createLight from '../threejs_iii/lights';
@@ -21,11 +21,12 @@ export default class III_MODELS extends III_SPACE
             POV,
         });
 
-        this.controlsLookAt(new THREE.Vector3(0,3,0));
+        this.controlsLookAt(new Vector3(0,3,0));
     }
 
     createObjects(){
-        this.GLBAnimated();
+        //this.GLBAnimated();
+        this.FSMCharacter();
     }
 
     
@@ -33,23 +34,23 @@ export default class III_MODELS extends III_SPACE
     /**GLB animated load */
     async GLBAnimated()
     {
-        const grid = new THREE.GridHelper(90, 90,0x00ff00,0xff0000);
+        const grid = new GridHelper(90, 90,0x00ff00,0xff0000);
         this.addObject(grid);
 
         let model = await glbLoad('./models/cats/an_animated_cat.glb',
-        new THREE.Vector3(0,0,0));
+        new Vector3(0,0,0));
         model.rotateY(-Math.PI);
         model.scale.multiplyScalar(0.2);
         this.addObject(model,true);
 
         model = await glbLoad('./models/cats/animated_bengal_cat.glb',
-        new THREE.Vector3(0,0,3));
+        new Vector3(0,0,3));
         model.rotateY(-Math.PI);
         model.scale.multiplyScalar(3);
         this.addObject(model,true);
 
         model = await glbLoad('./models/cats/toon_cat_free.glb',
-        new THREE.Vector3(0,0,-3));
+        new Vector3(0,0,-3));
         model.rotateY(-Math.PI);
         model.scale.multiplyScalar(0.01);
         model.rotateY(Math.PI/2)
@@ -85,7 +86,7 @@ export default class III_MODELS extends III_SPACE
 
     FSMCharacter()
     {
-        const grid = new THREE.GridHelper(90, 90,0xFF535D,0xff0000);
+        const grid = new GridHelper(90, 90,0xFF535D,0xff0000);
         this.addObject(grid);
         const params = {
             model : 'X Bot.fbx',
